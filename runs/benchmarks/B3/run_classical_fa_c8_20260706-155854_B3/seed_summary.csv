@@ -1,0 +1,2 @@
+rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
+c8,classical_fa,symmetry_vs_broken,5,0.9366666666666668,0.042687494916218996,0.8833333333333333,1.0,0.9,0.9733333333333334,18,0.5

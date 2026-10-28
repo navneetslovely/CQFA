@@ -1,0 +1,22 @@
+cqfa             n_train=   8  acc=0.866 +/- 0.062
+cqfa             n_train=  16  acc=0.910 +/- 0.033
+cqfa             n_train=  24  acc=0.946 +/- 0.031
+cqfa             n_train=  40  acc=0.969 +/- 0.010
+cqfa             n_train=  64  acc=0.984 +/- 0.012
+cqfa             n_train= 100  acc=0.985 +/- 0.013
+cqfa             n_train= 160  acc=0.986 +/- 0.005
+classical_fa     n_train=   8  acc=0.714 +/- 0.043
+classical_fa     n_train=  16  acc=0.727 +/- 0.033
+classical_fa     n_train=  24  acc=0.753 +/- 0.020
+classical_fa     n_train=  40  acc=0.746 +/- 0.020
+classical_fa     n_train=  64  acc=0.769 +/- 0.030
+classical_fa     n_train= 100  acc=0.758 +/- 0.013
+classical_fa     n_train= 160  acc=0.750 +/- 0.025
+non_equivariant  n_train=   8  acc=0.665 +/- 0.032
+non_equivariant  n_train=  16  acc=0.697 +/- 0.022
+non_equivariant  n_train=  24  acc=0.707 +/- 0.030
+non_equivariant  n_train=  40  acc=0.727 +/- 0.025
+non_equivariant  n_train=  64  acc=0.753 +/- 0.025
+non_equivariant  n_train= 100  acc=0.744 +/- 0.025
+non_equivariant  n_train= 160  acc=0.750 +/- 0.026
+wrote results/e7_generalization/learning_curves.csv

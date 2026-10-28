@@ -1,0 +1,1 @@
+{"task": "twocopy", "model": "thermal(nbar=0.1)", "strength": 0.05, "n": 3, "coherent_copies": 16.0, "singlecopy_copies": 64.0, "separation_ratio": 4.0}

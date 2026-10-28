@@ -1,0 +1,22 @@
+part,N,prime_order,max_phase_err,decode_success,n_decodes,decode_err_used,threshold_tight,p,q,dlp_decode_success
+phase+decode,5,True,1.18481185263504e-16,1.0,25,0.499*2pi/N,True,,,
+phase+decode,7,True,3.552713678800501e-15,1.0,35,0.499*2pi/N,True,,,
+phase+decode,11,True,7.105427357601002e-15,1.0,55,0.499*2pi/N,True,,,
+phase+decode,13,True,7.105427357601002e-15,1.0,65,0.499*2pi/N,True,,,
+phase+decode,17,True,2.1316282072803006e-14,1.0,85,0.499*2pi/N,True,,,
+phase+decode,19,True,2.1316282072803006e-14,1.0,95,0.499*2pi/N,True,,,
+phase+decode,23,True,2.1316282072803006e-14,1.0,115,0.499*2pi/N,True,,,
+phase+decode,29,True,3.552713678800501e-14,1.0,145,0.499*2pi/N,True,,,
+phase+decode,31,True,3.552713678800501e-14,1.0,155,0.499*2pi/N,True,,,
+phase+decode,37,True,4.263256414560601e-14,1.0,185,0.499*2pi/N,True,,,
+phase+decode,41,True,4.263256414560601e-14,1.0,205,0.499*2pi/N,True,,,
+phase+decode,43,True,4.973799150320701e-14,1.0,215,0.499*2pi/N,True,,,
+phase+decode,47,True,5.684341886080802e-14,1.0,235,0.499*2pi/N,True,,,
+dlp,5,True,0.0,,5,0 (exact),,11,5,1.0
+dlp,11,True,0.0,,5,0 (exact),,23,11,1.0
+dlp,23,True,8.881784197001252e-16,,5,0 (exact),,47,23,1.0
+dlp,29,True,1.1102230246251565e-16,,5,0 (exact),,59,29,1.0
+dlp,41,True,0.0,,5,0 (exact),,83,41,1.0
+dlp,53,True,8.881784197001252e-16,,5,0 (exact),,107,53,1.0
+dlp,83,True,0.0,,5,0 (exact),,167,83,1.0
+dlp,89,True,0.0,,5,0 (exact),,179,89,1.0

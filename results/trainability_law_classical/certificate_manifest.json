@@ -1,0 +1,26 @@
+{
+  "script": "run_certificate",
+  "numpy": "2.5.1",
+  "args": {
+    "n_min": 2,
+    "n_max": 5,
+    "models": [
+      "cqfa",
+      "classical_fa",
+      "non_equivariant"
+    ],
+    "source": "classical_reprepable",
+    "n_data": 64,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "out": "results/e5_scaling_classical"
+  },
+  "timestamp": "2026-07-06T18:57:26",
+  "n_point_rows": 60,
+  "n_scale_rows": 3
+}

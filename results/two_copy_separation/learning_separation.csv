@@ -1,0 +1,5 @@
+n,dim,coherent_copies,singlecopy_copies,singlecopy_capped_runs,ratio
+2,4,4.0,64.0,0,16.0
+3,8,4.0,128.0,0,32.0
+4,16,4.0,256.0,0,64.0
+5,32,4.0,512.0,0,128.0

@@ -1,0 +1,44 @@
+CQFA — Review Licence
+
+Copyright (c) 2026. All rights reserved.
+
+
+
+
+GRANT
+
+You may download, run, inspect and modify the code, and use the data included
+in this archive, for the purposes of:
+
+  (a) evaluating the submission, and
+  (b) reproducing the results reported in the paper and supplementary document.
+
+
+RESERVED
+
+All other rights are reserved. Without prior written permission you may not:
+
+  - redistribute this archive or any part of it,
+  - use it for any commercial purpose, or
+  - incorporate it, in whole or in part, into other published work.
+
+No patent rights are granted.
+
+Terms for public release will be issued upon publication.
+
+
+THIRD-PARTY MATERIAL
+
+Third-party packages listed in requirements-lock.txt, and any datasets
+referenced from the published literature, remain governed by their own terms.
+
+
+NO WARRANTY
+
+THE SOFTWARE AND DATA ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR DATA OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE OR DATA.

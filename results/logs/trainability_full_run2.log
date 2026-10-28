@@ -1,0 +1,304 @@
+=== BLOCK 1a: equivariant gradient variance (depth x obs x input x position) ===
+  n=3 dimH+=   4 D=1 P=  4 Var(mid,dla,haar)=1.102e-33 Var*dimH+=0.0000 P_g(rho)=3.643e-01
+  n=3 dimH+=   4 D=2 P=  8 Var(mid,dla,haar)=9.840e-02 Var*dimH+=0.3936 P_g(rho)=3.004e-01
+  n=3 dimH+=   4 D=4 P= 16 Var(mid,dla,haar)=1.242e-01 Var*dimH+=0.4967 P_g(rho)=2.850e-01
+  n=3 dimH+=   4 D=8 P= 32 Var(mid,dla,haar)=9.508e-02 Var*dimH+=0.3803 P_g(rho)=2.109e-01
+  n=4 dimH+=   8 D=1 P=  6 Var(mid,dla,haar)=1.183e-33 Var*dimH+=0.0000 P_g(rho)=1.199e-01
+  n=4 dimH+=   8 D=2 P= 12 Var(mid,dla,haar)=2.491e-02 Var*dimH+=0.1993 P_g(rho)=1.348e-01
+  n=4 dimH+=   8 D=4 P= 24 Var(mid,dla,haar)=2.866e-02 Var*dimH+=0.2293 P_g(rho)=8.238e-02
+  n=4 dimH+=   8 D=8 P= 48 Var(mid,dla,haar)=2.450e-02 Var*dimH+=0.1960 P_g(rho)=1.060e-01
+  n=5 dimH+=  16 D=1 P=  8 Var(mid,dla,haar)=3.335e-34 Var*dimH+=0.0000 P_g(rho)=3.736e-02
+  n=5 dimH+=  16 D=2 P= 16 Var(mid,dla,haar)=5.577e-03 Var*dimH+=0.0892 P_g(rho)=4.902e-02
+  n=5 dimH+=  16 D=4 P= 32 Var(mid,dla,haar)=7.334e-03 Var*dimH+=0.1173 P_g(rho)=4.225e-02
+  n=5 dimH+=  16 D=8 P= 64 Var(mid,dla,haar)=6.457e-03 Var*dimH+=0.1033 P_g(rho)=4.345e-02
+  n=6 dimH+=  32 D=1 P= 10 Var(mid,dla,haar)=1.480e-34 Var*dimH+=0.0000 P_g(rho)=1.434e-02
+  n=6 dimH+=  32 D=2 P= 20 Var(mid,dla,haar)=2.657e-03 Var*dimH+=0.0850 P_g(rho)=1.807e-02
+  n=6 dimH+=  32 D=4 P= 40 Var(mid,dla,haar)=2.508e-03 Var*dimH+=0.0803 P_g(rho)=1.251e-02
+  n=6 dimH+=  32 D=8 P= 80 Var(mid,dla,haar)=2.180e-03 Var*dimH+=0.0697 P_g(rho)=1.207e-02
+  n=7 dimH+=  64 D=1 P= 12 Var(mid,dla,haar)=4.645e-35 Var*dimH+=0.0000 P_g(rho)=3.692e-03
+  n=7 dimH+=  64 D=2 P= 24 Var(mid,dla,haar)=4.790e-04 Var*dimH+=0.0307 P_g(rho)=4.100e-03
+  n=7 dimH+=  64 D=4 P= 48 Var(mid,dla,haar)=8.442e-04 Var*dimH+=0.0540 P_g(rho)=4.605e-03
+  n=7 dimH+=  64 D=8 P= 96 Var(mid,dla,haar)=3.514e-04 Var*dimH+=0.0225 P_g(rho)=3.497e-03
+  n=8 dimH+= 128 D=1 P= 14 Var(mid,dla,haar)=1.725e-35 Var*dimH+=0.0000 P_g(rho)=1.403e-03
+  n=8 dimH+= 128 D=2 P= 28 Var(mid,dla,haar)=1.225e-04 Var*dimH+=0.0157 P_g(rho)=1.344e-03
+  n=8 dimH+= 128 D=4 P= 56 Var(mid,dla,haar)=1.575e-04 Var*dimH+=0.0202 P_g(rho)=1.313e-03
+  n=8 dimH+= 128 D=8 P=112 Var(mid,dla,haar)=2.188e-04 Var*dimH+=0.0280 P_g(rho)=1.080e-03
+
+=== BLOCK 1b: generic HEA reference (strong same-depth baseline) ===
+  n=3 dim=   8 D=1 P=  6 Var(mid,global)=9.722e-34 Var*4^n=0.0000 [Ragone 1/4^n = 1.389e-02]
+  n=3 dim=   8 D=2 P= 12 Var(mid,global)=3.304e-02 Var*4^n=2.1144 [Ragone 1/4^n = 1.389e-02]
+  n=3 dim=   8 D=4 P= 24 Var(mid,global)=2.784e-02 Var*4^n=1.7818 [Ragone 1/4^n = 1.389e-02]
+  n=3 dim=   8 D=8 P= 48 Var(mid,global)=3.012e-02 Var*4^n=1.9276 [Ragone 1/4^n = 1.389e-02]
+  n=4 dim=  16 D=1 P=  8 Var(mid,global)=7.604e-03 Var*4^n=1.9466 [Ragone 1/4^n = 3.676e-03]
+  n=4 dim=  16 D=2 P= 16 Var(mid,global)=8.065e-03 Var*4^n=2.0647 [Ragone 1/4^n = 3.676e-03]
+  n=4 dim=  16 D=4 P= 32 Var(mid,global)=7.655e-03 Var*4^n=1.9597 [Ragone 1/4^n = 3.676e-03]
+  n=4 dim=  16 D=8 P= 64 Var(mid,global)=7.866e-03 Var*4^n=2.0137 [Ragone 1/4^n = 3.676e-03]
+  n=5 dim=  32 D=1 P= 10 Var(mid,global)=1.378e-34 Var*4^n=0.0000 [Ragone 1/4^n = 9.470e-04]
+  n=5 dim=  32 D=2 P= 20 Var(mid,global)=2.013e-03 Var*4^n=2.0617 [Ragone 1/4^n = 9.470e-04]
+  n=5 dim=  32 D=4 P= 40 Var(mid,global)=1.894e-03 Var*4^n=1.9399 [Ragone 1/4^n = 9.470e-04]
+  n=5 dim=  32 D=8 P= 80 Var(mid,global)=1.701e-03 Var*4^n=1.7423 [Ragone 1/4^n = 9.470e-04]
+  n=6 dim=  64 D=1 P= 12 Var(mid,global)=4.908e-04 Var*4^n=2.0102 [Ragone 1/4^n = 2.404e-04]
+  n=6 dim=  64 D=2 P= 24 Var(mid,global)=5.009e-04 Var*4^n=2.0515 [Ragone 1/4^n = 2.404e-04]
+  n=6 dim=  64 D=4 P= 48 Var(mid,global)=4.756e-04 Var*4^n=1.9481 [Ragone 1/4^n = 2.404e-04]
+  n=6 dim=  64 D=8 P= 96 Var(mid,global)=5.183e-04 Var*4^n=2.1228 [Ragone 1/4^n = 2.404e-04]
+  n=7 dim= 128 D=1 P= 14 Var(mid,global)=1.355e-35 Var*4^n=0.0000 [Ragone 1/4^n = 6.056e-05]
+  n=7 dim= 128 D=2 P= 28 Var(mid,global)=1.141e-04 Var*4^n=1.8702 [Ragone 1/4^n = 6.056e-05]
+  n=7 dim= 128 D=4 P= 56 Var(mid,global)=1.210e-04 Var*4^n=1.9820 [Ragone 1/4^n = 6.056e-05]
+  n=7 dim= 128 D=8 P=112 Var(mid,global)=1.107e-04 Var*4^n=1.8143 [Ragone 1/4^n = 6.056e-05]
+  n=8 dim= 256 D=1 P= 16 Var(mid,global)=2.948e-05 Var*4^n=1.9323 [Ragone 1/4^n = 1.520e-05]
+  n=8 dim= 256 D=2 P= 32 Var(mid,global)=2.906e-05 Var*4^n=1.9045 [Ragone 1/4^n = 1.520e-05]
+  n=8 dim= 256 D=4 P= 64 Var(mid,global)=3.012e-05 Var*4^n=1.9739 [Ragone 1/4^n = 1.520e-05]
+  n=8 dim= 256 D=8 P=128 Var(mid,global)=3.158e-05 Var*4^n=2.0699 [Ragone 1/4^n = 1.520e-05]
+
+=== BLOCK 2: OPTIMISATION SUCCESS (train to convergence) ===
+  n=3 dimH+=   4 D=2 init=1.0 loss=0.124 test=0.980 succ=1.00 iters=42.833333333333336 |g0|^2=6.53e-02
+  n=3 dimH+=   4 D=2 init=0.1 loss=0.118 test=0.977 succ=1.00 iters=32.833333333333336 |g0|^2=6.13e-02
+  n=3 dimH+=   4 D=4 init=1.0 loss=0.128 test=0.985 succ=1.00 iters=46.666666666666664 |g0|^2=6.58e-02
+  n=3 dimH+=   4 D=4 init=0.1 loss=0.119 test=0.978 succ=1.00 iters=34.666666666666664 |g0|^2=4.09e-02
+  n=3 dimH+=   4 D=6 init=1.0 loss=0.127 test=0.965 succ=1.00 iters=46.5 |g0|^2=3.83e-02
+  n=3 dimH+=   4 D=6 init=0.1 loss=0.123 test=0.973 succ=1.00 iters=38.833333333333336 |g0|^2=8.41e-02
+  n=3 dimH+=   4 D=8 init=1.0 loss=0.099 test=0.968 succ=1.00 iters=31.833333333333332 |g0|^2=7.21e-02
+  n=3 dimH+=   4 D=8 init=0.1 loss=0.114 test=0.975 succ=1.00 iters=33.666666666666664 |g0|^2=8.31e-02
+  n=4 dimH+=   8 D=2 init=1.0 loss=0.149 test=0.962 succ=1.00 iters=64.66666666666667 |g0|^2=2.72e-02
+  n=4 dimH+=   8 D=2 init=0.1 loss=0.156 test=0.965 succ=1.00 iters=71.16666666666667 |g0|^2=2.23e-02
+  n=4 dimH+=   8 D=4 init=1.0 loss=0.159 test=0.981 succ=1.00 iters=77.0 |g0|^2=1.43e-02
+  n=4 dimH+=   8 D=4 init=0.1 loss=0.151 test=0.977 succ=1.00 iters=63.166666666666664 |g0|^2=1.88e-02
+  n=4 dimH+=   8 D=6 init=1.0 loss=0.144 test=0.961 succ=1.00 iters=62.5 |g0|^2=3.01e-02
+  n=4 dimH+=   8 D=6 init=0.1 loss=0.155 test=0.957 succ=1.00 iters=70.66666666666667 |g0|^2=2.35e-02
+  n=4 dimH+=   8 D=8 init=1.0 loss=0.153 test=0.967 succ=1.00 iters=69.33333333333333 |g0|^2=2.86e-02
+  n=4 dimH+=   8 D=8 init=0.1 loss=0.148 test=0.975 succ=1.00 iters=62.833333333333336 |g0|^2=1.67e-02
+  n=5 dimH+=  16 D=2 init=1.0 loss=0.193 test=0.957 succ=1.00 iters=117.16666666666667 |g0|^2=1.30e-02
+  n=5 dimH+=  16 D=2 init=0.1 loss=0.206 test=0.960 succ=1.00 iters=126.66666666666667 |g0|^2=5.95e-03
+  n=5 dimH+=  16 D=4 init=1.0 loss=0.199 test=0.962 succ=1.00 iters=121.0 |g0|^2=9.47e-03
+  n=5 dimH+=  16 D=4 init=0.1 loss=0.191 test=0.955 succ=1.00 iters=112.5 |g0|^2=5.76e-03
+  n=5 dimH+=  16 D=6 init=1.0 loss=0.196 test=0.963 succ=1.00 iters=117.66666666666667 |g0|^2=1.11e-02
+  n=5 dimH+=  16 D=6 init=0.1 loss=0.184 test=0.963 succ=1.00 iters=107.33333333333333 |g0|^2=1.15e-02
+  n=5 dimH+=  16 D=8 init=1.0 loss=0.185 test=0.961 succ=1.00 iters=108.33333333333333 |g0|^2=1.00e-02
+  n=5 dimH+=  16 D=8 init=0.1 loss=0.205 test=0.978 succ=1.00 iters=123.0 |g0|^2=6.82e-03
+  n=6 dimH+=  32 D=2 init=1.0 loss=0.252 test=0.954 succ=1.00 iters=205.33333333333334 |g0|^2=3.99e-03
+  n=6 dimH+=  32 D=2 init=0.1 loss=0.245 test=0.970 succ=1.00 iters=190.16666666666666 |g0|^2=3.06e-03
+  n=6 dimH+=  32 D=4 init=1.0 loss=0.243 test=0.962 succ=1.00 iters=190.16666666666666 |g0|^2=3.51e-03
+  n=6 dimH+=  32 D=4 init=0.1 loss=0.234 test=0.949 succ=1.00 iters=173.5 |g0|^2=3.37e-03
+  n=6 dimH+=  32 D=6 init=1.0 loss=0.242 test=0.955 succ=1.00 iters=190.16666666666666 |g0|^2=3.02e-03
+  n=6 dimH+=  32 D=6 init=0.1 loss=0.245 test=0.974 succ=1.00 iters=189.83333333333334 |g0|^2=3.94e-03
+  n=6 dimH+=  32 D=8 init=1.0 loss=0.241 test=0.951 succ=1.00 iters=185.66666666666666 |g0|^2=2.97e-03
+  n=6 dimH+=  32 D=8 init=0.1 loss=0.243 test=0.961 succ=1.00 iters=190.66666666666666 |g0|^2=3.96e-03
+  n=7 dimH+=  64 D=2 init=1.0 loss=0.293 test=0.950 succ=0.67 iters=268.5 |g0|^2=2.26e-03
+  n=7 dimH+=  64 D=2 init=0.1 loss=0.292 test=0.952 succ=0.67 iters=261.25 |g0|^2=1.52e-03
+  n=7 dimH+=  64 D=4 init=1.0 loss=0.295 test=0.941 succ=0.50 iters=265.6666666666667 |g0|^2=1.87e-03
+  n=7 dimH+=  64 D=4 init=0.1 loss=0.291 test=0.955 succ=0.83 iters=267.25 |g0|^2=1.85e-03
+  n=7 dimH+=  64 D=6 init=1.0 loss=0.287 test=0.938 succ=0.67 iters=255.5 |g0|^2=1.57e-03
+  n=7 dimH+=  64 D=6 init=0.1 loss=0.295 test=0.966 succ=0.50 iters=269.6666666666667 |g0|^2=1.54e-03
+  n=7 dimH+=  64 D=8 init=1.0 loss=0.287 test=0.969 succ=1.00 iters=272.0 |g0|^2=1.58e-03
+  n=7 dimH+=  64 D=8 init=0.1 loss=0.292 test=0.943 succ=0.67 iters=264.25 |g0|^2=1.32e-03
+wrote results/e5_scaling/trainability_full.csv (1960 rows, 53 cols)
+
+=== FITS: exponent of Var ~ dim^b, per subset ===
+  [cqfa_equivariant ] D=1 X0_local         aligned_gG  first    b = -0.96 +/- 0.13  R2=0.990 CI covers -1
+  [cqfa_equivariant ] D=1 X0_local         gpure_max   first    b = -1.04 +/- 0.19  R2=0.982 CI covers -1
+  [cqfa_equivariant ] D=1 X0_local         haar_Hp     first    b = -2.09 +/- 0.23  R2=0.994 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 dla_elem         aligned_gG  first    b = -0.98 +/- 0.12  R2=0.993 CI covers -1
+  [cqfa_equivariant ] D=1 dla_elem         gpure_max   first    b = -1.05 +/- 0.18  R2=0.984 CI covers -1
+  [cqfa_equivariant ] D=1 dla_elem         haar_Hp     first    b = -2.09 +/- 0.22  R2=0.994 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 proj_rank1       aligned_gG  first    b = -1.41 +/- 0.30  R2=0.978 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 proj_rank1       aligned_gG  mid      b = -1.4 +/- 2.1  R2=0.986 CI covers -1
+  [cqfa_equivariant ] D=1 proj_rank1       gpure_max   first    b = -1.74 +/- 0.20  R2=0.993 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 proj_rank1       gpure_max   mid      b = -1.58 +/- 0.54  R2=0.999 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 proj_rank1       haar_Hp     first    b = -2.064 +/- 0.064  R2=0.999 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 proj_rank1       haar_Hp     mid      b = -1.96 +/- 0.17  R2=1.000 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 X0_local         aligned_gG  first    b = -0.917 +/- 0.088  R2=0.995 CI covers -1
+  [cqfa_equivariant ] D=2 X0_local         aligned_gG  mid      b = -0.989 +/- 0.041  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=2 X0_local         gpure_max   first    b = -0.98 +/- 0.22  R2=0.976 CI covers -1
+  [cqfa_equivariant ] D=2 X0_local         gpure_max   mid      b = -0.977 +/- 0.051  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=2 X0_local         haar_Hp     first    b = -1.91 +/- 0.33  R2=0.985 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 X0_local         haar_Hp     mid      b = -1.90 +/- 0.21  R2=0.993 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 dla_elem         aligned_gG  first    b = -0.917 +/- 0.092  R2=0.995 CI covers -1
+  [cqfa_equivariant ] D=2 dla_elem         aligned_gG  mid      b = -0.988 +/- 0.032  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=2 dla_elem         gpure_max   first    b = -1.00 +/- 0.20  R2=0.980 CI covers -1
+  [cqfa_equivariant ] D=2 dla_elem         gpure_max   mid      b = -0.979 +/- 0.058  R2=0.998 CI covers -1
+  [cqfa_equivariant ] D=2 dla_elem         haar_Hp     first    b = -1.93 +/- 0.31  R2=0.987 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 dla_elem         haar_Hp     mid      b = -1.90 +/- 0.21  R2=0.994 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       aligned_gG  first    b = -1.56 +/- 0.16  R2=0.995 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       aligned_gG  mid      b = -1.656 +/- 0.098  R2=0.998 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       aligned_gG  quarter  b = -1.69 +/- 0.50  R2=0.957 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       gpure_max   first    b = -1.65 +/- 0.24  R2=0.989 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       gpure_max   mid      b = -1.58 +/- 0.19  R2=0.993 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       gpure_max   quarter  b = -1.61 +/- 0.28  R2=0.985 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       haar_Hp     first    b = -2.00 +/- 0.12  R2=0.998 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       haar_Hp     mid      b = -2.005 +/- 0.082  R2=0.999 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       haar_Hp     quarter  b = -2.04 +/- 0.23  R2=0.993 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         aligned_gG  first    b = -1.006 +/- 0.066  R2=0.998 CI covers -1
+  [cqfa_equivariant ] D=4 X0_local         aligned_gG  mid      b = -0.9955 +/- 0.0079  R2=1.000 CI covers -1
+  [cqfa_equivariant ] D=4 X0_local         aligned_gG  quarter  b = -0.999 +/- 0.035  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=4 X0_local         gpure_max   first    b = -1.11 +/- 0.13  R2=0.993 CI covers -1
+  [cqfa_equivariant ] D=4 X0_local         gpure_max   mid      b = -0.997 +/- 0.033  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=4 X0_local         gpure_max   quarter  b = -1.016 +/- 0.041  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=4 X0_local         haar_Hp     first    b = -1.92 +/- 0.25  R2=0.991 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         haar_Hp     mid      b = -1.86 +/- 0.14  R2=0.997 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         haar_Hp     quarter  b = -1.86 +/- 0.17  R2=0.996 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         aligned_gG  first    b = -1.005 +/- 0.099  R2=0.995 CI covers -1
+  [cqfa_equivariant ] D=4 dla_elem         aligned_gG  mid      b = -1.003 +/- 0.048  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=4 dla_elem         aligned_gG  quarter  b = -1.003 +/- 0.041  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=4 dla_elem         gpure_max   first    b = -1.10 +/- 0.14  R2=0.992 CI covers -1
+  [cqfa_equivariant ] D=4 dla_elem         gpure_max   mid      b = -0.997 +/- 0.028  R2=1.000 CI covers -1
+  [cqfa_equivariant ] D=4 dla_elem         gpure_max   quarter  b = -1.013 +/- 0.037  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=4 dla_elem         haar_Hp     first    b = -1.92 +/- 0.26  R2=0.991 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         haar_Hp     mid      b = -1.85 +/- 0.17  R2=0.996 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         haar_Hp     quarter  b = -1.88 +/- 0.16  R2=0.996 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       aligned_gG  first    b = -1.66 +/- 0.13  R2=0.997 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       aligned_gG  mid      b = -1.66 +/- 0.10  R2=0.998 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       aligned_gG  quarter  b = -1.633 +/- 0.073  R2=0.999 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       gpure_max   first    b = -1.76 +/- 0.11  R2=0.998 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       gpure_max   mid      b = -1.67 +/- 0.10  R2=0.998 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       gpure_max   quarter  b = -1.67 +/- 0.11  R2=0.998 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       haar_Hp     first    b = -2.013 +/- 0.064  R2=0.999 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       haar_Hp     mid      b = -2.006 +/- 0.033  R2=1.000 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       haar_Hp     quarter  b = -2.011 +/- 0.049  R2=1.000 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         aligned_gG  first    b = -0.93 +/- 0.16  R2=0.984 CI covers -1
+  [cqfa_equivariant ] D=8 X0_local         aligned_gG  mid      b = -1.004 +/- 0.019  R2=1.000 CI covers -1
+  [cqfa_equivariant ] D=8 X0_local         aligned_gG  quarter  b = -0.997 +/- 0.043  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=8 X0_local         gpure_max   first    b = -1.095 +/- 0.056  R2=0.999 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         gpure_max   mid      b = -0.999 +/- 0.024  R2=1.000 CI covers -1
+  [cqfa_equivariant ] D=8 X0_local         gpure_max   quarter  b = -1.010 +/- 0.037  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=8 X0_local         haar_Hp     first    b = -1.95 +/- 0.26  R2=0.991 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         haar_Hp     mid      b = -1.81 +/- 0.33  R2=0.983 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         haar_Hp     quarter  b = -1.84 +/- 0.29  R2=0.987 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         aligned_gG  first    b = -0.95 +/- 0.18  R2=0.982 CI covers -1
+  [cqfa_equivariant ] D=8 dla_elem         aligned_gG  mid      b = -0.997 +/- 0.044  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=8 dla_elem         aligned_gG  quarter  b = -0.992 +/- 0.018  R2=1.000 CI covers -1
+  [cqfa_equivariant ] D=8 dla_elem         gpure_max   first    b = -1.092 +/- 0.065  R2=0.998 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         gpure_max   mid      b = -1.002 +/- 0.029  R2=1.000 CI covers -1
+  [cqfa_equivariant ] D=8 dla_elem         gpure_max   quarter  b = -0.995 +/- 0.039  R2=0.999 CI covers -1
+  [cqfa_equivariant ] D=8 dla_elem         haar_Hp     first    b = -1.95 +/- 0.28  R2=0.990 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         haar_Hp     mid      b = -1.82 +/- 0.28  R2=0.988 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         haar_Hp     quarter  b = -1.82 +/- 0.31  R2=0.985 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       aligned_gG  first    b = -1.60 +/- 0.25  R2=0.987 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       aligned_gG  mid      b = -1.68 +/- 0.11  R2=0.998 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       aligned_gG  quarter  b = -1.597 +/- 0.075  R2=0.999 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       gpure_max   first    b = -1.752 +/- 0.053  R2=1.000 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       gpure_max   mid      b = -1.67 +/- 0.10  R2=0.998 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       gpure_max   quarter  b = -1.70 +/- 0.11  R2=0.998 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       haar_Hp     first    b = -2.038 +/- 0.063  R2=1.000 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       haar_Hp     mid      b = -1.988 +/- 0.049  R2=1.000 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       haar_Hp     quarter  b = -2.006 +/- 0.042  R2=1.000 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 X0_local         aligned_gG  first    b = -2.65 +/- 0.58  R2=0.975 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 X0_local         gpure_max   first    b = -2.8 +/- 1.2  R2=0.916 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 X0_local         haar_Hp     first    b = -5.7 +/- 1.6  R2=0.960 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 dla_elem         aligned_gG  first    b = -2.72 +/- 0.49  R2=0.983 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 dla_elem         gpure_max   first    b = -2.8 +/- 1.1  R2=0.921 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 dla_elem         haar_Hp     first    b = -5.7 +/- 1.6  R2=0.962 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 proj_rank1       aligned_gG  first    b = -3.97 +/- 0.48  R2=0.992 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 proj_rank1       aligned_gG  mid      b = -3.4 +/- 1.3  R2=0.999 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 proj_rank1       gpure_max   first    b = -4.7 +/- 1.6  R2=0.946 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 proj_rank1       gpure_max   mid      b = -3.9 +/- 6.1  R2=0.985 CI covers -1
+  [cqfa_equivariant ] D=1 proj_rank1       haar_Hp     first    b = -5.6 +/- 1.6  R2=0.960 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=1 proj_rank1       haar_Hp     mid      b = -4.8 +/- 8.9  R2=0.980 CI covers -1
+  [cqfa_equivariant ] D=2 X0_local         aligned_gG  first    b = -2.52 +/- 0.66  R2=0.966 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 X0_local         aligned_gG  mid      b = -2.70 +/- 0.75  R2=0.961 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 X0_local         gpure_max   first    b = -2.6 +/- 1.1  R2=0.913 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 X0_local         gpure_max   mid      b = -2.66 +/- 0.79  R2=0.956 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 X0_local         haar_Hp     first    b = -5.2 +/- 1.9  R2=0.937 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 X0_local         haar_Hp     mid      b = -5.2 +/- 1.5  R2=0.957 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 dla_elem         aligned_gG  first    b = -2.52 +/- 0.60  R2=0.971 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 dla_elem         aligned_gG  mid      b = -2.71 +/- 0.68  R2=0.968 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 dla_elem         gpure_max   first    b = -2.7 +/- 1.1  R2=0.923 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 dla_elem         gpure_max   mid      b = -2.67 +/- 0.78  R2=0.958 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 dla_elem         haar_Hp     first    b = -5.2 +/- 1.8  R2=0.945 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 dla_elem         haar_Hp     mid      b = -5.2 +/- 1.5  R2=0.959 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       aligned_gG  first    b = -4.31 +/- 0.85  R2=0.980 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       aligned_gG  mid      b = -4.5 +/- 1.1  R2=0.968 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       aligned_gG  quarter  b = -4.7 +/- 1.5  R2=0.951 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       gpure_max   first    b = -4.5 +/- 1.4  R2=0.954 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       gpure_max   mid      b = -4.39 +/- 0.82  R2=0.982 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       gpure_max   quarter  b = -4.50 +/- 0.63  R2=0.990 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       haar_Hp     first    b = -5.5 +/- 1.5  R2=0.965 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       haar_Hp     mid      b = -5.5 +/- 1.4  R2=0.968 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=2 proj_rank1       haar_Hp     quarter  b = -5.6 +/- 1.4  R2=0.967 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         aligned_gG  first    b = -2.77 +/- 0.65  R2=0.972 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         aligned_gG  mid      b = -2.73 +/- 0.69  R2=0.968 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         aligned_gG  quarter  b = -2.75 +/- 0.65  R2=0.972 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         gpure_max   first    b = -3.0 +/- 1.0  R2=0.945 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         gpure_max   mid      b = -2.72 +/- 0.77  R2=0.960 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         gpure_max   quarter  b = -2.78 +/- 0.77  R2=0.962 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         haar_Hp     first    b = -5.3 +/- 1.1  R2=0.977 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         haar_Hp     mid      b = -5.1 +/- 1.4  R2=0.964 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 X0_local         haar_Hp     quarter  b = -5.1 +/- 1.3  R2=0.967 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         aligned_gG  first    b = -2.76 +/- 0.71  R2=0.967 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         aligned_gG  mid      b = -2.75 +/- 0.70  R2=0.967 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         aligned_gG  quarter  b = -2.75 +/- 0.69  R2=0.968 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         gpure_max   first    b = -2.98 +/- 0.99  R2=0.946 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         gpure_max   mid      b = -2.74 +/- 0.65  R2=0.972 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         gpure_max   quarter  b = -2.78 +/- 0.67  R2=0.971 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         haar_Hp     first    b = -5.3 +/- 1.2  R2=0.974 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         haar_Hp     mid      b = -5.1 +/- 1.3  R2=0.968 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 dla_elem         haar_Hp     quarter  b = -5.2 +/- 1.2  R2=0.972 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       aligned_gG  first    b = -4.6 +/- 1.0  R2=0.975 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       aligned_gG  mid      b = -4.6 +/- 1.1  R2=0.972 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       aligned_gG  quarter  b = -4.50 +/- 0.96  R2=0.977 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       gpure_max   first    b = -4.8 +/- 1.3  R2=0.961 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       gpure_max   mid      b = -4.60 +/- 0.99  R2=0.976 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       gpure_max   quarter  b = -4.6 +/- 1.2  R2=0.966 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       haar_Hp     first    b = -5.5 +/- 1.3  R2=0.972 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       haar_Hp     mid      b = -5.5 +/- 1.3  R2=0.971 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=4 proj_rank1       haar_Hp     quarter  b = -5.5 +/- 1.4  R2=0.969 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         aligned_gG  first    b = -2.55 +/- 0.82  R2=0.949 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         aligned_gG  mid      b = -2.75 +/- 0.68  R2=0.969 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         aligned_gG  quarter  b = -2.73 +/- 0.74  R2=0.963 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         gpure_max   first    b = -2.99 +/- 0.85  R2=0.960 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         gpure_max   mid      b = -2.74 +/- 0.68  R2=0.969 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         gpure_max   quarter  b = -2.76 +/- 0.78  R2=0.960 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         haar_Hp     first    b = -5.3 +/- 1.4  R2=0.964 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         haar_Hp     mid      b = -5.0 +/- 1.3  R2=0.968 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 X0_local         haar_Hp     quarter  b = -5.1 +/- 1.3  R2=0.966 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         aligned_gG  first    b = -2.60 +/- 0.88  R2=0.943 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         aligned_gG  mid      b = -2.74 +/- 0.63  R2=0.973 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         aligned_gG  quarter  b = -2.72 +/- 0.65  R2=0.971 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         gpure_max   first    b = -2.98 +/- 0.83  R2=0.961 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         gpure_max   mid      b = -2.74 +/- 0.72  R2=0.965 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         gpure_max   quarter  b = -2.72 +/- 0.75  R2=0.962 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         haar_Hp     first    b = -5.4 +/- 1.4  R2=0.965 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         haar_Hp     mid      b = -5.0 +/- 1.2  R2=0.970 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 dla_elem         haar_Hp     quarter  b = -5.0 +/- 1.3  R2=0.965 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       aligned_gG  first    b = -4.4 +/- 1.3  R2=0.959 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       aligned_gG  mid      b = -4.6 +/- 1.3  R2=0.958 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       aligned_gG  quarter  b = -4.4 +/- 1.0  R2=0.972 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       gpure_max   first    b = -4.8 +/- 1.1  R2=0.972 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       gpure_max   mid      b = -4.61 +/- 0.92  R2=0.980 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       gpure_max   quarter  b = -4.7 +/- 1.2  R2=0.967 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       haar_Hp     first    b = -5.6 +/- 1.3  R2=0.972 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       haar_Hp     mid      b = -5.5 +/- 1.3  R2=0.972 *** CI EXCLUDES -1 ***
+  [cqfa_equivariant ] D=8 proj_rank1       haar_Hp     quarter  b = -5.5 +/- 1.3  R2=0.971 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=1 Z_local_full     haar_full   mid      b = -2.02 +/- 0.59  R2=0.999 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=1 Z_local_full     haar_full   quarter  b = -2.024 +/- 0.088  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=1 proj_rank1_full  haar_full   first    b = -2.028 +/- 0.060  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=1 proj_rank1_full  haar_full   mid      b = -2.00 +/- 0.19  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=1 proj_rank1_full  haar_full   quarter  b = -1.97 +/- 0.32  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=2 Z_local_full     haar_full   first    b = -2.015 +/- 0.016  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=2 Z_local_full     haar_full   quarter  b = -1.966 +/- 0.025  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=2 proj_rank1_full  haar_full   first    b = -1.970 +/- 0.032  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=2 proj_rank1_full  haar_full   mid      b = -2.034 +/- 0.025  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=2 proj_rank1_full  haar_full   quarter  b = -2.02 +/- 0.17  R2=0.996 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=4 Z_local_full     haar_full   first    b = -1.988 +/- 0.020  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=4 Z_local_full     haar_full   mid      b = -1.974 +/- 0.021  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=4 Z_local_full     haar_full   quarter  b = -1.968 +/- 0.047  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=4 proj_rank1_full  haar_full   first    b = -1.985 +/- 0.039  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=4 proj_rank1_full  haar_full   mid      b = -1.977 +/- 0.029  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=4 proj_rank1_full  haar_full   quarter  b = -1.956 +/- 0.011  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=8 Z_local_full     haar_full   first    b = -1.964 +/- 0.052  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=8 Z_local_full     haar_full   mid      b = -1.966 +/- 0.021  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=8 Z_local_full     haar_full   quarter  b = -1.977 +/- 0.027  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=8 proj_rank1_full  haar_full   first    b = -1.975 +/- 0.058  R2=1.000 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=8 proj_rank1_full  haar_full   mid      b = -1.990 +/- 0.081  R2=0.999 *** CI EXCLUDES -1 ***
+  [generic_hea      ] D=8 proj_rank1_full  haar_full   quarter  b = -1.990 +/- 0.061  R2=1.000 *** CI EXCLUDES -1 ***
+wrote results/e5_scaling/trainability_full_fits.csv (196 rows, 17 cols)
+
+=== FOUR-REGIME CLASSIFICATION + PRE-REGISTERED VERDICT ===
+  (K1) exponent spread across subsets = 1.169; median CI half-width = 0.118; subsets whose CI excludes -1 = 10/27 -> K1 TRIGGERED
+  (S2/K2) init_scale=1.0: rho(|g0|^2, success)=+0.531  rho(|g0|^2, test_acc)=+0.689  rho(dimH+, success)=-0.441 -> K2 not triggered
+  (S2/K2) init_scale=0.1: rho(|g0|^2, success)=+0.764  rho(|g0|^2, test_acc)=+0.638  rho(dimH+, success)=-0.773 -> K2 not triggered
+
+  *** PRE-REGISTERED VERDICT: DEMOTED_ensemble_specific ***
+wrote results/e5_scaling/trainability_full_regimes.csv (70 rows, 26 cols)
+
+done in 780.1s
+EXIT=0

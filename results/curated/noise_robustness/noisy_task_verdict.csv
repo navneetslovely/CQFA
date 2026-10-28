@@ -1,0 +1,2 @@
+preregistered_criterion,overall_verdict,n_rows,n_nonvacuous,n_vacuous_excluded,n_single_class_degenerate,n_task_destroyed_by_noise,n_kill_cells,n_unresolved_kill_cells,max_excess_method_shortfall_dM,max_gap_bayes_minus_cqfa,n_seeds
+SURVIVES iff for every non-vacuous cell dM<=0.10 or dI>=dM-0.05; KILLED iff exists a cell with dM>0.10 at >2 paired SE while dI<=0.05; MIXED if such cells exist but none resolved at >2 SE.,SURVIVES,240,229,11,11,11,0,0,0.06874999999999998,0.20625,8

@@ -1,0 +1,46 @@
+{
+  "timestamp_utc": "2026-07-17T17:45:06Z",
+  "git_hash": "HEAD",
+  "argv": [
+    "experiments/hardware/ibm_campaign/campaign.py",
+    "run",
+    "--backend",
+    "fake:fez",
+    "--which",
+    "C8",
+    "--tag",
+    "dry_c8_fez"
+  ],
+  "which_experiments": [
+    "C8"
+  ],
+  "backend_label": "Fake:fez",
+  "job_id": null,
+  "usage": null,
+  "calibration": {
+    "kind": "offline",
+    "backend": "Fake:fez"
+  },
+  "cost_estimate": {
+    "n_pubs": 16,
+    "total_shots": 65536,
+    "est_qpu_seconds": 24.94,
+    "per_shot_seconds": 0.00035,
+    "overhead_seconds": 2.0,
+    "by_experiment": {
+      "C8": {
+        "n_pubs": 16,
+        "shots": 65536
+      }
+    }
+  },
+  "versions": {
+    "python": "3.14.5",
+    "numpy": "2.5.1",
+    "qiskit": "2.5.0",
+    "qiskit_aer": "0.17.2",
+    "qiskit_ibm_runtime": "0.47.0"
+  },
+  "n_pubs": 16,
+  "note": "API token intentionally NOT stored"
+}

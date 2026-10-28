@@ -1,0 +1,12 @@
+[E5/dla] numpy 2.5.1  n=2..6  cap=8192
+  n= 2 generic_hea      ambient=15 restricted= |H+|= (4^n-1=15) capped=False 0.0019s
+  n= 2 cqfa_restricted  ambient= restricted=3 |H+|=2 (4^n-1=15) capped=False 0.0005s
+  n= 3 generic_hea      ambient=63 restricted= |H+|= (4^n-1=63) capped=False 0.0248s
+  n= 3 cqfa_restricted  ambient= restricted=6 |H+|=4 (4^n-1=63) capped=False 0.0007s
+  n= 4 generic_hea      ambient=255 restricted= |H+|= (4^n-1=255) capped=False 0.6214s
+  n= 4 cqfa_restricted  ambient= restricted=9 |H+|=8 (4^n-1=255) capped=False 0.0017s
+  n= 5 generic_hea      ambient=1023 restricted= |H+|= (4^n-1=1023) capped=False 21.6009s
+  n= 5 cqfa_restricted  ambient= restricted=12 |H+|=16 (4^n-1=1023) capped=False 0.0028s
+  n= 6 generic_hea      ambient=4095 restricted= |H+|= (4^n-1=4095) capped=False 1556.4829s
+  n= 6 cqfa_restricted  ambient= restricted=15 |H+|=32 (4^n-1=4095) capped=False 0.0268s
+[E5/dla] wrote results/e5_scaling/dla.csv (10 rows)

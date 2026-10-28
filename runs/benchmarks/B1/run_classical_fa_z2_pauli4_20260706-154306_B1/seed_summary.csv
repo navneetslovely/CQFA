@@ -1,0 +1,2 @@
+rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
+z2_pauli4,classical_fa,coherent_teacher,5,0.6533333333333333,0.08393118874676116,0.5333333333333333,0.7666666666666667,0.5766666666666667,0.7233333333333334,24,0.5

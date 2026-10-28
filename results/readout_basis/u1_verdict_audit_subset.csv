@@ -1,0 +1,2 @@
+deciding_task,deciding_shots,n_nonabelian_tested,n_nonabelian_confirms,required_nonabelian_confirms,n_abelian_tested,n_abelian_confirms,track_verdict,pearson_r_delta_vs_offdiag_weight,n_seeds,n_train,n_test,epochs,restarts,circuit_layers
+generic_W,256,2,2,5,1,0,KILLS,,5,400,400,150,2,3

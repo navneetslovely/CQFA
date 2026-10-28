@@ -1,0 +1,3 @@
+[noise] z2_rc/fixed0: f_exact=1.000 p_exact=0.162 done
+[noise] z2_rc/rand0: f_exact=1.000 p_exact=0.714 done
+[run_hardware] noise -> results/hardware/noise_study.csv (180 rows, 18 summary rows)

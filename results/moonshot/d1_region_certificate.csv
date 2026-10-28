@@ -1,0 +1,9 @@
+group,order,dim,functional_degree,frame_basis,n_comparisons,max_abs_EF_minus_EB,mean_abs_EF_minus_EB,rho_reconstruct_err,cross_irrep_C_mean,cross_irrep_C_min,cross_irrep_modeB,frac_C_gt_0p1,rho_offblock_norm,verdict
+Z2,2,4,linear,random-orthonormal,10000,2.6645352591003757e-15,2.394137839367705e-16,2.7833528704240246e-16,,,,,,NO-GO holds
+C4,4,4,linear,random-orthonormal,10000,2.6645352591003757e-15,2.1962627029525894e-16,1.9432836597640642e-16,,,,,,NO-GO holds
+S3,6,3,linear,random-orthonormal,10000,2.6645352591003757e-15,2.363009961314777e-16,3.33069347309088e-16,,,,,,NO-GO holds
+Q8,8,2,linear,random-orthonormal,10000,2.4424906541753444e-15,2.128317921207268e-16,4.996003610813204e-16,,,,,,NO-GO holds
+F20,20,5,linear,random-orthonormal,10000,3.1086244689504383e-15,3.0408109840882047e-16,1.6657813668779586e-16,,,,,,NO-GO holds
+Z8,8,8,quadratic,fourier,10000,,,,4.942620772110838,2.17871069530496,0.0,1.0,1.811314655358271e-15,SURPLUS active
+C4,4,4,quadratic,fourier,10000,,,,2.0941174417316044,0.3776168784165496,0.0,1.0,5.689895228959947e-16,SURPLUS active
+Q8,8,2,quadratic,fourier,10000,,,,4.62753984628807,0.38522412526328453,0.0,1.0,0.0,SURPLUS active

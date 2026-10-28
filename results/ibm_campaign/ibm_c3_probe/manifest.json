@@ -1,0 +1,125 @@
+{
+  "timestamp_utc": "2026-07-12T15:16:06Z",
+  "git_hash": "no-git",
+  "argv": [
+    "experiments/hardware/ibm_campaign/campaign.py",
+    "run",
+    "--backend",
+    "ibm",
+    "--ibm",
+    "--ibm-confirm",
+    "--which",
+    "C3",
+    "--budget-seconds",
+    "400",
+    "--tag",
+    "ibm_c3_probe"
+  ],
+  "which_experiments": [
+    "C3"
+  ],
+  "backend_label": "IBM:ibm_marrakesh",
+  "job_id": "d99qv7af47jc73a9eri0",
+  "usage": {
+    "usage_estimation": {
+      "quantum_seconds": null
+    },
+    "usage": 9,
+    "metrics": {
+      "caller": "qiskit_ibm_runtime~sampler.py",
+      "qiskit_version": "qiskit_ibm_runtime-0.47.0,qiskit-2.5.0*,qiskit_aer-0.17.2",
+      "timestamps": {
+        "created": "2026-07-12T15:15:42.054016Z",
+        "finished": "2026-07-12T15:16:04.311155Z",
+        "running": "2026-07-12T15:15:44.047076Z"
+      },
+      "bss": {
+        "seconds": 9
+      },
+      "usage": {
+        "quantum_seconds": 9,
+        "seconds": 9,
+        "status": "complete"
+      }
+    }
+  },
+  "calibration": {
+    "backend": "ibm_marrakesh",
+    "used_qubits": [
+      15,
+      19,
+      35
+    ],
+    "used_qubits_source": "layout",
+    "num_qubits": 156,
+    "basis_gates": [
+      "id",
+      "if_else",
+      "reset",
+      "x",
+      "rz",
+      "measure",
+      "sx",
+      "delay",
+      "cz"
+    ],
+    "qubit_properties": {
+      "15": {
+        "sx_error": 0.000135234582803571,
+        "sx_duration": 3.6e-08,
+        "x_error": 0.000135234582803571,
+        "x_duration": 3.6e-08,
+        "measure_error": 0.002197265625,
+        "measure_duration": 2.18e-06
+      },
+      "19": {
+        "sx_error": 0.00020417317506114872,
+        "sx_duration": 3.6e-08,
+        "x_error": 0.00020417317506114872,
+        "x_duration": 3.6e-08,
+        "measure_error": 0.00341796875,
+        "measure_duration": 2.18e-06
+      },
+      "35": {
+        "sx_error": 0.00014589906614910657,
+        "sx_duration": 3.6e-08,
+        "x_error": 0.00014589906614910657,
+        "x_duration": 3.6e-08,
+        "measure_error": 0.003662109375,
+        "measure_duration": 2.18e-06
+      }
+    },
+    "two_qubit_gates": {
+      "15_19": {
+        "cz_error": 0.0029929318832714324,
+        "cz_duration": 6.8e-08
+      },
+      "19_35": {
+        "cz_error": 0.0018285595020775536,
+        "cz_duration": 8e-08
+      }
+    }
+  },
+  "cost_estimate": {
+    "n_pubs": 6,
+    "total_shots": 26624,
+    "est_qpu_seconds": 11.32,
+    "per_shot_seconds": 0.00035,
+    "overhead_seconds": 2.0,
+    "by_experiment": {
+      "C3": {
+        "n_pubs": 6,
+        "shots": 26624
+      }
+    }
+  },
+  "versions": {
+    "python": "3.14.5",
+    "numpy": "2.5.1",
+    "qiskit": "2.5.0",
+    "qiskit_aer": "0.17.2",
+    "qiskit_ibm_runtime": "0.47.0"
+  },
+  "n_pubs": 6,
+  "note": "API token intentionally NOT stored"
+}

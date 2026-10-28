@@ -1,0 +1,11 @@
+name,order,dim,classical_dim,coherent_dim,surplus_dim,closed_form,matches
+Z2-rc,2,4,2,4,2,2,True
+Z2-pauli3,2,8,2,4,2,2,True
+C3,3,3,3,9,6,6,True
+C4,4,4,4,16,12,12,True
+C5,5,5,5,25,20,20,True
+C6,6,6,6,36,30,30,True
+C7,7,7,7,49,42,42,True
+C8,8,8,8,64,56,56,True
+S3,6,3,6,9,3,3,True
+D4,8,4,8,16,8,8,True

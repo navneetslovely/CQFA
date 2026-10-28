@@ -1,0 +1,11 @@
+which,n,dim,dim_g_ambient,dim_g_restricted,dim_Hplus,theory_su_dim,capped,cap,wall_s
+generic_hea,2,4,15,,,15,False,8192,0.0019
+cqfa_restricted,2,4,,3,2,15,False,8192,0.0005
+generic_hea,3,8,63,,,63,False,8192,0.0248
+cqfa_restricted,3,8,,6,4,63,False,8192,0.0007
+generic_hea,4,16,255,,,255,False,8192,0.6214
+cqfa_restricted,4,16,,9,8,255,False,8192,0.0017
+generic_hea,5,32,1023,,,1023,False,8192,21.6009
+cqfa_restricted,5,32,,12,16,1023,False,8192,0.0028
+generic_hea,6,64,4095,,,4095,False,8192,1556.4829
+cqfa_restricted,6,64,,15,32,4095,False,8192,0.0268

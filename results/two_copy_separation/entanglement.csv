@@ -1,0 +1,4 @@
+task,nA,dimA,coherent_copies,singlecopy_copies,singlecopy_capped,ratio
+entanglement,1,2,32.0,256.0,0,8.0
+entanglement,2,4,4.0,64.0,0,16.0
+entanglement,3,8,4.0,128.0,0,32.0

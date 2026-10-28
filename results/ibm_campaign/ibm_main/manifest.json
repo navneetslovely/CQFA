@@ -1,0 +1,300 @@
+{
+  "timestamp_utc": "2026-07-12T15:27:46Z",
+  "git_hash": "no-git",
+  "argv": [
+    "experiments/hardware/ibm_campaign/campaign.py",
+    "run",
+    "--backend",
+    "ibm",
+    "--ibm",
+    "--ibm-confirm",
+    "--which",
+    "C1,C2,C4,C5,C6,C7",
+    "--budget-seconds",
+    "400",
+    "--max-circuits",
+    "600",
+    "--tag",
+    "ibm_main"
+  ],
+  "which_experiments": [
+    "C1",
+    "C2",
+    "C4",
+    "C5",
+    "C6",
+    "C7"
+  ],
+  "backend_label": "IBM:ibm_fez",
+  "job_id": "d99r060tcv6s73dnmbr0",
+  "usage": {
+    "usage_estimation": {
+      "quantum_seconds": 34.64077043
+    },
+    "usage": 48,
+    "metrics": {
+      "caller": "qiskit_ibm_runtime~sampler.py",
+      "qiskit_version": "qiskit_ibm_runtime-0.47.0,qiskit-2.5.0*,qiskit_aer-0.17.2",
+      "timestamps": {
+        "created": "2026-07-12T15:17:44.615768Z",
+        "finished": "2026-07-12T15:27:43.136488Z",
+        "running": "2026-07-12T15:26:38.911224Z"
+      },
+      "bss": {
+        "seconds": 48
+      },
+      "usage": {
+        "quantum_seconds": 48,
+        "seconds": 48,
+        "status": "complete"
+      }
+    }
+  },
+  "calibration": {
+    "backend": "ibm_fez",
+    "used_qubits": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      25,
+      26,
+      37,
+      123,
+      124,
+      125,
+      136,
+      142,
+      143
+    ],
+    "used_qubits_source": "layout",
+    "num_qubits": 156,
+    "basis_gates": [
+      "rz",
+      "reset",
+      "if_else",
+      "measure",
+      "sx",
+      "delay",
+      "x",
+      "cz",
+      "id"
+    ],
+    "qubit_properties": {
+      "0": {
+        "sx_error": 0.001672755302771763,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.001672755302771763,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.0137939453125,
+        "measure_duration": 1.7e-06
+      },
+      "1": {
+        "sx_error": 0.0003119522418214782,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.0003119522418214782,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.0135498046875,
+        "measure_duration": 1.7e-06
+      },
+      "2": {
+        "sx_error": 0.00018214732860510118,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.00018214732860510118,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.007080078125,
+        "measure_duration": 1.7e-06
+      },
+      "3": {
+        "sx_error": 0.0001691857577763051,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.0001691857577763051,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.018798828125,
+        "measure_duration": 1.7e-06
+      },
+      "4": {
+        "sx_error": 0.00038277313046408934,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.00038277313046408934,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.004638671875,
+        "measure_duration": 1.7e-06
+      },
+      "5": {
+        "sx_error": 0.0002799315681649315,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.0002799315681649315,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.006591796875,
+        "measure_duration": 1.7e-06
+      },
+      "25": {
+        "sx_error": 0.00040116489990302257,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.00040116489990302257,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.0042724609375,
+        "measure_duration": 1.7e-06
+      },
+      "26": {
+        "sx_error": 0.0002692096175311482,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.0002692096175311482,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.005859375,
+        "measure_duration": 1.7e-06
+      },
+      "37": {
+        "sx_error": 0.0002992075506739755,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.0002992075506739755,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.004150390625,
+        "measure_duration": 1.7e-06
+      },
+      "123": {
+        "sx_error": 0.000245633958707585,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.000245633958707585,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.0081787109375,
+        "measure_duration": 1.7e-06
+      },
+      "124": {
+        "sx_error": 0.00022961956106117365,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.00022961956106117365,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.005859375,
+        "measure_duration": 1.7e-06
+      },
+      "125": {
+        "sx_error": 0.00019954093708884007,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.00019954093708884007,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.0103759765625,
+        "measure_duration": 1.7e-06
+      },
+      "136": {
+        "sx_error": 0.00027512551857279005,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.00027512551857279005,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.005859375,
+        "measure_duration": 1.7e-06
+      },
+      "142": {
+        "sx_error": 0.00028997807446904224,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.00028997807446904224,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.007080078125,
+        "measure_duration": 1.7e-06
+      },
+      "143": {
+        "sx_error": 0.000279995726691196,
+        "sx_duration": 2.4e-08,
+        "x_error": 0.000279995726691196,
+        "x_duration": 2.4e-08,
+        "measure_error": 0.0059814453125,
+        "measure_duration": 1.7e-06
+      }
+    },
+    "two_qubit_gates": {
+      "0_1": {
+        "cz_error": 0.00961499186816675,
+        "cz_duration": 6.8e-08
+      },
+      "1_2": {
+        "cz_error": 0.002378235189304273,
+        "cz_duration": 6.8e-08
+      },
+      "2_3": {
+        "cz_error": 0.001964957826467717,
+        "cz_duration": 6.8e-08
+      },
+      "3_4": {
+        "cz_error": 0.002500684393657304,
+        "cz_duration": 6.8e-08
+      },
+      "4_5": {
+        "cz_error": 0.003393723951301386,
+        "cz_duration": 6.8e-08
+      },
+      "25_26": {
+        "cz_error": 0.002443979524743234,
+        "cz_duration": 6.8e-08
+      },
+      "25_37": {
+        "cz_error": 0.00214312286676413,
+        "cz_duration": 6.8e-08
+      },
+      "123_124": {
+        "cz_error": 0.0021717967556028617,
+        "cz_duration": 6.8e-08
+      },
+      "123_136": {
+        "cz_error": 0.0026222209696969145,
+        "cz_duration": 6.8e-08
+      },
+      "124_125": {
+        "cz_error": 0.0017253918043529382,
+        "cz_duration": 6.8e-08
+      },
+      "136_143": {
+        "cz_error": 0.0027716912441246577,
+        "cz_duration": 6.8e-08
+      },
+      "142_143": {
+        "cz_error": 0.0021778324247166136,
+        "cz_duration": 6.8e-08
+      }
+    }
+  },
+  "cost_estimate": {
+    "n_pubs": 512,
+    "total_shots": 172518,
+    "est_qpu_seconds": 62.38,
+    "per_shot_seconds": 0.00035,
+    "overhead_seconds": 2.0,
+    "by_experiment": {
+      "C1": {
+        "n_pubs": 492,
+        "shots": 25062
+      },
+      "C2": {
+        "n_pubs": 4,
+        "shots": 32768
+      },
+      "C4": {
+        "n_pubs": 6,
+        "shots": 49152
+      },
+      "C5": {
+        "n_pubs": 4,
+        "shots": 32768
+      },
+      "C6": {
+        "n_pubs": 2,
+        "shots": 16384
+      },
+      "C7": {
+        "n_pubs": 4,
+        "shots": 16384
+      }
+    }
+  },
+  "versions": {
+    "python": "3.14.5",
+    "numpy": "2.5.1",
+    "qiskit": "2.5.0",
+    "qiskit_aer": "0.17.2",
+    "qiskit_ibm_runtime": "0.47.0"
+  },
+  "n_pubs": 512,
+  "note": "API token intentionally NOT stored"
+}

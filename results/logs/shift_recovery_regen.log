@@ -1,0 +1,72 @@
+==============================================================================
+HALF A  --  CONTINUOUS parameter theta:  QFI, QCRB attainment (legitimate regime)
+==============================================================================
+  N=  4  F_Q=     4.30  CFI/F_Q=1.000000  MLE Var/QCRB=1.076
+  N=  8  F_Q=    16.66  CFI/F_Q=1.000000  MLE Var/QCRB=1.079
+  N= 16  F_Q=    83.20  CFI/F_Q=1.000000  MLE Var/QCRB=1.090
+  N= 32  F_Q=   350.85  CFI/F_Q=1.000000  MLE Var/QCRB=1.082
+  N= 64  F_Q=  1365.17  CFI/F_Q=1.000000  MLE Var/QCRB=1.088
+
+==============================================================================
+HALF B  --  DISCRETE hidden shift s in {0..N-1}:  N-hypothesis discrimination
+==============================================================================
+  N=  4 dlp_flat seed=None orth=1 P_Hel=1.0000  A/projection=>100000000  B/frame=>100000000  F/srm=1  F/fixed=>100000000  F/fixed=11  F/fixed=40
+  N=  4 generic  seed=0    orth=0 P_Hel=0.9520  A/projection=>100000000  B/frame=>100000000  F/srm=1  F/fixed=82  F/fixed=20  F/fixed=52
+  N=  4 generic  seed=1    orth=0 P_Hel=0.8103  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=11  F/fixed=9  F/fixed=18
+  N=  4 generic  seed=2    orth=0 P_Hel=0.9776  A/projection=>100000000  B/frame=>100000000  F/srm=1  F/fixed=30  F/fixed=16  F/fixed=28
+  N=  4 generic  seed=3    orth=0 P_Hel=0.8263  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=18  F/fixed=26  F/fixed=36
+  N=  4 generic  seed=4    orth=0 P_Hel=0.9555  A/projection=>100000000  B/frame=>100000000  F/srm=1  F/fixed=7  F/fixed=20  F/fixed=228
+  N=  8 dlp_flat seed=None orth=1 P_Hel=1.0000  A/projection=>100000000  B/frame=>100000000  F/srm=1  F/fixed=>100000000  F/fixed=74  F/fixed=133
+  N=  8 generic  seed=0    orth=0 P_Hel=0.8212  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=391  F/fixed=149  F/fixed=180
+  N=  8 generic  seed=1    orth=0 P_Hel=0.9240  A/projection=>100000000  B/frame=>100000000  F/srm=1  F/fixed=223  F/fixed=161  F/fixed=217
+  N=  8 generic  seed=2    orth=0 P_Hel=0.8822  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=867  F/fixed=257  F/fixed=295
+  N=  8 generic  seed=3    orth=0 P_Hel=0.7593  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=594  F/fixed=126  F/fixed=198
+  N=  8 generic  seed=4    orth=0 P_Hel=0.8828  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=64  F/fixed=114  F/fixed=248
+  N= 16 dlp_flat seed=None orth=1 P_Hel=1.0000  A/projection=>100000000  B/frame=>100000000  F/srm=1  F/fixed=>100000000  F/fixed=566  F/fixed=1165
+  N= 16 generic  seed=0    orth=0 P_Hel=0.8724  A/projection=>100000000  B/frame=>100000000  F/srm=1  F/fixed=1252  F/fixed=1664  F/fixed=2288
+  N= 16 generic  seed=1    orth=0 P_Hel=0.7883  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=1091  F/fixed=7152  F/fixed=7296
+  N= 16 generic  seed=2    orth=0 P_Hel=0.8537  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=1915  F/fixed=6399  F/fixed=7167
+  N= 16 generic  seed=3    orth=0 P_Hel=0.8491  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=2032  F/fixed=762  F/fixed=795
+  N= 16 generic  seed=4    orth=0 P_Hel=0.7612  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=342  F/fixed=6746  F/fixed=7270
+  N= 32 dlp_flat seed=None orth=1 P_Hel=1.0000  A/projection=>100000000  B/frame=>100000000  F/srm=1  F/fixed=>100000000  F/fixed=5121  F/fixed=8171
+  N= 32 generic  seed=0    orth=0 P_Hel=0.6625  A/projection=>100000000  B/frame=>100000000  F/srm=4  F/fixed=3073  F/fixed=37148  F/fixed=40960
+  N= 32 generic  seed=1    orth=0 P_Hel=0.7135  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=5200  F/fixed=1457124  F/fixed=1648129
+  N= 32 generic  seed=2    orth=0 P_Hel=0.8309  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=7541  F/fixed=5203  F/fixed=10179
+  N= 32 generic  seed=3    orth=0 P_Hel=0.8183  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=2806  F/fixed=14324  F/fixed=19391
+  N= 32 generic  seed=4    orth=0 P_Hel=0.8138  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=9024  F/fixed=75839  F/fixed=71168
+  N= 64 dlp_flat seed=None orth=1 P_Hel=1.0000  A/projection=>100000000  B/frame=>100000000  F/srm=1  F/fixed=>100000000  F/fixed=35694  F/fixed=74502
+  N= 64 generic  seed=0    orth=0 P_Hel=0.7690  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=16246  F/fixed=84039  F/fixed=104906
+  N= 64 generic  seed=1    orth=0 P_Hel=0.7758  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=25169  F/fixed=147347  F/fixed=188584
+  N= 64 generic  seed=2    orth=0 P_Hel=0.8238  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=22150  F/fixed=147457  F/fixed=156819
+  N= 64 generic  seed=3    orth=0 P_Hel=0.8063  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=16023  F/fixed=225063  F/fixed=391666
+  N= 64 generic  seed=4    orth=0 P_Hel=0.7915  A/projection=>100000000  B/frame=>100000000  F/srm=3  F/fixed=12547  F/fixed=24577  F/fixed=44735
+
+==============================================================================
+SCALING OF THE MEASURED SHOT COUNT:  log2(shots_90) = a + b log2(N)
+==============================================================================
+  dlp_flat  A_projection               b=+nan +/- nan  95%CI=[+nan,+nan]  blind: p(o|s) exactly independent of s at every N (vacuous_excluded)   [5 N vacuous/blind]
+  dlp_flat  B_frame_average            b=+nan +/- nan  95%CI=[+nan,+nan]  blind: p(o|s) exactly independent of s at every N (vacuous_excluded)   [5 N vacuous/blind]
+  dlp_flat  F_fixed_binary_sld         b=+nan +/- nan  95%CI=[+nan,+nan]  censored at every N: never reaches 0.90 within the shot cap   [5 N censored]
+  dlp_flat  F_fixed_product_coh_bestM  b=+2.906 +/- 0.032  95%CI=[+2.804,+3.008]  b=+2.91; CI EXCLUDES 0 (grows with N); CI EXCLUDES 2 from above (grows FASTER than N^2)
+  dlp_flat  F_fixed_product_coh_randM  b=+2.772 +/- 0.147  95%CI=[+2.306,+3.239]  b=+2.77; CI EXCLUDES 0 (grows with N); CI EXCLUDES 2 from above (grows FASTER than N^2)
+  dlp_flat  F_srm_joint                b=+0.000 +/- 0.000  95%CI=[+0.000,+0.000]  b=+0.00; CI contains 0 (cannot exclude flat); CI excludes 2 from below (slower than N^2)
+  generic   A_projection               b=+nan +/- nan  95%CI=[+nan,+nan]  blind: p(o|s) exactly independent of s at every N (vacuous_excluded)   [5 N vacuous/blind]
+  generic   B_frame_average            b=+nan +/- nan  95%CI=[+nan,+nan]  blind: p(o|s) exactly independent of s at every N (vacuous_excluded)   [5 N vacuous/blind]
+  generic   F_fixed_binary_sld         b=+2.226 +/- 0.228  95%CI=[+1.500,+2.951]  b=+2.23; CI EXCLUDES 0 (grows with N); CI contains 2 (consistent with N^2)
+  generic   F_fixed_product_coh_bestM  b=+3.645 +/- 0.672  95%CI=[+1.506,+5.784]  b=+3.65; CI EXCLUDES 0 (grows with N); CI contains 2 (consistent with N^2)
+  generic   F_fixed_product_coh_randM  b=+3.314 +/- 0.626  95%CI=[+1.320,+5.307]  b=+3.31; CI EXCLUDES 0 (grows with N); CI contains 2 (consistent with N^2)
+  generic   F_srm_joint                b=+0.177 +/- 0.057  95%CI=[-0.006,+0.360]  b=+0.18; CI contains 0 (cannot exclude flat); CI excludes 2 from below (slower than N^2)
+
+==============================================================================
+IBM N=4,8,16 -> can it support an ASYMPTOTIC Theta(N^2) Fisher claim?
+==============================================================================
+  peak   N=4;8;16  b=-0.056 95%CI=[-0.634,+0.523] width=1.16
+  tv     N=4;8;16  b=+0.125 95%CI=[-1.040,+1.289] width=2.33
+  err    N=4;8;16  b=+0.348 95%CI=[-3.760,+4.455] width=8.21
+  3 distinct N, dof=1, t(0.975,1)=12.706
+  -> NO Fisher information was measured on hardware at any N.
+wrote results/e12_fourier_mode/shift_recovery_deterministic/shift_recovery_cost_hw_scaling.csv
+
+wrote results/e12_fourier_mode/shift_recovery_deterministic/shift_recovery_cost.csv
+wrote results/e12_fourier_mode/shift_recovery_deterministic/shift_recovery_cost_halfA.csv
+wrote results/e12_fourier_mode/shift_recovery_deterministic/shift_recovery_cost_fits.csv

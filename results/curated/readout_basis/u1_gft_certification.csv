@@ -1,0 +1,13 @@
+group,order,abelian,n_conjugacy_classes,block_sizes,max_offblock_magnitude,blockdiag_ok,multiplicity_integral,irrep_dims_recovered,sum_d_squared,sum_d_squared_equals_order,n_irreps,n_irreps_equals_n_classes,gft_certified,irrep_dims_published,matches_published,method
+S3,6,0,3,1|1|2|2,8.15855824586603e-16,1,1,1|1|2,6,1,3,1,1,1|1|2,1,structural_blockdiag_no_eigendecomposition
+D4,8,0,5,1|1|1|1|2|2,2.9284398342422217e-15,1,1,1|1|1|1|2,8,1,5,1,1,1|1|1|1|2,1,structural_blockdiag_no_eigendecomposition
+Q8,8,0,5,1|1|1|1|2|2,2.985029729792848e-14,1,1,1|1|1|1|2,8,1,5,1,1,1|1|1|1|2,1,structural_blockdiag_no_eigendecomposition
+D5,10,0,4,1|1|2|2|2|2,6.274916943519578e-15,1,1,1|1|2|2,10,1,4,1,1,1|1|2|2,1,structural_blockdiag_no_eigendecomposition
+A4,12,0,4,1|1|1|3|3|3,9.200254793224025e-14,1,1,1|1|1|3,12,1,4,1,1,1|1|1|3,1,structural_blockdiag_no_eigendecomposition
+D6,12,0,6,1|1|1|1|2|2|2|2,1.3865203255440776e-14,1,1,1|1|1|1|2|2,12,1,6,1,1,1|1|1|1|2|2,1,structural_blockdiag_no_eigendecomposition
+D10,20,0,8,1|1|1|1|2|2|2|2|2|2|2|2,1.8442102725328146e-13,1,1,1|1|1|1|2|2|2|2,20,1,8,1,1,1|1|1|1|2|2|2|2,1,structural_blockdiag_no_eigendecomposition
+F21,21,0,5,1|1|1|3|3|3|3|3|3,9.168776803029015e-14,1,1,1|1|1|3|3,21,1,5,1,1,1|1|1|3|3,1,structural_blockdiag_no_eigendecomposition
+S4,24,0,5,1|1|2|2|3|3|3|3|3|3,3.399291996743943e-14,1,1,1|1|2|3|3,24,1,5,1,1,1|1|2|3|3,1,structural_blockdiag_no_eigendecomposition
+C6,6,1,6,1|1|1|1|1|1,3.773774087735705e-15,1,1,1|1|1|1|1|1,6,1,6,1,1,1|1|1|1|1|1,1,structural_blockdiag_no_eigendecomposition
+C8,8,1,8,1|1|1|1|1|1|1|1,6.05119689060812e-15,1,1,1|1|1|1|1|1|1|1,8,1,8,1,1,1|1|1|1|1|1|1|1,1,structural_blockdiag_no_eigendecomposition
+C12,12,1,12,1|1|1|1|1|1|1|1|1|1|1|1,1.2563162981839722e-14,1,1,1|1|1|1|1|1|1|1|1|1|1|1,12,1,12,1,1,1|1|1|1|1|1|1|1|1|1|1|1,1,structural_blockdiag_no_eigendecomposition

@@ -1,0 +1,2 @@
+group,order,abelian,n_frame_qubits,irrep_dims,n_conjugacy_classes,gft_block_sizes,gft_block_sizes_expected,gft_verified,gft_note,hermiticity_err,trace_err,min_eigenvalue,circulant_err,max_offdiag_after_fourier,modeF_matches_t2_err,n_involutions
+A4,12,0,4,unavailable,4,unavailable,unavailable,0,"centre split unavailable: isotypic dims [1, 2, 9] are not perfect squares -- centre split failed",5.204170427930421e-18,2.220446049250313e-16,0.023902434696955858,1.388934052975849e-17,0.033415346239614306,,3

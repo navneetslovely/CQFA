@@ -1,0 +1,354 @@
+[
+  {
+    "pub_id": "C8_F_N4_s1",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 1,
+      "N": 4,
+      "mode": "F",
+      "ideal_peak_k": 1,
+      "ideal_peak_prob": 0.9999999999999993,
+      "ideal_uniform": false
+    },
+    "meta": {
+      "n_frame": 2,
+      "mode": "F",
+      "hidden_shift": 1,
+      "N": 4
+    },
+    "transpiled_2q_depth": 2,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_B_N4_s1",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 1,
+      "N": 4,
+      "mode": "B",
+      "ideal_peak_k": 0,
+      "ideal_peak_prob": 0.2499999999999999,
+      "ideal_uniform": true
+    },
+    "meta": {
+      "n_frame": 2,
+      "mode": "B",
+      "hidden_shift": 1,
+      "N": 4
+    },
+    "transpiled_2q_depth": 0,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_F_N4_s2",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 2,
+      "N": 4,
+      "mode": "F",
+      "ideal_peak_k": 2,
+      "ideal_peak_prob": 0.9999999999999993,
+      "ideal_uniform": false
+    },
+    "meta": {
+      "n_frame": 2,
+      "mode": "F",
+      "hidden_shift": 2,
+      "N": 4
+    },
+    "transpiled_2q_depth": 2,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_B_N4_s2",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 2,
+      "N": 4,
+      "mode": "B",
+      "ideal_peak_k": 0,
+      "ideal_peak_prob": 0.2499999999999999,
+      "ideal_uniform": true
+    },
+    "meta": {
+      "n_frame": 2,
+      "mode": "B",
+      "hidden_shift": 2,
+      "N": 4
+    },
+    "transpiled_2q_depth": 0,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_F_N4_s3",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 3,
+      "N": 4,
+      "mode": "F",
+      "ideal_peak_k": 3,
+      "ideal_peak_prob": 0.9999999999999993,
+      "ideal_uniform": false
+    },
+    "meta": {
+      "n_frame": 2,
+      "mode": "F",
+      "hidden_shift": 3,
+      "N": 4
+    },
+    "transpiled_2q_depth": 2,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_B_N4_s3",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 3,
+      "N": 4,
+      "mode": "B",
+      "ideal_peak_k": 0,
+      "ideal_peak_prob": 0.2499999999999999,
+      "ideal_uniform": true
+    },
+    "meta": {
+      "n_frame": 2,
+      "mode": "B",
+      "hidden_shift": 3,
+      "N": 4
+    },
+    "transpiled_2q_depth": 0,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_F_N8_s1",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 1,
+      "N": 8,
+      "mode": "F",
+      "ideal_peak_k": 1,
+      "ideal_peak_prob": 0.9999999999999991,
+      "ideal_uniform": false
+    },
+    "meta": {
+      "n_frame": 3,
+      "mode": "F",
+      "hidden_shift": 1,
+      "N": 8
+    },
+    "transpiled_2q_depth": 4,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_B_N8_s1",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 1,
+      "N": 8,
+      "mode": "B",
+      "ideal_peak_k": 0,
+      "ideal_peak_prob": 0.12499999999999994,
+      "ideal_uniform": true
+    },
+    "meta": {
+      "n_frame": 3,
+      "mode": "B",
+      "hidden_shift": 1,
+      "N": 8
+    },
+    "transpiled_2q_depth": 0,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_F_N8_s3",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 3,
+      "N": 8,
+      "mode": "F",
+      "ideal_peak_k": 3,
+      "ideal_peak_prob": 0.9999999999999991,
+      "ideal_uniform": false
+    },
+    "meta": {
+      "n_frame": 3,
+      "mode": "F",
+      "hidden_shift": 3,
+      "N": 8
+    },
+    "transpiled_2q_depth": 4,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_B_N8_s3",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 3,
+      "N": 8,
+      "mode": "B",
+      "ideal_peak_k": 0,
+      "ideal_peak_prob": 0.12499999999999994,
+      "ideal_uniform": true
+    },
+    "meta": {
+      "n_frame": 3,
+      "mode": "B",
+      "hidden_shift": 3,
+      "N": 8
+    },
+    "transpiled_2q_depth": 0,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_F_N8_s6",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 6,
+      "N": 8,
+      "mode": "F",
+      "ideal_peak_k": 6,
+      "ideal_peak_prob": 0.9999999999999991,
+      "ideal_uniform": false
+    },
+    "meta": {
+      "n_frame": 3,
+      "mode": "F",
+      "hidden_shift": 6,
+      "N": 8
+    },
+    "transpiled_2q_depth": 4,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_B_N8_s6",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 6,
+      "N": 8,
+      "mode": "B",
+      "ideal_peak_k": 0,
+      "ideal_peak_prob": 0.12499999999999994,
+      "ideal_uniform": true
+    },
+    "meta": {
+      "n_frame": 3,
+      "mode": "B",
+      "hidden_shift": 6,
+      "N": 8
+    },
+    "transpiled_2q_depth": 0,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_F_N16_s5",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 5,
+      "N": 16,
+      "mode": "F",
+      "ideal_peak_k": 5,
+      "ideal_peak_prob": 0.9999999999999989,
+      "ideal_uniform": false
+    },
+    "meta": {
+      "n_frame": 4,
+      "mode": "F",
+      "hidden_shift": 5,
+      "N": 16
+    },
+    "transpiled_2q_depth": 6,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_B_N16_s5",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 5,
+      "N": 16,
+      "mode": "B",
+      "ideal_peak_k": 2,
+      "ideal_peak_prob": 0.06249999999999997,
+      "ideal_uniform": true
+    },
+    "meta": {
+      "n_frame": 4,
+      "mode": "B",
+      "hidden_shift": 5,
+      "N": 16
+    },
+    "transpiled_2q_depth": 0,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_F_N16_s11",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 11,
+      "N": 16,
+      "mode": "F",
+      "ideal_peak_k": 11,
+      "ideal_peak_prob": 0.9999999999999984,
+      "ideal_uniform": false
+    },
+    "meta": {
+      "n_frame": 4,
+      "mode": "F",
+      "hidden_shift": 11,
+      "N": 16
+    },
+    "transpiled_2q_depth": 6,
+    "final_index_layout": null
+  },
+  {
+    "pub_id": "C8_B_N16_s11",
+    "experiment": "C8",
+    "analysis": "fourier_peak",
+    "shots": 4096,
+    "theory": {
+      "hidden_shift": 11,
+      "N": 16,
+      "mode": "B",
+      "ideal_peak_k": 6,
+      "ideal_peak_prob": 0.06249999999999997,
+      "ideal_uniform": true
+    },
+    "meta": {
+      "n_frame": 4,
+      "mode": "B",
+      "hidden_shift": 11,
+      "N": 16
+    },
+    "transpiled_2q_depth": 0,
+    "final_index_layout": null
+  }
+]

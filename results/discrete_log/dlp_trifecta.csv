@@ -1,0 +1,2 @@
+prime,N,acc_modeF,acc_modeA,head_grad_var,efficient,classical_hardness
+11,10,0.9875,0.5625,0.03702621527777788,"Fourier sampling, sum_k p_k=1 (no post-selection)",NOT demonstrated: task as coded is a classically-easy hidden shift; DLP encoding (LAT 2021) not implemented

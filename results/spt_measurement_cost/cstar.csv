@@ -1,0 +1,13 @@
+arm,n,task,cstar_mean,cstar_std,cstar_ci_lo,cstar_ci_hi,n_seeds,n_finite,target_metric,epsilon
+coherent,6,optionA_stringfamily,16.0,0.0,16.0,16.0,7,7,functional_error,0.1
+coherent,8,optionA_stringfamily,16.0,0.0,16.0,16.0,7,7,functional_error,0.1
+coherent,10,optionA_stringfamily,16.0,0.0,16.0,16.0,7,7,functional_error,0.1
+shadow_nonlinear,6,optionA_stringfamily,7661.714285714285,7664.80128741184,2450.285714285714,12873.142857142857,7,7,functional_error,0.1
+shadow_nonlinear,8,optionA_stringfamily,6592.0,6370.400121992787,2368.0,11995.42857142857,7,7,functional_error,0.1
+shadow_nonlinear,10,optionA_stringfamily,8243.2,6793.219395838765,2560.0,13926.4,7,5,functional_error,0.1
+shadow_known,6,optionA_stringfamily,16.0,0.0,16.0,16.0,7,7,functional_error,0.1
+shadow_known,8,optionA_stringfamily,16.0,0.0,16.0,16.0,7,7,functional_error,0.1
+shadow_known,10,optionA_stringfamily,16.0,0.0,16.0,16.0,7,7,functional_error,0.1
+local,6,optionA_stringfamily,inf,inf,inf,inf,7,0,functional_error,0.1
+local,8,optionA_stringfamily,inf,inf,inf,inf,7,0,functional_error,0.1
+local,10,optionA_stringfamily,inf,inf,inf,inf,7,0,functional_error,0.1

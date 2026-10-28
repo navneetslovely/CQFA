@@ -1,0 +1,69 @@
+==============================================================================
+CQFA core verification  (Coherent Quantum Frame Averaging)
+==============================================================================
+
+### Theorem 1 -- exact any-group invariance ---------------------------------
+
+[Z2 (reverse-complement)]  |G|=2  dim=4
+  max invariance error  base model (non-equivariant): 2.295e+00
+  max invariance error  classical frame averaging   : 0.000e+00
+  max invariance error  CQFA (coherent)             : 0.000e+00
+
+[C4 (cyclic shift)]  |G|=4  dim=4
+  max invariance error  base model (non-equivariant): 2.878e+00
+  max invariance error  classical frame averaging   : 2.220e-16
+  max invariance error  CQFA (coherent)             : 0.000e+00
+
+[S3 (permutation, non-abelian)]  |G|=6  dim=3
+  max invariance error  base model (non-equivariant): 4.220e+00
+  max invariance error  classical frame averaging   : 4.441e-16
+  max invariance error  CQFA (coherent)             : 8.882e-16
+
+
+### Theorem 2 -- coherent-vs-classical separation ---------------------------
+
+[Z2 (reverse-complement)]  coherent-vs-classical separation
+  (a) boundary   : max|surplus| over fully-symmetric inputs (q=0) = 1.11e-15  (=> 0)
+  (b) M=I        : surplus=2.22e-16 at q=0.595  (entangled but no surplus => non-trivial M also required)
+  (c) separation : max|surplus| over random (M generic) = 2.8661  (>> 0 => real)
+  (d) order param: q=1-p (frame asymmetry) vs |surplus| along controlled path:
+         theta    q=1-p  entropy  |surplus|
+         0.000   0.0000  -0.0000     0.0000
+         0.314   0.0955   0.4545     0.2717
+         0.628   0.3455   0.9300     0.9830
+         0.942   0.6545   0.9300     1.8622
+         1.257   0.9045   0.4545     2.5736
+         1.571   1.0000  -0.0000        nan  <- p=0: coherent projection annihilates a fully-antisymmetric input
+
+[C4 (cyclic shift)]  coherent-vs-classical separation
+  (a) boundary   : max|surplus| over fully-symmetric inputs (q=0) = 1.33e-15  (=> 0)
+  (b) M=I        : surplus=0.00e+00 at q=0.986  (entangled but no surplus => non-trivial M also required)
+  (c) separation : max|surplus| over random (M generic) = 3.9999  (>> 0 => real)
+  (d) order param: q=1-p (frame asymmetry) vs |surplus| along controlled path:
+         theta    q=1-p  entropy  |surplus|
+         0.000  -0.0000  -0.0000     0.0000
+         0.314   0.0955   0.5351     0.3577
+         0.628   0.3455   1.2215     1.2942
+         0.942   0.6545   1.4823     2.4518
+         1.257   0.9045   1.2178     3.3883
+         1.571   1.0000   0.8439        nan  <- p=0: coherent projection annihilates a fully-antisymmetric input
+
+[S3 (permutation, non-abelian)]  coherent-vs-classical separation
+  (a) boundary   : max|surplus| over fully-symmetric inputs (q=0) = 7.77e-16  (=> 0)
+  (b) M=I        : surplus=1.11e-16 at q=0.976  (entangled but no surplus => non-trivial M also required)
+  (c) separation : max|surplus| over random (M generic) = 0.6856  (>> 0 => real)
+  (d) order param: q=1-p (frame asymmetry) vs |surplus| along controlled path:
+         theta    q=1-p  entropy  |surplus|
+         0.000   0.0000  -0.0000     0.0000
+         0.314   0.0955   0.5500     0.0655
+         0.628   0.3455   1.2755     0.2369
+         0.942   0.6545   1.5845     0.4488
+         1.257   0.9045   1.3590     0.6202
+         1.571   1.0000   1.0000        nan  <- p=0: coherent projection annihilates a fully-antisymmetric input
+
+==============================================================================
+SUMMARY: FA and CQFA are invariant to ~1e-15; the base model is not.
+CQFA differs from classical FA by interference; the gap vanishes for
+symmetric inputs and grows with frame-register entanglement (the resource).
+=> Theorems 1 and 2 hold numerically across Z2, C4 (abelian) and S3 (non-abelian).
+==============================================================================

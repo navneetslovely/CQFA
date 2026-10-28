@@ -1,0 +1,4 @@
+task,n,dim,coherent_copies,singlecopy_copies,singlecopy_capped,ratio
+overlap,1,2,4.0,64.0,0,16.0
+overlap,2,4,2.0,64.0,0,32.0
+overlap,3,8,4.0,64.0,0,16.0

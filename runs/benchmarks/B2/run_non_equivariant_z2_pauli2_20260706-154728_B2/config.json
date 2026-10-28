@@ -1,0 +1,19 @@
+{
+  "rep": "z2_pauli2",
+  "model": "non_equivariant",
+  "task": "orbit_interference",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "n_train": 80,
+  "n_test": 60,
+  "epochs": 120,
+  "lr": 0.15,
+  "n_layers": 3,
+  "teacher_seed": 12345,
+  "tag": "B2"
+}

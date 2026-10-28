@@ -1,0 +1,2 @@
+rep,model,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params
+z2_rc,non_equivariant,5,0.74,0.04163331998932266,0.7,0.8166666666666667,0.71,0.7799999999999999,12

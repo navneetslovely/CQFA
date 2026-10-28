@@ -1,0 +1,91 @@
+[Z2] |G|=2 abelian=True nf=1 nd=2 irreps=[1, 1] accept=0.500 verifyA=7.5e-16 verifyLadder=0.0e+00
+    prep_G                       q=1 heron 2q=0 depth=3
+    uncompute_G                  q=1 heron 2q=0 depth=3
+    select_V_naive               q=3 heron 2q=2 depth=6
+    select_V_ladder              q=3 heron 2q=2 depth=6
+    group_fourier_generic        q=1 heron 2q=0 depth=3
+    group_fourier_structured_qft q=1 heron 2q=0 depth=3
+    single_U_g_worstcase         q=2 heron 2q=0 depth=1
+    [Z2] done (1s elapsed)
+[C4] |G|=4 abelian=True nf=2 nd=2 irreps=[1, 1, 1, 1] accept=0.250 verifyA=1.4e-14 verifyLadder=5.2e-14
+    prep_G                       q=2 heron 2q=0 depth=3
+    uncompute_G                  q=2 heron 2q=0 depth=3
+    select_V_naive               q=4 heron 2q=112 depth=507
+    select_V_ladder              q=5 heron 2q=53 depth=159
+    group_fourier_generic        q=2 heron 2q=3 depth=14
+    group_fourier_structured_qft q=2 heron 2q=3 depth=15
+    single_U_g_worstcase         q=2 heron 2q=1 depth=6
+    [C4] done (2s elapsed)
+[C8] |G|=8 abelian=True nf=3 nd=3 irreps=[1, 1, 1, 1, 1, 1, 1, 1] accept=0.125 verifyA=1.5e-13 verifyLadder=7.4e-13
+    prep_G                       q=3 heron 2q=0 depth=3
+    uncompute_G                  q=3 heron 2q=0 depth=3
+    select_V_naive               q=6 heron 2q=4521 depth=21064
+    select_V_ladder              q=8 heron 2q=343 depth=707
+    group_fourier_generic        q=3 heron 2q=11 depth=53
+    group_fourier_structured_qft q=3 heron 2q=6 depth=26
+    single_U_g_worstcase         q=3 heron 2q=18 depth=81
+    [C8] done (9s elapsed)
+[C8d] |G|=8 abelian=True nf=3 nd=2 irreps=[1, 1, 1, 1, 1, 1, 1, 1] accept=0.250 verifyA=5.9e-15 verifyLadder=1.6e-14
+    prep_G                       q=3 heron 2q=0 depth=3
+    uncompute_G                  q=3 heron 2q=0 depth=3
+    select_V_naive               q=5 heron 2q=146 depth=458
+    select_V_ladder              q=7 heron 2q=191 depth=621
+    group_fourier_generic        q=3 heron 2q=11 depth=53
+    group_fourier_structured_qft q=3 heron 2q=6 depth=26
+    single_U_g_worstcase         q=2 heron 2q=0 depth=1
+    [C8d] done (10s elapsed)
+[S3] |G|=6 abelian=False nf=3 nd=2 irreps=[1, 1, 2] accept=0.500 verifyA=9.6e-12 verifyLadder=2.6e-11
+    prep_G                       q=3 heron 2q=4 depth=21
+    uncompute_G                  q=3 heron 2q=4 depth=21
+    select_V_naive               q=5 heron 2q=1133 depth=5223
+    select_V_ladder              q=7 heron 2q=161 depth=508
+    group_fourier_generic        q=3 heron 2q=19 depth=99
+    single_U_g_worstcase         q=2 heron 2q=2 depth=9
+    [S3] done (12s elapsed)
+[D4] |G|=8 abelian=False nf=3 nd=2 irreps=[1, 1, 1, 1, 2] accept=0.250 verifyA=7.0e-12 verifyLadder=2.6e-11
+    prep_G                       q=3 heron 2q=0 depth=3
+    uncompute_G                  q=3 heron 2q=0 depth=3
+    select_V_naive               q=5 heron 2q=1221 depth=5631
+    select_V_ladder              q=7 heron 2q=204 depth=659
+    group_fourier_generic        q=3 heron 2q=19 depth=95
+    single_U_g_worstcase         q=2 heron 2q=1 depth=6
+    [D4] done (15s elapsed)
+[Q8] |G|=8 abelian=False nf=3 nd=1 irreps=[1, 1, 1, 1, 2] accept=0.000 verifyA=3.7e-15 verifyLadder=3.2e-14
+    prep_G                       q=3 heron 2q=0 depth=3
+    uncompute_G                  q=3 heron 2q=0 depth=3
+    select_V_naive               q=4 heron 2q=212 depth=877
+    select_V_ladder              q=6 heron 2q=174 depth=586
+    group_fourier_generic        q=3 heron 2q=19 depth=99
+    single_U_g_worstcase         q=1 heron 2q=0 depth=2
+    [Q8] done (16s elapsed)
+[A4] |G|=12 abelian=False nf=4 nd=2 irreps=[1, 1, 1, 3] accept=0.250 verifyA=5.8e-12 verifyLadder=2.6e-11
+    prep_G                       q=4 heron 2q=7 depth=31
+    uncompute_G                  q=4 heron 2q=7 depth=30
+    select_V_naive               q=6 heron 2q=9430 depth=43592
+    select_V_ladder              q=9 heron 2q=459 depth=1382
+    group_fourier_generic        q=4 heron 2q=95 depth=463
+    single_U_g_worstcase         q=2 heron 2q=0 depth=1
+    [A4] done (29s elapsed)
+[S4] |G|=24 abelian=False nf=5 nd=2 irreps=[1, 1, 2, 3, 3] accept=0.250 verifyA=5.4e-12 verifyLadder=3.9e-11
+    prep_G                       q=5 heron 2q=10 depth=40
+    uncompute_G                  q=5 heron 2q=10 depth=39
+    select_V_naive               q=7 heron 2q=86242 depth=400419
+    select_V_ladder              q=11 heron 2q=1263 depth=3832
+    group_fourier_generic        q=5 heron 2q=423 depth=2021
+    single_U_g_worstcase         q=2 heron 2q=1 depth=6
+    [S4] done (294s elapsed)
+[QSD Z2] ntot=3 2q=2
+[QSD C4] ntot=4 2q=21
+[QSD C8] ntot=6 2q=442
+[QSD C8d] ntot=5 2q=17
+[QSD S3] ntot=5 2q=236
+[QSD D4] ntot=5 2q=234
+[QSD Q8] ntot=4 2q=9
+[QSD A4] ntot=6 2q=1004
+wrote results/benchmarks/group_structure.csv (9 rows)
+wrote results/benchmarks/resource_table.csv (216 rows)
+wrote results/benchmarks/resource_components.csv (116 rows)
+wrote results/benchmarks/resource_raw_seeds.csv (1640 rows)
+wrote results/benchmarks/verification.csv (27 rows)
+wrote results/benchmarks/oracle_monolithic_qsd.csv (9 rows)
+total 295s

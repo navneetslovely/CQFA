@@ -1,0 +1,1 @@
+{"task": "twocopy", "model": "phase_damping", "strength": 0.1, "n": 4, "coherent_copies": 8.0, "singlecopy_copies": 256.0, "separation_ratio": 32.0}

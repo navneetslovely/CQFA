@@ -1,0 +1,4 @@
+group,order,abelian,n_frame_qubits,irrep_dims,n_conjugacy_classes,gft_block_sizes,gft_block_sizes_expected,gft_verified,gft_note,hermiticity_err,trace_err,min_eigenvalue,circulant_err,max_offdiag_after_fourier,modeF_matches_t2_err,n_involutions
+S3,6,0,3,1|1|2,3,1|1|2|2,1|1|2|2,1,,1.0408340855860843e-17,2.220446049250313e-16,0.05726902927983346,2.776498549771984e-17,0.04050690448269914,0.0,3
+Q8,8,0,3,1|1|1|1|2,5,1|1|1|1|2|2,1|1|1|1|2|2,1,,1.3877787807814457e-17,0.0,0.010068779058852497,1.411962612463446e-17,0.16416914265420582,,1
+C8,8,1,3,unavailable,8,unavailable,unavailable,0,"centre split unavailable: isotypic dims [2, 2, 1, 1, 2] are not perfect squares -- centre split failed",6.938893903907228e-18,0.0,0.010068779058852482,1.4304896245381992e-17,2.6609880376771603e-16,0.0,1

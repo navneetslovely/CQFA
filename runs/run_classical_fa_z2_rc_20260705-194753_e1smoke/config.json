@@ -1,0 +1,18 @@
+{
+  "rep": "z2_rc",
+  "model": "classical_fa",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "n_train": 80,
+  "n_test": 60,
+  "epochs": 80,
+  "lr": 0.15,
+  "n_layers": 3,
+  "teacher_seed": 12345,
+  "tag": "e1smoke"
+}

@@ -1,0 +1,35 @@
+{
+  "timestamp_utc": "2026-07-06T05:28:48Z",
+  "git_hash": "no-git",
+  "argv": [
+    "experiments/hardware/run_hardware.py",
+    "--task",
+    "noise",
+    "--group",
+    "z2_rc",
+    "--shots",
+    "256,1024,4096",
+    "--depol-p",
+    "1e-3,1e-2,3e-2,1e-1",
+    "--seeds",
+    "5",
+    "--out",
+    "results/hardware"
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "versions": {
+    "python": "3.14.5",
+    "numpy": "2.5.1",
+    "qiskit": "2.5.0",
+    "qiskit_aer": "0.17.2",
+    "qiskit_ibm_runtime": "0.47.0"
+  },
+  "task": "noise",
+  "n_rows": 180
+}

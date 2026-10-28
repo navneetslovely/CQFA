@@ -1,0 +1,11 @@
+group,is_abelian,order_G,n_frame_qubits,irrep_dims,max_irrep_dim,gft_generic_qsd_twoq,gft_structured_qft_twoq,structured_available,qsd_theory_bound_4pow_nf_over_4,cheapest_available_twoq,note
+Z2,1,2,1,1|1,1,0.0,0.0,1,1,0.0,"abelian, |G|=2^n_frame: DFT == standard QFT, O(n^2) structured circuit"
+C4,1,4,2,1|1|1|1,1,3.0,3.0,1,4,3.0,"abelian, |G|=2^n_frame: DFT == standard QFT, O(n^2) structured circuit"
+C8,1,8,3,1|1|1|1|1|1|1|1,1,11.0,6.0,1,16,6.0,"abelian, |G|=2^n_frame: DFT == standard QFT, O(n^2) structured circuit"
+C8d,1,8,3,1|1|1|1|1|1|1|1,1,11.0,6.0,1,16,6.0,"abelian, |G|=2^n_frame: DFT == standard QFT, O(n^2) structured circuit"
+S3,0,6,3,1|1|2,2,19.0,,0,16,19.0,no structured circuit implemented: generic QSD synthesis only (UPPER BOUND; efficient non-abelian QFTs exist in the literature but are NOT implemented here)
+D4,0,8,3,1|1|1|1|2,2,19.0,,0,16,19.0,no structured circuit implemented: generic QSD synthesis only (UPPER BOUND; efficient non-abelian QFTs exist in the literature but are NOT implemented here)
+Q8,0,8,3,1|1|1|1|2,2,19.0,,0,16,19.0,no structured circuit implemented: generic QSD synthesis only (UPPER BOUND; efficient non-abelian QFTs exist in the literature but are NOT implemented here)
+A4,0,12,4,1|1|1|3,3,95.0,,0,64,95.0,no structured circuit implemented: generic QSD synthesis only (UPPER BOUND; efficient non-abelian QFTs exist in the literature but are NOT implemented here)
+S4,0,24,5,1|1|2|3|3,3,423.0,,0,256,423.0,no structured circuit implemented: generic QSD synthesis only (UPPER BOUND; efficient non-abelian QFTs exist in the literature but are NOT implemented here)
+MATCHED_n_frame=3,,8,3,,,,,,,3.17,RATIO nonabelian/abelian of CHEAPEST AVAILABLE Fourier transform at matched n_frame=3: 19/6 = 3.17x

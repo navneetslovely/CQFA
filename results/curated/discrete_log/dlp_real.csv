@@ -1,0 +1,4 @@
+prime,generator,n_examples,best_classical_acc,quantum_dlog_acc,cls_svm_rbf,cls_random_forest,cls_grad_boost,cls_mlp,cls_knn,cls_logistic
+23,5,22,0.696,0.992,0.666,0.566,0.438,0.6,0.694,0.696
+47,5,46,0.509,0.982,0.464,0.424,0.509,0.44,0.503,0.464
+59,2,58,0.497,0.976,0.349,0.336,0.364,0.386,0.494,0.497

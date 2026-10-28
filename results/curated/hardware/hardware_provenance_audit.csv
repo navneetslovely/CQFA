@@ -1,0 +1,20 @@
+requested_field,status,where,note
+raw outcome histograms,RECORDED,raw_counts.json per run dir -> hardware_stats.csv:raw_counts_json,Full per-PUB counts dicts for all 582 PUBs across 6 runs.
+shots per PUB,RECORDED,pub_index.json:shots; recomputed as shots_returned,Requested and returned shots both written; they agree everywhere.
+confidence intervals,COMPUTED_HERE,"hardware_stats.csv:primary_ci_lo/hi, ci_method","Wilson for binomial proportions; multinomial bootstrap (B=10000, seed=20260722) otherwise."
+qubit layout (physical),RECORDED (device runs only),pub_index.json:final_index_layout,Per-PUB physical layout stored for the 4 IBM runs; NULL for the two offline runs (no physical layout exists offline).
+circuit depth (total),RECOVERABLE,circuits_transpiled.qpy -> depth_total,"Not stored as a field, but recomputed exactly from the saved transpiled circuits."
+two-qubit depth,RECORDED,pub_index.json:transpiled_2q_depth,Stored per PUB; independently recomputed here and verified to match on all 582 PUBs.
+two-qubit gate COUNT,RECOVERABLE,"circuits_transpiled.qpy -> n_2q_gates, n_cz",Not stored as a field; recomputed exactly from the saved transpiled circuits.
+two-qubit edges used,RECOVERABLE,circuits_transpiled.qpy -> two_qubit_edges_used,Physical edge list recomputed per PUB.
+"gate error rates (sx, x, measure)",RECORDED (device runs only),manifest.json:calibration.qubit_properties,Per used qubit. Offline runs store calibration.kind='offline' with no numbers.
+two-qubit gate error rates,RECORDED (device runs only),manifest.json:calibration.two_qubit_gates,cz_error and cz_duration per used edge.
+CALIBRATION DATE / timestamp,NOT_RECORDED,-- absent from every manifest --,"The calibration snapshot carries NO timestamp. It was taken in-process at job submission (runner._calibration_snapshot is called on the live backend target before Batch submission), so its age is BOUNDED by job_created_utc, but the actual last-calibration time of the device is NOT recoverable. Reported as a bound in job_created_utc, never as a measurement."
+T1 / T2 / qubit frequency,NOT_RECORDED,-- absent from every manifest --,runner._calibration_snapshot attempts T1/T2/frequency inside a try/except; the attempt evidently failed on this backend/target version and NO manifest contains these fields. Not reconstructable without new device queries.
+error-mitigation settings,NOT_RECORDED,-- absent from every manifest --,"No resilience_level / dynamical_decoupling / twirling / measurement-mitigation values were stored. Source (runner.run_ibm) shows SamplerV2(mode=batch) built with NO options, so server-side defaults applied, but the RESOLVED values were never captured and are not reconstructed here."
+post-selection (analysis-level mitigation),RECORDED,"hardware_stats.csv:analysis_level_postselection, accept_rate + Wilson CI",C3/C5/C6/C7 post-select on the frame register; acceptance rate is measured.
+repeated jobs,RECORDED,"hardware_stats.csv:repeat_group_id, n_device_runs_with_this_pub_id","16 C8 PUB ids appear in 4 runs each (2 IBM device runs ibm_modef/ibm_modef2 on DIFFERENT layouts, plus ideal and FakeFez offline runs). C1-C7 have NO device repeat: each was run exactly once."
+job ids / billed QPU seconds,RECORDED,"manifest.json:job_id, usage.metrics",4 device jobs; billed 9 + 48 + 19 + 19 = 95 quantum-seconds.
+readout-error mitigation matrix,NOT_RECORDED,-- never collected --,"No calibration-matrix job was run, so no measurement-error unfolding is possible from stored data."
+randomized benchmarking / device-level fidelity,NOT_RECORDED,-- never collected --,Only the vendor-reported per-gate errors above; no independent RB was run.
+per-shot / per-job timestamps within a job,NOT_RECORDED,-- absent --,"Only job-level created/running/finished timestamps exist; PUBs inside a batched job carry no individual timing, so drift within a job cannot be assessed."

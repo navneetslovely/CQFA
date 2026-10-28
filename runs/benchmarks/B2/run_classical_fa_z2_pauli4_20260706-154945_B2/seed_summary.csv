@@ -1,0 +1,2 @@
+rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
+z2_pauli4,classical_fa,orbit_interference,5,0.5933333333333334,0.05333333333333331,0.5166666666666667,0.6666666666666666,0.5466666666666666,0.6366666666666666,24,0.5

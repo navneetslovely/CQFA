@@ -1,0 +1,32 @@
+# CQFA — exact environment lock.
+#
+# These are the versions every number in the paper and supplementary document
+# was produced on: macOS on arm64, CPython 3.14.5.
+#
+# Reproduce the environment:
+#   python3.14 -m venv .venv
+#   source .venv/bin/activate
+#   pip install -r requirements-lock.txt
+#   pip install -e .
+#
+# Python 3.11 through 3.14 are supported; 3.14.5 is the reference interpreter.
+
+numpy==2.5.1
+scipy==1.18.0
+scikit-learn==1.9.0
+matplotlib==3.11.0
+pandas==3.0.3
+
+# circuit construction, transpilation and hardware submission
+qiskit==2.5.0
+qiskit-aer==0.17.2
+qiskit-machine-learning==0.9.0
+qiskit-ibm-runtime==0.47.0
+pennylane==0.45.1
+
+# transitive, pinned for determinism
+networkx==3.6.1
+rustworkx==0.18.0
+
+# test suite
+pytest==8.4.2

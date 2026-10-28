@@ -1,0 +1,24 @@
+# CQFA — supported dependency ranges.
+#
+# The library in src/cqfa is pure NumPy. The scientific stack below is required
+# by the experiment drivers, the analysis code and the figure scripts. The
+# quantum stack is required only by the circuit-construction and hardware
+# experiments; every simulated result reproduces without it.
+#
+# For the exact versions the reported numbers were produced on, install
+# requirements-lock.txt instead.
+
+numpy>=2.0
+scipy>=1.14
+scikit-learn>=1.5
+matplotlib>=3.9
+pandas>=2.2
+
+# circuit construction, transpilation and hardware submission
+qiskit>=2.0
+qiskit-aer>=0.16
+qiskit-machine-learning>=0.9
+qiskit-ibm-runtime>=0.40
+
+# test suite
+pytest>=8.0

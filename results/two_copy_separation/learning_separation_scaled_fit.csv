@@ -1,0 +1,3 @@
+arm,alpha_bits_per_qubit,base_per_qubit,intercept_log2,r2,max_abs_resid_bits,n_min,n_max,n_points
+single_copy_shadows,1.2143,2.3203,3.0714,0.9753,0.9286,2,9,8
+coherent_two_copy,-0.0952,0.9361,2.2738,0.254,0.7024,2,9,8

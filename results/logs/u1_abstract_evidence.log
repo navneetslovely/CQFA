@@ -1,0 +1,63 @@
+PART A -- fixed-GFT pool sweep
+  [poolsweep S=256] S3 done
+  [poolsweep S=256] D4 done
+  [poolsweep S=256] Q8 done
+  [poolsweep S=256] D5 done
+  [poolsweep S=256] A4 done
+  [poolsweep S=256] D6 done
+  [poolsweep S=256] D10 done
+  [poolsweep S=256] F21 done
+  [poolsweep S=256] S4 done
+  [poolsweep S=exact] S3 done
+  [poolsweep S=exact] D4 done
+  [poolsweep S=exact] Q8 done
+  [poolsweep S=exact] D5 done
+  [poolsweep S=exact] A4 done
+  [poolsweep S=exact] D6 done
+  [poolsweep S=exact] D10 done
+  [poolsweep S=exact] F21 done
+  [poolsweep S=exact] S4 done
+wrote results/cqfa_pp/u1_pool_sweep.csv
+
+PART B -- mechanism regressors
+wrote results/cqfa_pp/u1_mechanism.csv
+wrote results/cqfa_pp/u1_mechanism_regressors.csv
+
+=== pool sweep (the shot-matched claim) ===
+     S     K    fixed  circ-fixed    pass          p
+   256     1   0.7455     +0.1277     8/9   1.14e-05
+   256     2   0.7725     +0.1007     7/9   5.18e-06
+   256     4   0.7996     +0.0736     7/9   1.42e-05
+   256     8   0.8248     +0.0484     6/9   9.04e-04
+   256    16   0.8347     +0.0385     4/9   1.77e-03
+   256    32   0.8531     +0.0201     3/9   2.17e-02
+   256    64   0.8599     +0.0133     1/9   8.88e-02
+   256   128   0.8733     -0.0001     1/9   5.06e-01
+   256   256   0.8767     -0.0035     0/9   7.25e-01
+   256   320   0.8752     -0.0019     0/9   6.76e-01
+ exact     1   0.7621     +0.2184     9/9   1.72e-08
+ exact     2   0.7898     +0.1907     9/9   1.18e-07
+ exact     4   0.8186     +0.1619     9/9   2.26e-06
+ exact     8   0.8444     +0.1361     9/9   2.40e-05
+ exact    16   0.8559     +0.1245     9/9   3.91e-05
+ exact    32   0.8782     +0.1022     8/9   3.29e-04
+ exact    64   0.8880     +0.0924     8/9   9.45e-04
+ exact   128   0.9014     +0.0791     8/9   1.85e-03
+ exact   256   0.9137     +0.0668     8/9   2.55e-03
+ exact   320   0.9155     +0.0649     7/9   2.55e-03
+
+=== mechanism (non-rival regressors only) ===
+  S=  256 vs modeF_fixed      invisible_fraction     r=-0.3436 p=3.65e-01 loo[-0.478,-0.220]
+  S=  256 vs modeF_fixed      ensemble_rel_offdiag   r=-0.3588 p=3.43e-01 loo[-0.491,-0.240]
+  S=  256 vs modeF_bestbasis  invisible_fraction     r=+0.2241 p=5.62e-01 loo[+0.070,+0.426]
+  S=  256 vs modeF_bestbasis  ensemble_rel_offdiag   r=+0.2029 p=6.00e-01 loo[+0.050,+0.415]
+  S=exact vs modeF_fixed      invisible_fraction     r=+0.8277 p=5.89e-03 loo[+0.771,+0.908]
+  S=exact vs modeF_fixed      ensemble_rel_offdiag   r=+0.8224 p=6.50e-03 loo[+0.762,+0.911]
+  S=exact vs modeF_bestbasis  invisible_fraction     r=+0.9696 p=1.57e-05 loo[+0.957,+0.976]
+  S=exact vs modeF_bestbasis  ensemble_rel_offdiag   r=+0.9642 p=2.75e-05 loo[+0.949,+0.972]
+
+=== rival regressor 1/|G| (must NOT explain it as well) ===
+  S=  256 vs modeF_fixed      r=+0.8127 p=7.76e-03
+  S=  256 vs modeF_bestbasis  r=+0.4173 p=2.64e-01
+  S=exact vs modeF_fixed      r=-0.3751 p=3.20e-01
+  S=exact vs modeF_bestbasis  r=-0.7508 p=1.97e-02

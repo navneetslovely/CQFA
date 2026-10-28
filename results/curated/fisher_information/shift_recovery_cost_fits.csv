@@ -1,0 +1,13 @@
+ensemble,readout,n_points,Ns,shots_90_mean,shots_90_std,slope_b,slope_se,ci95_lo,ci95_hi,ci95_excludes_0,ci95_contains_2,ci95_excludes_2_above,n_N_censored,n_N_vacuous,verdict
+dlp_flat,A_projection,0,,,,nan,nan,nan,nan,,,,0,5,blind: p(o|s) exactly independent of s at every N (vacuous_excluded)
+dlp_flat,B_frame_average,0,,,,nan,nan,nan,nan,,,,0,5,blind: p(o|s) exactly independent of s at every N (vacuous_excluded)
+dlp_flat,F_fixed_binary_sld,0,,,,nan,nan,nan,nan,,,,5,0,censored at every N: never reaches 0.90 within the shot cap
+dlp_flat,F_fixed_product_coh_bestM,5,4;8;16;32;64,12.2;78.8;604.8;4848.4;36800,0.979796;2.85657;45.6745;161.049;2351.97,2.9060387094550286,0.03199631693624343,2.804212148838594,3.007865270071463,1,0,1,0,0,b=+2.91; CI EXCLUDES 0 (grows with N); CI EXCLUDES 2 from above (grows FASTER than N^2)
+dlp_flat,F_fixed_product_coh_randM,5,4;8;16;32;64,39.6;134.2;1139;8370.4;74615.2,1.49666;8.65794;57.6715;471.709;1887.87,2.772234680816521,0.14652609221084095,2.30592326003247,3.238546101600572,1,0,1,0,0,b=+2.77; CI EXCLUDES 0 (grows with N); CI EXCLUDES 2 from above (grows FASTER than N^2)
+dlp_flat,F_srm_joint,5,4;8;16;32;64,1;1;1;1;1,0;0;0;0;0,0.0,0.0,0.0,0.0,0,0,0,0,0,b=+0.00; CI contains 0 (cannot exclude flat); CI excludes 2 from below (slower than N^2)
+generic,A_projection,0,,,,nan,nan,nan,nan,,,,0,5,blind: p(o|s) exactly independent of s at every N (vacuous_excluded)
+generic,B_frame_average,0,,,,nan,nan,nan,nan,,,,0,5,blind: p(o|s) exactly independent of s at every N (vacuous_excluded)
+generic,F_fixed_binary_sld,5,4;8;16;32;64,29.6;427.8;1326.4;5528.8;18427,27.3393;281.484;612.26;2442.05;4570.03,2.225597463972435,0.22802484106231166,1.4999206510207768,2.9512742769240936,1,1,0,0,0,b=+2.23; CI EXCLUDES 0 (grows with N); CI contains 2 (consistent with N^2)
+generic,F_fixed_product_coh_bestM,5,4;8;16;32;64,18.2;161.4;4544.6;317928;125697,5.6;50.583;2745.52;570120;67492.9,3.6451281082671962,0.6720697847732257,1.5063021048228276,5.783954111711565,1,1,0,0,0,b=+3.65; CI EXCLUDES 0 (grows with N); CI contains 2 (consistent with N^2)
+generic,F_fixed_product_coh_randM,5,4;8;16;32;64,72.4;227.6;4963.2;357965;177342,78.5916;40.5295;2833.75;645423;117740,3.3135617740465473,0.6262941146596906,1.320414382826884,5.306709165266211,1,1,0,0,0,b=+3.31; CI EXCLUDES 0 (grows with N); CI contains 2 (consistent with N^2)
+generic,F_srm_joint,5,4;8;16;32;64,1.8;2.6;2.6;3.2;3,0.979796;0.8;0.8;0.4;0,0.1773491470191321,0.05749113194210253,-0.005613293416590254,0.3603115874548545,0,0,0,0,0,b=+0.18; CI contains 0 (cannot exclude flat); CI excludes 2 from below (slower than N^2)

@@ -1,0 +1,164 @@
+[
+  {
+    "pub_id": "C3_in0_s1024",
+    "experiment": "C3",
+    "analysis": "cqfa_postsel",
+    "shots": 1024,
+    "theory": {
+      "f_A": 1.0,
+      "p": 0.9295146711980659
+    },
+    "meta": {
+      "input_id": "in0",
+      "shot_level": 1024,
+      "observable_sites": [
+        0,
+        1
+      ],
+      "n_data": 2,
+      "n_frame": 1,
+      "observable": "X0Z1"
+    },
+    "transpiled_2q_depth": 6,
+    "final_index_layout": [
+      35,
+      15,
+      19
+    ]
+  },
+  {
+    "pub_id": "C3_in0_s4096",
+    "experiment": "C3",
+    "analysis": "cqfa_postsel",
+    "shots": 4096,
+    "theory": {
+      "f_A": 1.0,
+      "p": 0.9295146711980659
+    },
+    "meta": {
+      "input_id": "in0",
+      "shot_level": 4096,
+      "observable_sites": [
+        0,
+        1
+      ],
+      "n_data": 2,
+      "n_frame": 1,
+      "observable": "X0Z1"
+    },
+    "transpiled_2q_depth": 6,
+    "final_index_layout": [
+      35,
+      15,
+      19
+    ]
+  },
+  {
+    "pub_id": "C3_in0_s8192",
+    "experiment": "C3",
+    "analysis": "cqfa_postsel",
+    "shots": 8192,
+    "theory": {
+      "f_A": 1.0,
+      "p": 0.9295146711980659
+    },
+    "meta": {
+      "input_id": "in0",
+      "shot_level": 8192,
+      "observable_sites": [
+        0,
+        1
+      ],
+      "n_data": 2,
+      "n_frame": 1,
+      "observable": "X0Z1"
+    },
+    "transpiled_2q_depth": 6,
+    "final_index_layout": [
+      19,
+      15,
+      35
+    ]
+  },
+  {
+    "pub_id": "C3_in1_s1024",
+    "experiment": "C3",
+    "analysis": "cqfa_postsel",
+    "shots": 1024,
+    "theory": {
+      "f_A": 1.0,
+      "p": 0.41499900007923385
+    },
+    "meta": {
+      "input_id": "in1",
+      "shot_level": 1024,
+      "observable_sites": [
+        0,
+        1
+      ],
+      "n_data": 2,
+      "n_frame": 1,
+      "observable": "X0Z1"
+    },
+    "transpiled_2q_depth": 6,
+    "final_index_layout": [
+      35,
+      15,
+      19
+    ]
+  },
+  {
+    "pub_id": "C3_in1_s4096",
+    "experiment": "C3",
+    "analysis": "cqfa_postsel",
+    "shots": 4096,
+    "theory": {
+      "f_A": 1.0,
+      "p": 0.41499900007923385
+    },
+    "meta": {
+      "input_id": "in1",
+      "shot_level": 4096,
+      "observable_sites": [
+        0,
+        1
+      ],
+      "n_data": 2,
+      "n_frame": 1,
+      "observable": "X0Z1"
+    },
+    "transpiled_2q_depth": 6,
+    "final_index_layout": [
+      19,
+      15,
+      35
+    ]
+  },
+  {
+    "pub_id": "C3_in1_s8192",
+    "experiment": "C3",
+    "analysis": "cqfa_postsel",
+    "shots": 8192,
+    "theory": {
+      "f_A": 1.0,
+      "p": 0.41499900007923385
+    },
+    "meta": {
+      "input_id": "in1",
+      "shot_level": 8192,
+      "observable_sites": [
+        0,
+        1
+      ],
+      "n_data": 2,
+      "n_frame": 1,
+      "observable": "X0Z1"
+    },
+    "transpiled_2q_depth": 6,
+    "final_index_layout": [
+      35,
+      15,
+      19
+    ]
+  }
+]

@@ -1,0 +1,126 @@
+[selftest] analytic gradients vs finite differences
+    S3 D= 8: rel grad err  unitary=1.86e-09  circuit=8.37e-10
+    D4 D= 8: rel grad err  unitary=1.69e-08  circuit=6.43e-09
+    A4 D=16: rel grad err  unitary=1.51e-08  circuit=2.89e-09
+[selftest] OK
+[struct]   S3 |G|=6 abelian=0 irreps=1|1|2 blocks=1|1|2|2 offdiag=4.051e-02 t2err=0.0
+    S3 generic_W S=   16 | modeF=0.6885 circ=0.8300 unit=0.8225 mfhead=0.6660 | d_circ=+0.1415 2se=0.0951 -> CONFIRMS_CELL [2s]
+    S3 generic_W S=   64 | modeF=0.7425 circ=0.8795 unit=0.9005 mfhead=0.7085 | d_circ=+0.1370 2se=0.1196 -> CONFIRMS_CELL [2s]
+    S3 generic_W S=  256 | modeF=0.7460 circ=0.9460 unit=0.9405 mfhead=0.7380 | d_circ=+0.2000 2se=0.1118 -> CONFIRMS_CELL [2s]
+    S3 generic_W S= None | modeF=0.7505 circ=0.9865 unit=0.9875 mfhead=0.7505 | d_circ=+0.2360 2se=0.1225 -> CONFIRMS_CELL [1s]
+    S3 offdiag_W S=   16 | modeF=0.4940 circ=0.8225 unit=0.8365 mfhead=0.4850 | d_circ=+0.3285 2se=0.0276 -> CONFIRMS_CELL [2s]
+    S3 offdiag_W S=   64 | modeF=0.5305 circ=0.9010 unit=0.9085 mfhead=0.4925 | d_circ=+0.3705 2se=0.0366 -> CONFIRMS_CELL [2s]
+    S3 offdiag_W S=  256 | modeF=0.5100 circ=0.9415 unit=0.9375 mfhead=0.5105 | d_circ=+0.4315 2se=0.0150 -> CONFIRMS_CELL [2s]
+    S3 offdiag_W S= None | modeF=0.5170 circ=0.9845 unit=0.9870 mfhead=0.4980 | d_circ=+0.4675 2se=0.0259 -> CONFIRMS_CELL [1s]
+[struct]   D4 |G|=8 abelian=0 irreps=1|1|1|1|2 blocks=1|1|1|1|2|2 offdiag=7.687e-02 t2err=0.0
+    D4 generic_W S=   16 | modeF=0.7220 circ=0.8020 unit=0.7985 mfhead=0.6960 | d_circ=+0.0800 2se=0.0967 -> KILLS_CELL [2s]
+    D4 generic_W S=   64 | modeF=0.7770 circ=0.8735 unit=0.8815 mfhead=0.7510 | d_circ=+0.0965 2se=0.1157 -> KILLS_CELL [2s]
+    D4 generic_W S=  256 | modeF=0.8110 circ=0.9310 unit=0.9395 mfhead=0.7825 | d_circ=+0.1200 2se=0.1087 -> CONFIRMS_CELL [2s]
+    D4 generic_W S= None | modeF=0.8170 circ=0.9880 unit=0.9885 mfhead=0.7905 | d_circ=+0.1710 2se=0.1105 -> CONFIRMS_CELL [1s]
+    D4 offdiag_W S=   16 | modeF=0.4940 circ=0.7750 unit=0.8005 mfhead=0.5000 | d_circ=+0.2810 2se=0.0366 -> CONFIRMS_CELL [2s]
+    D4 offdiag_W S=   64 | modeF=0.4840 circ=0.8685 unit=0.8890 mfhead=0.5070 | d_circ=+0.3845 2se=0.0263 -> CONFIRMS_CELL [2s]
+    D4 offdiag_W S=  256 | modeF=0.5015 circ=0.9255 unit=0.9300 mfhead=0.4965 | d_circ=+0.4240 2se=0.0221 -> CONFIRMS_CELL [2s]
+    D4 offdiag_W S= None | modeF=0.4805 circ=0.9825 unit=0.9830 mfhead=0.4910 | d_circ=+0.5020 2se=0.0176 -> CONFIRMS_CELL [1s]
+[struct]   Q8 |G|=8 abelian=0 irreps=1|1|1|1|2 blocks=1|1|1|1|2|2 offdiag=1.642e-01 t2err=
+    Q8 generic_W S=   16 | modeF=0.7305 circ=0.7935 unit=0.8060 mfhead=0.6845 | d_circ=+0.0630 2se=0.0483 -> CONFIRMS_CELL [2s]
+    Q8 generic_W S=   64 | modeF=0.7640 circ=0.8745 unit=0.8800 mfhead=0.7460 | d_circ=+0.1105 2se=0.0437 -> CONFIRMS_CELL [2s]
+    Q8 generic_W S=  256 | modeF=0.7840 circ=0.9270 unit=0.9305 mfhead=0.7645 | d_circ=+0.1430 2se=0.0501 -> CONFIRMS_CELL [2s]
+    Q8 generic_W S= None | modeF=0.7945 circ=0.9780 unit=0.9780 mfhead=0.7785 | d_circ=+0.1835 2se=0.0505 -> CONFIRMS_CELL [1s]
+    Q8 offdiag_W S=   16 | modeF=0.5145 circ=0.7975 unit=0.7890 mfhead=0.5130 | d_circ=+0.2830 2se=0.0345 -> CONFIRMS_CELL [2s]
+    Q8 offdiag_W S=   64 | modeF=0.4985 circ=0.8830 unit=0.8855 mfhead=0.4955 | d_circ=+0.3845 2se=0.0262 -> CONFIRMS_CELL [2s]
+    Q8 offdiag_W S=  256 | modeF=0.5055 circ=0.9400 unit=0.9350 mfhead=0.4810 | d_circ=+0.4345 2se=0.0258 -> CONFIRMS_CELL [2s]
+    Q8 offdiag_W S= None | modeF=0.5075 circ=0.9870 unit=0.9850 mfhead=0.4790 | d_circ=+0.4795 2se=0.0228 -> CONFIRMS_CELL [1s]
+[struct]   D5 |G|=10 abelian=0 irreps=1|1|2|2 blocks=1|1|2|2|2|2 offdiag=7.223e-02 t2err=
+    D5 generic_W S=   16 | modeF=0.6955 circ=0.7155 unit=0.7795 mfhead=0.6275 | d_circ=+0.0200 2se=0.0680 -> KILLS_CELL [3s]
+    D5 generic_W S=   64 | modeF=0.7430 circ=0.8330 unit=0.8725 mfhead=0.6785 | d_circ=+0.0900 2se=0.0801 -> CONFIRMS_CELL [3s]
+    D5 generic_W S=  256 | modeF=0.7705 circ=0.9050 unit=0.9235 mfhead=0.7355 | d_circ=+0.1345 2se=0.0942 -> CONFIRMS_CELL [4s]
+    D5 generic_W S= None | modeF=0.7835 circ=0.9890 unit=0.9885 mfhead=0.7350 | d_circ=+0.2055 2se=0.1113 -> CONFIRMS_CELL [2s]
+    D5 offdiag_W S=   16 | modeF=0.5075 circ=0.7280 unit=0.7690 mfhead=0.4870 | d_circ=+0.2205 2se=0.0360 -> CONFIRMS_CELL [3s]
+experiments/cqfa_pp/u1_shotmatched_nonabelian.py:661: RuntimeWarning: overflow encountered in exp
+  s = (1.0 / (1.0 + np.exp(-z)) - yv) / n
+    D5 offdiag_W S=   64 | modeF=0.5155 circ=0.8180 unit=0.8695 mfhead=0.4860 | d_circ=+0.3025 2se=0.0203 -> CONFIRMS_CELL [4s]
+    D5 offdiag_W S=  256 | modeF=0.5125 circ=0.8975 unit=0.9190 mfhead=0.4975 | d_circ=+0.3850 2se=0.0272 -> CONFIRMS_CELL [5s]
+    D5 offdiag_W S= None | modeF=0.4995 circ=0.9865 unit=0.9875 mfhead=0.4965 | d_circ=+0.4870 2se=0.0268 -> CONFIRMS_CELL [2s]
+[struct]   A4 |G|=12 abelian=0 irreps=unavailable blocks=unavailable offdiag=3.342e-02 t2err=
+    A4 generic_W S=   16 | modeF=0.6425 circ=0.7010 unit=0.7630 mfhead=0.5815 | d_circ=+0.0585 2se=0.0232 -> CONFIRMS_CELL [3s]
+    A4 generic_W S=   64 | modeF=0.7085 circ=0.7965 unit=0.8390 mfhead=0.6265 | d_circ=+0.0880 2se=0.0229 -> CONFIRMS_CELL [4s]
+    A4 generic_W S=  256 | modeF=0.7215 circ=0.8830 unit=0.9155 mfhead=0.6565 | d_circ=+0.1615 2se=0.0314 -> CONFIRMS_CELL [5s]
+    A4 generic_W S= None | modeF=0.7325 circ=0.9800 unit=0.9775 mfhead=0.6590 | d_circ=+0.2475 2se=0.0433 -> CONFIRMS_CELL [2s]
+    A4 offdiag_W S=   16 | modeF=0.5090 circ=0.7280 unit=0.7395 mfhead=0.5020 | d_circ=+0.2190 2se=0.0325 -> CONFIRMS_CELL [3s]
+    A4 offdiag_W S=   64 | modeF=0.5045 circ=0.8135 unit=0.8645 mfhead=0.4925 | d_circ=+0.3090 2se=0.0288 -> CONFIRMS_CELL [4s]
+    A4 offdiag_W S=  256 | modeF=0.4985 circ=0.8830 unit=0.9270 mfhead=0.4875 | d_circ=+0.3845 2se=0.0295 -> CONFIRMS_CELL [5s]
+    A4 offdiag_W S= None | modeF=0.5030 circ=0.9855 unit=0.9855 mfhead=0.5075 | d_circ=+0.4825 2se=0.0224 -> CONFIRMS_CELL [2s]
+[struct]   D6 |G|=12 abelian=0 irreps=1|1|1|1|2|2 blocks=1|1|1|1|2|2|2|2 offdiag=3.605e-02 t2err=
+    D6 generic_W S=   16 | modeF=0.6775 circ=0.6960 unit=0.7540 mfhead=0.5925 | d_circ=+0.0185 2se=0.0641 -> KILLS_CELL [3s]
+    D6 generic_W S=   64 | modeF=0.7320 circ=0.7945 unit=0.8495 mfhead=0.6775 | d_circ=+0.0625 2se=0.0839 -> KILLS_CELL [4s]
+    D6 generic_W S=  256 | modeF=0.7490 circ=0.8765 unit=0.8980 mfhead=0.6950 | d_circ=+0.1275 2se=0.0960 -> CONFIRMS_CELL [4s]
+    D6 generic_W S= None | modeF=0.7610 circ=0.9820 unit=0.9815 mfhead=0.7285 | d_circ=+0.2210 2se=0.0937 -> CONFIRMS_CELL [2s]
+    D6 offdiag_W S=   16 | modeF=0.4920 circ=0.7070 unit=0.7610 mfhead=0.5010 | d_circ=+0.2150 2se=0.0494 -> CONFIRMS_CELL [3s]
+    D6 offdiag_W S=   64 | modeF=0.5040 circ=0.8120 unit=0.8680 mfhead=0.4985 | d_circ=+0.3080 2se=0.0277 -> CONFIRMS_CELL [3s]
+    D6 offdiag_W S=  256 | modeF=0.5240 circ=0.8805 unit=0.9270 mfhead=0.5010 | d_circ=+0.3565 2se=0.0387 -> CONFIRMS_CELL [4s]
+    D6 offdiag_W S= None | modeF=0.5190 circ=0.9860 unit=0.9885 mfhead=0.4900 | d_circ=+0.4670 2se=0.0130 -> CONFIRMS_CELL [2s]
+[struct]  D10 |G|=20 abelian=0 irreps=1|1|1|1|2|2|2|2 blocks=1|1|1|1|2|2|2|2|2|2|2|2 offdiag=5.058e-02 t2err=
+   D10 generic_W S=   16 | modeF=0.6500 circ=0.6280 unit=0.7115 mfhead=0.6105 | d_circ=-0.0220 2se=0.0186 -> KILLS_CELL [8s]
+   D10 generic_W S=   64 | modeF=0.7180 circ=0.6975 unit=0.8200 mfhead=0.6850 | d_circ=-0.0205 2se=0.0122 -> KILLS_CELL [9s]
+   D10 generic_W S=  256 | modeF=0.7545 circ=0.7930 unit=0.8880 mfhead=0.7345 | d_circ=+0.0385 2se=0.0456 -> KILLS_CELL [10s]
+   D10 generic_W S= None | modeF=0.7850 circ=0.9765 unit=0.9780 mfhead=0.7320 | d_circ=+0.1915 2se=0.0377 -> CONFIRMS_CELL [7s]
+   D10 offdiag_W S=   16 | modeF=0.5055 circ=0.6115 unit=0.7050 mfhead=0.4845 | d_circ=+0.1060 2se=0.0340 -> CONFIRMS_CELL [9s]
+   D10 offdiag_W S=   64 | modeF=0.5085 circ=0.7130 unit=0.8170 mfhead=0.4850 | d_circ=+0.2045 2se=0.0539 -> CONFIRMS_CELL [10s]
+   D10 offdiag_W S=  256 | modeF=0.4950 circ=0.8250 unit=0.8980 mfhead=0.5095 | d_circ=+0.3300 2se=0.0170 -> CONFIRMS_CELL [11s]
+   D10 offdiag_W S= None | modeF=0.4930 circ=0.9715 unit=0.9750 mfhead=0.4965 | d_circ=+0.4785 2se=0.0106 -> CONFIRMS_CELL [7s]
+[struct]  F21 |G|=21 abelian=0 irreps=unavailable blocks=unavailable offdiag=4.418e-02 t2err=
+   F21 generic_W S=   16 | modeF=0.6275 circ=0.5920 unit=0.7190 mfhead=0.5805 | d_circ=-0.0355 2se=0.0633 -> KILLS_CELL [9s]
+   F21 generic_W S=   64 | modeF=0.6690 circ=0.7120 unit=0.8180 mfhead=0.6360 | d_circ=+0.0430 2se=0.1028 -> KILLS_CELL [9s]
+   F21 generic_W S=  256 | modeF=0.7120 circ=0.8065 unit=0.8850 mfhead=0.6630 | d_circ=+0.0945 2se=0.0693 -> CONFIRMS_CELL [11s]
+   F21 generic_W S= None | modeF=0.7165 circ=0.9770 unit=0.9815 mfhead=0.6590 | d_circ=+0.2605 2se=0.1034 -> CONFIRMS_CELL [7s]
+   F21 offdiag_W S=   16 | modeF=0.4920 circ=0.5770 unit=0.6915 mfhead=0.5085 | d_circ=+0.0850 2se=0.0202 -> CONFIRMS_CELL [9s]
+   F21 offdiag_W S=   64 | modeF=0.4860 circ=0.6945 unit=0.8075 mfhead=0.4730 | d_circ=+0.2085 2se=0.0399 -> CONFIRMS_CELL [10s]
+   F21 offdiag_W S=  256 | modeF=0.5010 circ=0.8190 unit=0.8970 mfhead=0.4850 | d_circ=+0.3180 2se=0.0248 -> CONFIRMS_CELL [12s]
+   F21 offdiag_W S= None | modeF=0.5030 circ=0.9745 unit=0.9750 mfhead=0.4880 | d_circ=+0.4715 2se=0.0270 -> CONFIRMS_CELL [7s]
+[struct]   S4 |G|=24 abelian=0 irreps=1|1|2|3|3 blocks=1|1|2|2|3|3|3|3|3|3 offdiag=3.558e-02 t2err=
+    S4 generic_W S=   16 | modeF=0.5935 circ=0.5785 unit=0.6760 mfhead=0.5585 | d_circ=-0.0150 2se=0.0220 -> KILLS_CELL [9s]
+    S4 generic_W S=   64 | modeF=0.6805 circ=0.6920 unit=0.8030 mfhead=0.6215 | d_circ=+0.0115 2se=0.0412 -> KILLS_CELL [10s]
+    S4 generic_W S=  256 | modeF=0.7070 circ=0.7910 unit=0.8750 mfhead=0.6625 | d_circ=+0.0840 2se=0.0544 -> CONFIRMS_CELL [11s]
+    S4 generic_W S= None | modeF=0.7180 circ=0.9670 unit=0.9705 mfhead=0.6620 | d_circ=+0.2490 2se=0.0474 -> CONFIRMS_CELL [8s]
+    S4 offdiag_W S=   16 | modeF=0.5035 circ=0.5880 unit=0.7105 mfhead=0.5045 | d_circ=+0.0845 2se=0.0291 -> CONFIRMS_CELL [9s]
+    S4 offdiag_W S=   64 | modeF=0.4975 circ=0.6665 unit=0.8035 mfhead=0.5070 | d_circ=+0.1690 2se=0.0484 -> CONFIRMS_CELL [10s]
+    S4 offdiag_W S=  256 | modeF=0.4970 circ=0.7955 unit=0.8845 mfhead=0.4850 | d_circ=+0.2985 2se=0.0356 -> CONFIRMS_CELL [12s]
+    S4 offdiag_W S= None | modeF=0.4870 circ=0.9710 unit=0.9700 mfhead=0.4905 | d_circ=+0.4840 2se=0.0135 -> CONFIRMS_CELL [8s]
+[struct]   C6 |G|=6 abelian=1 irreps=unavailable blocks=unavailable offdiag=4.252e-16 t2err=0.0
+    C6 generic_W S=   16 | modeF=0.8265 circ=0.8195 unit=0.8195 mfhead=0.8255 | d_circ=-0.0070 2se=0.0140 -> KILLS_CELL [2s]
+    C6 generic_W S=   64 | modeF=0.9085 circ=0.9060 unit=0.9000 mfhead=0.9080 | d_circ=-0.0025 2se=0.0204 -> KILLS_CELL [2s]
+    C6 generic_W S=  256 | modeF=0.9595 circ=0.9410 unit=0.9405 mfhead=0.9565 | d_circ=-0.0185 2se=0.0214 -> KILLS_CELL [2s]
+    C6 generic_W S= None | modeF=0.9925 circ=0.9925 unit=0.9900 mfhead=0.9940 | d_circ=+0.0000 2se=0.0035 -> KILLS_CELL [1s]
+    C6 offdiag_W S=   16 | modeF=0.8025 circ=0.8015 unit=0.8210 mfhead=0.7765 | d_circ=-0.0010 2se=0.0208 -> vacuous_excluded [2s]
+    C6 offdiag_W S=   64 | modeF=0.8865 circ=0.8775 unit=0.8690 mfhead=0.8980 | d_circ=-0.0090 2se=0.0123 -> vacuous_excluded [2s]
+    C6 offdiag_W S=  256 | modeF=0.9420 circ=0.9220 unit=0.9180 mfhead=0.9395 | d_circ=-0.0200 2se=0.0170 -> vacuous_excluded [2s]
+    C6 offdiag_W S= None | modeF=0.9650 circ=0.9660 unit=0.9675 mfhead=0.9655 | d_circ=+0.0010 2se=0.0025 -> vacuous_excluded [1s]
+[struct]   C8 |G|=8 abelian=1 irreps=unavailable blocks=unavailable offdiag=2.661e-16 t2err=0.0
+    C8 generic_W S=   16 | modeF=0.8060 circ=0.8000 unit=0.7995 mfhead=0.7695 | d_circ=-0.0060 2se=0.0198 -> KILLS_CELL [2s]
+    C8 generic_W S=   64 | modeF=0.8935 circ=0.8780 unit=0.8740 mfhead=0.8730 | d_circ=-0.0155 2se=0.0283 -> KILLS_CELL [2s]
+    C8 generic_W S=  256 | modeF=0.9420 circ=0.9375 unit=0.9380 mfhead=0.9400 | d_circ=-0.0045 2se=0.0135 -> KILLS_CELL [2s]
+    C8 generic_W S= None | modeF=0.9865 circ=0.9885 unit=0.9875 mfhead=0.9880 | d_circ=+0.0020 2se=0.0029 -> KILLS_CELL [1s]
+    C8 offdiag_W S=   16 | modeF=0.8115 circ=0.7985 unit=0.7990 mfhead=0.7705 | d_circ=-0.0130 2se=0.0121 -> vacuous_excluded [2s]
+    C8 offdiag_W S=   64 | modeF=0.8745 circ=0.8720 unit=0.8820 mfhead=0.8715 | d_circ=-0.0025 2se=0.0156 -> vacuous_excluded [2s]
+    C8 offdiag_W S=  256 | modeF=0.9310 circ=0.9125 unit=0.9140 mfhead=0.9210 | d_circ=-0.0185 2se=0.0168 -> vacuous_excluded [2s]
+    C8 offdiag_W S= None | modeF=0.9565 circ=0.9570 unit=0.9565 mfhead=0.9480 | d_circ=+0.0005 2se=0.0010 -> vacuous_excluded [1s]
+[struct]  C12 |G|=12 abelian=1 irreps=unavailable blocks=unavailable offdiag=6.595e-16 t2err=
+   C12 generic_W S=   16 | modeF=0.7640 circ=0.6985 unit=0.7450 mfhead=0.6745 | d_circ=-0.0655 2se=0.0254 -> KILLS_CELL [3s]
+   C12 generic_W S=   64 | modeF=0.8575 circ=0.8315 unit=0.8495 mfhead=0.8270 | d_circ=-0.0260 2se=0.0139 -> KILLS_CELL [3s]
+   C12 generic_W S=  256 | modeF=0.9175 circ=0.8700 unit=0.9070 mfhead=0.9155 | d_circ=-0.0475 2se=0.0157 -> KILLS_CELL [4s]
+   C12 generic_W S= None | modeF=0.9820 circ=0.9860 unit=0.9840 mfhead=0.9830 | d_circ=+0.0040 2se=0.0051 -> KILLS_CELL [2s]
+   C12 offdiag_W S=   16 | modeF=0.7700 circ=0.7365 unit=0.7465 mfhead=0.7195 | d_circ=-0.0335 2se=0.0318 -> vacuous_excluded [3s]
+   C12 offdiag_W S=   64 | modeF=0.8570 circ=0.8245 unit=0.8550 mfhead=0.8180 | d_circ=-0.0325 2se=0.0255 -> vacuous_excluded [4s]
+   C12 offdiag_W S=  256 | modeF=0.9315 circ=0.8795 unit=0.9180 mfhead=0.9115 | d_circ=-0.0520 2se=0.0164 -> vacuous_excluded [4s]
+   C12 offdiag_W S= None | modeF=0.9800 circ=0.9810 unit=0.9800 mfhead=0.9775 | d_circ=+0.0010 2se=0.0041 -> vacuous_excluded [2s]
+
+==============================================================================
+PRE-REGISTERED TRACK VERDICT: CONFIRMS
+  non-abelian CONFIRMS_CELL: 8/9 (need >= 5)
+  abelian     CONFIRMS_CELL: 0/3 (need 0)
+  pearson r (mean_delta_circ vs off-Fourier-diagonal weight): 0.11227035815451945
+==============================================================================
+wrote results/cqfa_pp/u1_shotmatched_percell.csv
+wrote results/cqfa_pp/u1_shotmatched_summary.csv
+wrote results/cqfa_pp/u1_structure_check.csv
+wrote results/cqfa_pp/u1_verdict.csv

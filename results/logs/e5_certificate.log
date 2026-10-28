@@ -1,0 +1,17 @@
+[E5/certificate] numpy 2.5.1  n=2..5  source=quantum_nonreprepable  n_data=64  seeds=[0, 1, 2, 3, 4]
+  n= 2 cqfa             d_eff=    3 var_lb=1.667e-01 S_frame=0.838 escape=1
+  n= 2 classical_fa     d_eff=    3 var_lb=1.667e-01 S_frame=0.838 escape=1
+  n= 2 non_equivariant  d_eff=   15 var_lb=5.000e-02 S_frame=0.838 escape=1
+  n= 3 cqfa             d_eff=    6 var_lb=4.322e-02 S_frame=0.925 escape=1
+  n= 3 classical_fa     d_eff=    6 var_lb=4.322e-02 S_frame=0.925 escape=1
+  n= 3 non_equivariant  d_eff=   63 var_lb=1.389e-02 S_frame=0.925 escape=1
+  n= 4 cqfa             d_eff=    9 var_lb=9.236e-03 S_frame=0.969 escape=1
+  n= 4 classical_fa     d_eff=    9 var_lb=9.236e-03 S_frame=0.969 escape=1
+  n= 4 non_equivariant  d_eff=  255 var_lb=3.676e-03 S_frame=0.969 escape=1
+  n= 5 cqfa             d_eff=   12 var_lb=4.793e-03 S_frame=0.981 escape=1
+  n= 5 classical_fa     d_eff=   12 var_lb=4.793e-03 S_frame=0.981 escape=1
+  n= 5 non_equivariant  d_eff= 1023 var_lb=9.470e-04 S_frame=0.981 escape=1
+[E5/certificate] wrote results/e5_scaling/certificate_points.csv (60 rows) and results/e5_scaling/certificate_scaling.csv (3 rows)
+  [cqfa            ] d_eff(nmax)=12 (poly) T=-2.40 S=0.98 -> trainable_and_hard
+  [classical_fa    ] d_eff(nmax)=12 (poly) T=-2.40 S=0.98 -> trainable_and_hard
+  [non_equivariant ] d_eff(nmax)=1023 (exp) T=-3.02 S=0.98 -> hard_and_untrainable

@@ -1,0 +1,2 @@
+experiment,n,weight,three_pow_w,n_snapshots,n_hits,hit_rate,expected_hit_rate,shadow_mean_illustrative,shadow_var_illustrative,note
+C1_shadow,4,4,81,486,5,0.0102880658436214,0.012345679012345678,0.8333333333333334,66.80555555555556,budget-limited: hit_rate illustrates 1/3^w; variance law is E2 sim

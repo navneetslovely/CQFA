@@ -1,0 +1,4 @@
+family,model,n_min,n_max,d_eff_at_nmax,d_eff_poly_R2,d_eff_exp_R2,poly_vs_exp,T_scalar_at_nmax,H_frame_entropy_at_nmax,H_escape,H_surplus_mean,quadrant
+z2_pauli,cqfa,2,5,12.0,0.9957218698415816,0.9607604883077161,poly,-2.400179578925981,0.9784262176155165,0,0.08873727058408139,trainable_and_simulable
+z2_pauli,classical_fa,2,5,12.0,0.9957218698415816,0.9607604883077161,poly,-2.400179578925981,0.9784262176155165,0,0.08873727058408139,trainable_and_simulable
+z2_pauli,non_equivariant,2,5,1023.0,0.9839328638066559,0.9999428861826689,exp,-3.023663918197794,0.9784262176155165,0,0.08873727058408139,untrainable_and_simulable

@@ -1,0 +1,17 @@
+<frozen runpy>:130: RuntimeWarning: 'experiments.e3_dlog.run_e3' found in sys.modules after import of package 'experiments.e3_dlog', but prior to execution of 'experiments.e3_dlog.run_e3'; this may result in unpredictable behaviour
+E3 discrete-log concept class  p=47  seeds=7  n_train=12  n_test=24
+  (proof-of-principle at simulable p; NO scaling claim; classical
+   hardness = LAT/DLP theorem, CITED not re-proven)
+  seed=  0 s= 39  structured=0.958  classical_raw=0.583  chance=0.542
+  seed=  1 s= 21  structured=0.833  classical_raw=0.583  chance=0.500
+  seed=  2 s= 38  structured=0.583  classical_raw=0.583  chance=0.583
+  seed=  3 s= 37  structured=0.958  classical_raw=0.458  chance=0.625
+  seed=  4 s= 33  structured=0.792  classical_raw=0.542  chance=0.542
+  seed=  5 s= 30  structured=0.958  classical_raw=0.583  chance=0.583
+  seed=  6 s= 20  structured=0.958  classical_raw=0.583  chance=0.542
+--------------------------------------------------------------------
+  STRUCTURED (covariant C_{46}, log-aware): 0.863 +/- 0.131  95% CI [0.756, 0.940]
+  CLASSICAL  (raw-x, log-blind, best-of-family):     0.560 +/- 0.044  95% CI [0.524, 0.583]
+  chance (majority class):                           0.560
+  SEPARATION (structured - classical):               +0.304
+  CSVs -> runs/run_e3_dlog_p47_20260706-152827_paper

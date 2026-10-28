@@ -1,0 +1,2 @@
+rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
+RC-k2,augmented,genomics_rc,5,0.9233333333333335,0.05333333333333331,0.8333333333333334,0.9833333333333333,0.8733333333333334,0.9666666666666666,24,0.5

@@ -1,0 +1,20 @@
+============================================================================
+CQFA advantage demo  --  label depends on cross-orbit coherence (Thm 2(d))
+============================================================================
+  samples=1200  group=Z2 on C^8  classes balanced (0.50 positive)
+
+  TEST ACCURACY
+    Quantum / CQFA  (coherent feature, 1 frame qubit)   : 0.995
+    Classical frame averaging  (avg diagonal output)    : 0.810
+    Classical FA, STRONGER (all diagonal orbit outputs) : 0.808
+    (chance baseline)                                   : 0.507
+
+  COLLISIONS (classical-FA features ~identical, labels opposite):
+    26 collision pairs found  => classical FA is information-theoretically
+    blocked from perfect accuracy here, while the coherent feature separates them.
+============================================================================
+Reading: this is a CONSTRUCTED separation that isolates the coherent function
+class (Thm 2(d)). CQFA exceeds classical frame averaging because the signal is an
+interference term output-averaging cannot represent. Broader provable advantages
+(SPT / quantum data: Huang 2022; discrete log: Liu 2021) are reported separately.
+============================================================================

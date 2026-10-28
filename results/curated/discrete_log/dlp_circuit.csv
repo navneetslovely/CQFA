@@ -1,0 +1,4 @@
+prime,t_qubits,n_qubits,n_seeds,dlog_recovery_rate,note
+5,8,19,4,1.0,"quantum feature = discrete log EXTRACTED FROM A CIRCUIT (Shor phase estimation), not a table lookup"
+17,8,21,4,1.0,"quantum feature = discrete log EXTRACTED FROM A CIRCUIT (Shor phase estimation), not a table lookup"
+257,8,25,4,1.0,"quantum feature = discrete log EXTRACTED FROM A CIRCUIT (Shor phase estimation), not a table lookup"

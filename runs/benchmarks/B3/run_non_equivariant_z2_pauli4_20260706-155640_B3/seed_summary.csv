@@ -1,2 +1,0 @@
-rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
-z2_pauli4,non_equivariant,symmetry_vs_broken,5,0.9933333333333334,0.01333333333333333,0.9666666666666667,1.0,0.9800000000000001,1.0,24,0.5

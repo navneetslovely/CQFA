@@ -1,4 +1,30 @@
+"""
+experiments.hardware_ibm.cqfa_circuit
+=================================
+Circuit builders that compile the abstract CQFA model (G, U, V, W) to a real
+gate-based qiskit circuit. Generalises the blessed Z2 seed in
+``qiskit_cqfa_reference.py`` to Z2 (rc / Pauli^n) and Z2xZ2.
 
+The contract (verified in ``equivalence.py`` and the gating unit test):
+
+    Statevector( initialize(psi) -> H(frame) -> V -> H(frame) -> W(theta) )
+    projected onto frame=0..0 and renormalised
+        == CQFAModel(rep).feature(theta, psi)[0]         to < 1e-9.
+
+Only ABELIAN, POWER-OF-TWO groups whose generators are tensor-products of Paulis
+are supported on hardware (Z2, Z2xZ2). For those, the group oracle V factorises
+into single-control CX/CZ gates (no multi-controlled gates), keeping the circuit
+shallow. Non-abelian D4/S3 are explicitly out of scope for the hardware experiment (see README).
+
+Qubit-ordering convention (primary)
+----------------------------------------
+The numpy statevector uses site 0 = most-significant bit (matches
+``cqfa.simulator._apply_1q_state`` and ``local_z(n, 0)`` = Z on the MSB). qiskit
+uses q0 = least-significant bit. The helpers ``numpy_to_qiskit_amplitudes`` /
+``qiskit_to_numpy_amplitudes`` translate a data-register statevector between the
+two conventions; ``site_to_qubit`` maps a numpy site to its qiskit data-qubit
+index. Getting this wrong silently breaks the cross-check.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -13,7 +39,13 @@ from cqfa.group import Representation, close_matrices, kron, X, I2, Z
 # hardware representation registry (Z2, Z2xZ2 only)
 # ---------------------------------------------------------------------------
 def z2xz2(n: int = 4) -> Representation:
+    """G = Z2 x Z2 with generators P_even = prod_{even} X, P_odd = prod_{odd} X.
 
+    Order 4, dim 2**n, n_frame = 2. The two Z2 factors commute and each is a
+    tensor of Paulis, so the group oracle needs only single-control CX gates.
+    Defined here (not in cqfa.group) to keep the verified core untouched; it is
+    unit-tested to agree with ``cqfa.frame.postselect_symmetric``.
+    """
     if n < 2:
         raise ValueError("z2xz2 needs n >= 2 sites")
     Peven = kron([X if s % 2 == 0 else I2 for s in range(n)])
@@ -22,7 +54,12 @@ def z2xz2(n: int = 4) -> Representation:
 
 
 def hardware_representation(name: str, n_data: int | None = None) -> Representation:
-   
+    """Named reps that ``build_cqfa_circuit`` knows how to compile to gates.
+
+    Supported: 'z2_rc' (2 data qubits, A = X(x)Z), 'z2_pauli' (n data qubits,
+    A = X^(x)n), 'z2xz2' (n data qubits, P_even / P_odd). Non-abelian groups are
+    intentionally rejected here — hardware scope is Z2 and Z2xZ2 only.
+    """
     key = name.lower()
     from cqfa import group as G
     if key in ("z2", "z2_rc", "rc"):
@@ -150,7 +187,14 @@ def _apply_oracle(qc: QuantumCircuit, rep: Representation, data: QuantumRegister
 # ---------------------------------------------------------------------------
 def append_ansatz(qc: QuantumCircuit, data: QuantumRegister, theta, n_data: int,
                   n_layers: int) -> None:
+    """Append W(theta) using the SAME gate order as ``cqfa.simulator.Ansatz``.
 
+    Ansatz layout: per layer, for each qubit apply RY(t0) then RZ(t1), then a
+    CNOT ring CX(0->1) CX(1->2) ... CX(n-1->0). theta is flat, reshaped to
+    (n_layers, n_data, 2). The numpy ansatz acts on the numpy statevector where
+    "qubit q" = site q (site0 = MSB); the qiskit data register uses
+    ``site_to_qubit`` so RY/RZ/CX land on the correct physical qubit.
+    """
     if theta is None:
         return
     th = np.asarray(theta, dtype=float).reshape(n_layers, n_data, 2)
@@ -214,7 +258,32 @@ def _append_basis_rotation(qc, data, pauli_by_site, n_data):
 def build_cqfa_circuit(rep: Representation, theta=None, mode: str = "postselect",
                        observable_qubit: int = 0, measure: bool = True,
                        n_layers: int | None = None, observable=None):
+    """Build the CQFA circuit for a supported abelian rep.
 
+    Parameters
+    ----------
+    rep : cqfa.group.Representation
+        z2_rc, z2_pauli(n), or z2xz2(n).
+    theta : array or None
+        Flat ansatz params (len = n_layers * n_data * 2). None -> W = I.
+    mode : {"postselect", "hadamard"}
+        "postselect" realises Pi via frame post-selection (Mode A headline).
+        "hadamard" builds a Hadamard test on one ancilla reading
+        Re<psi|V|psi> = Re<psi|Pi... interference numerator (diagnostic only).
+    observable_qubit : int
+        numpy site index of the single-qubit Z observable (default 0 = MSB).
+    observable : dict or None
+        Pauli observable as {site: 'X'|'Y'|'Z'} measured per-shot as a product
+        of +/-1 eigenvalues. A measurement-basis rotation (H / Sdg+H) is appended
+        so a computational measurement reads it. None -> plain Z measurement.
+    measure : bool
+        If True, append measurements (c_data, c_frame). Statevector paths pass
+        measure=False.
+
+    Returns
+    -------
+    (QuantumCircuit, RegisterMap)
+    """
     kind, n_data = _rep_kind(rep)
     n_frame = rep.n_frame_qubits
     if n_layers is None:
@@ -276,7 +345,12 @@ def build_cqfa_circuit(rep: Representation, theta=None, mode: str = "postselect"
 
 
 def _apply_controlled_involution(qc, rep, ctrl, data, n_data):
+    """Controlled non-trivial involution A off `ctrl` (for the Hadamard test).
 
+    For Z2 there is a single non-trivial element A; the Hadamard test then reads
+    Re<psi|A|psi>. For Z2xZ2 we read the product involution P_even*P_odd (a
+    single Z2 element) — a representative interference diagnostic.
+    """
     kind, _ = _rep_kind(rep)
     if kind == "z2_rc":
         qc.cx(ctrl, data[site_to_qubit(0, n_data)])

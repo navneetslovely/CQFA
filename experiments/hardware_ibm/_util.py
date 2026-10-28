@@ -1,4 +1,9 @@
-
+"""
+experiments.hardware_ibm._util
+==========================
+Small shared helpers: run manifest (env + git + argv), CSV writing, and a
+deterministic bootstrap 95% CI (matches the project integrity rules).
+"""
 from __future__ import annotations
 
 import csv

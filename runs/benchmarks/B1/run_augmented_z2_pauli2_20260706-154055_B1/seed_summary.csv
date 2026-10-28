@@ -1,2 +1,0 @@
-rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
-z2_pauli2,augmented,coherent_teacher,5,0.7566666666666666,0.03265986323710907,0.7,0.8,0.7266666666666666,0.7833333333333334,12,0.5

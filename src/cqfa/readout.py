@@ -1,4 +1,20 @@
+"""The four model variants, sharing one ansatz and one observable.
 
+All four have identical parameter counts, so comparisons between them are
+controlled. They differ only in how the group frame and orbit are handled:
+
+  CQFAModel          Mode A. Coherent projection Pi psi, then trainable W,
+                     then read O. Exactly G-invariant for every theta, and
+                     sensitive to cross-orbit interference.
+  ClassicalFAModel   Mode B. Average the orbit outputs of the same W and O.
+                     Exactly G-invariant, without interference.
+  NonEquivModel      No frame. Trainable W on the raw state. Not invariant.
+  AugmentedModel     NonEquiv forward pass trained with orbit data
+                     augmentation, giving invariance by data rather than by
+                     architecture.
+
+The decision feature f(x; theta) is an expectation value in [-1, 1].
+"""
 from __future__ import annotations
 
 import numpy as np

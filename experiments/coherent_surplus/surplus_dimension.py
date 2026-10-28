@@ -1,4 +1,21 @@
+"""
+experiments/coherent_surplus/surplus_dimension.py
+==========================================
+The coherent-surplus EXPRESSIVITY theorem, quantified.
 
+A CQFA feature is a quadratic form <psi|A|psi> whose operator is a combination of the
+group coherences  C_{gh} = U_g^dag M U_h  (g,h in G). Classical frame averaging sees
+only the DIAGONAL coherences {C_{gg}} (the orbit outputs), a space of dimension |G|.
+The coherent readout sees ALL coherences, a space of dimension min(|G|^2, d^2) (d =
+rep dimension). Hence:
+
+    coherent-surplus dimension  =  min(|G|^2, d^2) - |G| .
+
+In the faithful/regular regime (|G| <= d) this is |G|(|G|-1): the coherent model's
+expressivity grows QUADRATICALLY in |G| while classical frame averaging grows only
+LINEARLY. Verified below across Z2, C_n, S_3, D_4 (surplus matches the closed form
+exactly). Output: results/coherent_surplus/surplus_dimension.csv .
+"""
 from __future__ import annotations
 import argparse, csv, os
 import numpy as np

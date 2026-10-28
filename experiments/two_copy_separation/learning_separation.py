@@ -1,4 +1,33 @@
+"""
+experiments/two_copy_separation/learning_separation.py
+==========================================================
+A fair, unconditional learning-task separation between a coherent (two-copy) reader
+and every single-copy strategy: a win on a physical task against a matched
+baseline, with no synthetic teacher and no informed-vs-uninformed asymmetry.
 
+Task (physical, non-synthetic label): given copies of an unknown n-qubit state,
+decide whether it is (near-)PURE or MIXED. The discriminating property is the
+purity Tr(rho^2) -- a genuine physical quantity (decoherence detector), NOT an
+engineered coherence feature.
+
+Learners (both TRAINED: a threshold fit on the same labeled copies, matched budget):
+  * coherent 2-copy reader  (CQFA copy-permutation frame register, G=S_2):
+      purity via the destructive SWAP test -> per-measurement variance <= 1,
+      so O(1) copies suffice, FLAT in n.
+  * single-copy shadows (Huang-Kueng-Preskill) + trained classifier:
+      the unbiased single-copy purity estimator has variance that GROWS
+      exponentially in n (Chen-Cotler-Huang-Li 2022 lower bound applies to ANY
+      single-copy strategy, informed or not) -> copies-to-accuracy blows up.
+
+Unlike the SPT string task, the advantage here is NOT symmetry-awareness: purity is
+a NONLINEAR functional, so no single-copy strategy -- however informed -- can match
+the two-copy reader. That makes this the fair, unconditional separation. 
+caveat carried in the paper: the two-copy purity primitive itself is prior art
+(SWAP test); the contribution is the fair LEARNING-task demonstration that CQFA's
+frame register realizes it and beats the entire single-copy class on a real task.
+
+Output: results/two_copy_separation/learning_separation.csv .
+"""
 from __future__ import annotations
 
 import argparse
@@ -12,7 +41,7 @@ import numpy as np
 # state ensembles (the two physical classes)
 # ---------------------------------------------------------------------------
 def haar_pure(n: int, rng) -> np.ndarray:
-   
+    """A Haar-random pure state density matrix on n qubits (purity 1)."""
     d = 2 ** n
     v = rng.standard_normal(d) + 1j * rng.standard_normal(d)
     v /= np.linalg.norm(v)
@@ -20,7 +49,8 @@ def haar_pure(n: int, rng) -> np.ndarray:
 
 
 def mixed_state(n: int, rng, rank: int | None = None) -> np.ndarray:
-    
+    """A mixed state: uniform mixture of `rank` Haar-random pure states.
+    rank=None -> maximally mixed (purity 2^-n). rank=2 -> purity ~1/2..."""
     d = 2 ** n
     if rank is None:
         return np.eye(d, dtype=complex) / d
@@ -50,7 +80,9 @@ def make_dataset(n: int, m: int, rng, mixed_rank=None):
 # coherent 2-copy reader: purity via destructive SWAP (per-measurement var <= 1)
 # ---------------------------------------------------------------------------
 def coherent_purity_samples(pur: float, n_copies: int, rng) -> np.ndarray:
-   
+    """n_copies destructive-SWAP outcomes on rho^{⊗2}: each is +/-1 with mean
+    Tr(rho^2). (The two-copy measurement's per-shot value equals the SWAP
+    eigenvalue; its expectation is the purity, variance 1 - purity^2 <= 1.)"""
     p_plus = 0.5 * (1.0 + pur)                          # P(outcome +1)
     return np.where(rng.random(n_copies) < p_plus, 1.0, -1.0)
 
@@ -67,18 +99,22 @@ _EIGVEC = {b: np.linalg.eigh(_PAULI[b])[1] for b in (0, 1, 2)}   # columns = |b,
 
 
 def _single_shadow_snapshot(rho: np.ndarray, n: int, rng):
-    
+    """One random-Pauli single-copy snapshot: pick a basis per qubit, sample an
+    outcome from the Born rule of rho, return (bases, outcomes)."""
     bases = rng.integers(0, 3, size=n)
-  
+    # per-qubit measurement projectors in the chosen bases -> sample joint outcome
+    # build the measurement basis vectors and Born probabilities
+    # (dense; fine for n<=6). Basis state index b_bits -> projector |v><v|.
     vecs = [ _EIGVEC[int(bases[q])] for q in range(n) ]
-   
+    # sample outcome bit per qubit sequentially via the reduced Born rule is
+    # complex for correlated rho; instead sample from the full joint distribution.
     d = 2 ** n
-    
+    # measurement operator that rotates rho into the product eigenbasis:
     U = np.array([[1.0 + 0j]])
     for q in range(n):
         U = np.kron(U, vecs[q].conj().T)                 # <eigbasis| per qubit
     probs = np.real(np.einsum("ij,jk, ki->i", U, rho, U.conj().T)) if False else None
-   
+    # rho in the measurement eigenbasis: diag gives outcome probabilities
     rho_meas = U @ rho @ U.conj().T
     p = np.real(np.diag(rho_meas))
     p = np.clip(p, 0, None); p /= p.sum()
@@ -97,7 +133,12 @@ def _snapshot_matrix(bases, outcomes, n):
 
 
 def shadow_purity_estimate(rho: np.ndarray, n: int, n_copies: int, rng) -> float:
-    
+    """Unbiased single-copy purity estimate Tr(rho^2) via the U-statistic over
+    distinct snapshot pairs: (1/(C(C-1))) sum_{i!=j} Tr(rho_hat_i rho_hat_j).
+    Variance grows exponentially in n (this is the cost the coherent reader avoids).
+
+    Vectorized: Tr(S_i S_j) = vec(S_i) . vec(S_j^T), so the full pairwise sum is one
+    Gram matmul F @ G^T instead of an O(C^2) Python loop (exact same estimator)."""
     snaps = [ _snapshot_matrix(*_single_shadow_snapshot(rho, n, rng), n)
               for _ in range(n_copies) ]
     C = len(snaps)
@@ -125,7 +166,8 @@ def _accuracy_at_threshold(feats, labels):
 
 
 def copies_to_accuracy(dataset, learner, budgets, rng, target=0.9):
-  
+    """Smallest copy budget at which the learner's trained threshold hits `target`
+    test accuracy; returns (copies, acc_curve). learner(rho,pur,C,rng)->feature."""
     curve = []
     for C in budgets:
         feats, labels = [], []

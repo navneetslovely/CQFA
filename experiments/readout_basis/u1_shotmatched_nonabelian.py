@@ -1,4 +1,163 @@
+"""
+U1 -- SHOT-MATCHED non-abelian learned readout vs fixed Mode F, on a group ladder.
+=================================================================================
 
+WHY THIS FILE EXISTS
+--------------------
+T2 (experiments/readout_basis/t2_nonabelian_learned_readout.py,
+results/readout_basis/t2_nonabelian_summary.csv) found that on non-abelian G a LEARNED frame
+readout beats the fixed Fourier (Mode F) readout by +0.218 (S3) and +0.184 (D4) on the
+generic_W task. An adversarial verifier accepted it but recorded two scope limits:
+
+  (a) T2's "learned" arm was convex logistic regression on ALL |G|^2 Hermitian degrees of
+      freedom of the frame state. That is a TOMOGRAPHICALLY COMPLETE readout, statevector
+      exact, no shot noise, no circuit. It proves the information EXISTS off the Fourier
+      diagonal. It does NOT exhibit a shot-efficient physical protocol.
+  (b) Only two non-abelian groups, both of order <= 8. No scaling claim.
+
+Adding groups to the tomographic version makes (a) worse, not better: tomography of |G|^2
+numbers costs ~|G|^2/eps^2 shots, so a growing gap would just be measuring a growing
+tomography budget. The only version worth running is SHOT-MATCHED, which is this file.
+
+PHYSICAL SETUP (identical to T1's readout family, extended to non-abelian G)
+---------------------------------------------------------------------------
+Frame register: n = ceil(log2|G|) qubits, D = 2^n.  |Psi> = |G|^{-1/2} sum_g |g> (x) U_g|psi>,
+U = LEFT-REGULAR representation.  The frame reduced state is the Gram matrix
+
+        rho[g,h] = (1/|G|) <U_h psi | U_g psi>                          (G-circulant)
+
+embedded in the top-left |G| x |G| block of a D x D matrix (padding states carry zero
+amplitude).  A readout is ONE unitary R on the frame register followed by a COMPUTATIONAL
+BASIS measurement, giving D outcome probabilities
+
+        p_j(R) = (R^dag rho R)_{jj},      sum_j p_j = 1.
+
+Every arm sees exactly this, and nothing else: no arm ever gets a number that is not an
+estimate of some p_j from a finite number of computational-basis samples. That is what
+closes T2 scope limit (a).
+
+  * R = F_G (the GENERALIZED FOURIER TRANSFORM, block-diagonalising C[G] into one
+    d_lambda x d_lambda block per irrep) reproduces the Mode-F readout of T2 EXACTLY.
+    Asserted at run time to < 1e-14 against T2's own functions for S3 and D4
+    (`assert_matches_t2`), and F_G is verified to be a genuine GFT by an independent
+    irrep-structure check (`gft_structure_check`): the isotypic components are recovered
+    from the CENTRE of the group algebra (class sums), the irrep dimensions d_lambda are
+    read off as sqrt(dim of isotypic component), sum_lambda d_lambda^2 == |G| and
+    #irreps == #conjugacy classes are asserted, and F_G^dag rho F_G is verified to be
+    BLOCK diagonal with exactly that multiset of block sizes. For abelian G all
+    d_lambda = 1, so the blocks are 1x1 and the readout is fully diagonal -- the C1--C3
+    ceiling theorem.
+
+ARMS  (same train/test split, same data budget, same per-state shot budget S)
+----------------------------------------------------------------------------
+  (1) modeF_fixed      R = F_G (fixed, data independent) + trainable linear head.
+                       params = D + 1.
+  (2) learned_unitary  R = expm(i H), H Hermitian, D^2 real parameters, trained END TO END
+                       with the head on the TRAIN split under shot noise.
+                       params = D^2 + D + 1.
+  (3) learned_circuit  R = a SHALLOW HARDWARE-EFFICIENT CIRCUIT on n = ceil(log2|G|) qubits:
+                       L_CIRC+1 layers of (RY,RZ) on every qubit separated by a fixed ring
+                       of CNOTs. params_R = 2*n*(L_CIRC+1) = O(poly log|G|), NOT a general
+                       unitary. Trained end to end with the head under shot noise.
+                       THIS IS THE PHYSICALLY IMPLEMENTABLE ARM AND THE ONE THAT MATTERS.
+  (4) modeF_plus_head  PARAMETER-MATCHED CONTROL: fixed Mode-F features into a 1-hidden-layer
+                       MLP head with ~D^2 parameters, i.e. matched to the LARGER of arms
+                       (2)/(3). If a win were merely "more parameters", this arm gets it too.
+
+FAIRNESS (a real objection raised against T2)
+---------------------------------------------
+  * R is fitted on the TRAIN split only; all reported accuracies are on a held-out TEST split.
+  * every arm's head is fitted on the same training data, from the same measurement records.
+  * TRAIN accuracy is reported alongside TEST accuracy for every arm. If an arm cannot fit
+    its own TRAINING set, that is an information ceiling, and it is the single most
+    valuable number in the file.
+  * arm (2) is WARM-STARTED at R = F_G on one of its two restarts, so a correctly working
+    optimiser can never leave it below Mode F for optimisation reasons alone. Arm (3)
+    cannot be warm started (F_G is not in the shallow-circuit family) and uses random
+    inits only -- this is a real, disclosed handicap on arm (3).
+
+SHOT ACCOUNTING  (two accountings, both reported; columns in the CSV)
+--------------------------------------------------------------------
+  ACCOUNTING A -- DEPLOYMENT MATCHED (primary; the pre-registered criterion uses this).
+    Every arm measures every train and test state with exactly S shots.
+        deploy_shots = S * (N_TRAIN + N_TEST),  IDENTICAL for all four arms, ASSERTED in code.
+    The cost of FITTING R is reported separately in `readout_fit_shots` (0 for arms 1 and 4)
+    and is NOT charged. This is the usual "training cost is amortised over deployment"
+    convention, and it is the reading of "shot matched" that isolates the physics question:
+    at equal per-state measurement cost, is there a better readout than Mode F?
+
+  ACCOUNTING B -- TOTAL BUDGET MATCHED (secondary, reported prominently, NOT amortised).
+    Arms (2)/(3) really do spend readout_fit_shots = n_restarts * EPOCHS * N_TRAIN * S shots
+    re-measuring the train split at every optimiser step (the basis changes each step, so a
+    single frozen measurement record is not physically available). Accounting B gives arm (1)
+    that ENTIRE budget instead, spent on more shots per state in the fixed Fourier basis:
+        S_B = (readout_fit_shots + deploy_shots) / (N_TRAIN + N_TEST)
+    and reports `acc_test_modeF_totalmatched`. This answers: given one fixed total number of
+    measurements, is it better to buy more shots in a fixed basis, or to buy a better basis?
+
+  For the "exact" budget the shot columns are left EMPTY (statevector, no shots) rather than
+  being filled with a sentinel, per the censoring rule.
+
+TASKS  (identical functional form for abelian and non-abelian G, so the ladder is clean)
+----------------------------------------------------------------------------------------
+  psi Haar-random in C^{|G|};  y = 1{ Re tr(rho W) > median_train } for per-seed Hermitian W.
+    generic_W  : W generic Hermitian.                          <-- PRIMARY TASK
+    offdiag_W  : W supported purely OFF the Fourier block diagonal, i.e. exactly the part a
+                 fixed-basis readout is blind to.               <-- SECONDARY, mechanistic
+  For ABELIAN G the off-Fourier-diagonal part of rho is exactly zero, so offdiag_W has an
+  identically-zero label functional and is pure floating-point roundoff -- the built-in
+  vacuity control.
+
+GROUP LADDER
+------------
+  non-abelian: S3(6) D4(8) Q8(8) D5(10) A4(12) D6(12) D10(20) F21=C7:C3(21) S4(24)
+  abelian NEGATIVE CONTROLS: C6(6) C8(8) C12(12)   -- these MUST show no gain.
+  Per group we also record max|offdiag of F_G^dag rho F_G|, the residual off-Fourier-diagonal
+  weight. The scaling story we would LIKE is that the gap tracks this quantity. We TEST that
+  (Pearson r across non-abelian groups, reported); we do not assume it.
+
+=========================================================================================
+PRE-REGISTERED CRITERION  -- written before any run; applied exactly as written.
+=========================================================================================
+Per-cell (group, task, S) statistics over SEEDS (5 seeds, project minimum):
+    delta_circ = acc_test(learned_circuit) - acc_test(modeF_fixed)      [ACCOUNTING A]
+    se         = std(delta_circ, ddof=1) / sqrt(n_seeds)
+
+VACUITY GUARD, APPLIED FIRST, BEFORE ANY DELTA TEST:
+    if label_signal_scale < 1e-10 the cell is `vacuous_excluded` regardless of delta.
+    (Without this guard the test thresholds floating-point roundoff against roundoff.)
+
+Per-cell verdict:
+    vacuous_excluded   if label_signal_scale < 1e-10
+    CONFIRMS_CELL      if mean(delta_circ) > 2*se
+    KILLS_CELL         otherwise
+
+TRACK-LEVEL VERDICT, decided at the largest finite shot budget S = 256 on the PRIMARY task
+generic_W (this budget/task pair is fixed here, before running):
+    CONFIRMS   iff  >= 5 of the 9 non-abelian groups are CONFIRMS_CELL
+                AND 0 of the 3 abelian controls are CONFIRMS_CELL.
+    KILLS      iff  <  5 of the 9 non-abelian groups are CONFIRMS_CELL.
+                In that case the T2 advantage did NOT survive into a physically realisable,
+                shot-matched protocol. That is a genuinely important NEGATIVE result and it
+                MUST be reported as the headline, plainly, not buried.
+    MIXED      iff  the non-abelian majority confirms BUT at least one abelian control also
+                confirms. An abelian gain at matched shots is a RED FLAG ABOUT THE HARNESS,
+                not a discovery: the C1--C3 ceiling theorem forbids it. Investigate the
+                harness before reporting anything.
+
+Secondary, also pre-registered, reported but NOT used to decide the track verdict:
+    * the same test with arm (2) learned_unitary in place of arm (3);
+    * the same test under ACCOUNTING B;
+    * the offdiag_W task;
+    * Pearson r between mean(delta_circ) and max_offdiag_after_fourier over non-abelian groups.
+
+CSV OUTPUT
+----------
+  results/readout_basis/u1_shotmatched_percell.csv     per (group, task, S, seed)
+  results/readout_basis/u1_shotmatched_summary.csv     per (group, task, S) with verdicts
+  results/readout_basis/u1_structure_check.csv         GFT / irrep / T2-match structural asserts
+  results/readout_basis/u1_verdict.csv                 the track-level verdict, one row
+"""
 from __future__ import annotations
 
 import argparse
@@ -19,7 +178,7 @@ while _ROOT != os.path.dirname(_ROOT) and not os.path.exists(
     _ROOT = os.path.dirname(_ROOT)
 sys.path.insert(0, _ROOT)
 
-OUT = os.path.join(_ROOT, "results", "cqfa_pp")
+OUT = os.path.join(_ROOT, "results", "readout_basis")
 
 # ============================================================================
 # PRE-REGISTERED hyper-parameters. Fixed BEFORE the first comparison run.
@@ -44,7 +203,7 @@ BASIS_SEED = 12345            # identical to T2; makes F_G data independent AND 
 N_FIXED_BASES = 8             # candidate fixed Fourier bases for the best-basis diagnostic
 CANONICAL_BASIS = 0
 VACUITY_TOL = 1e-10
-S_B_CAP = 2_000_000          
+S_B_CAP = 2_000_000           # cap on the Accounting-B per-state shot count (disclosed)
 
 
 # ============================================================================
@@ -422,7 +581,14 @@ def grad_theta_circuit(Z, R, cums, paulis, n):
 # ============================================================================
 def probs(Psi, R, m, iu):
     """p[n,j] = (R^dag rho_n R)_jj, computed as a real GEMM against phi(rho_n)."""
-    Rm = R[:m, :]                                   
+    Rm = R[:m, :]                                   # rho is supported on the first m rows
+    # M_j[a,b] = R[a,j] conj(R[b,j]), so tr(rho M_j) = (R^dag rho R)_jj.
+    # NOTE the operand order: ("aj,bj->jab", Rm.conj(), Rm) instead evaluates
+    # (R^dag rho^T R)_jj -- the TRANSPOSED state. rho^T is still a valid density
+    # matrix, so that error is silent here (outcomes stay positive and sum to 1)
+    # and only surfaces as a gradient mismatch, because dprobs_to_Z below
+    # correctly differentiates the untransposed model. That inconsistency made
+    # --selftest fail at rel err 6.7e-01 (unitary) / 4.0e-01 (circuit).
     Mj = np.einsum("aj,bj->jab", Rm, Rm.conj())     # M_j Hermitian
     PhiM = phi(Mj, iu)
     return Psi @ PhiM.T
@@ -517,7 +683,14 @@ def fit_mlp(Xtr, ytr, Xte, yte, h, seed):
 # end-to-end training of a readout + linear head under shot noise
 # ============================================================================
 def train_readout(kind, Psi_tr, ytr, m, D, n, S, seed, F_embed, iu):
+    """Adam on (readout params, w, b). At every epoch the TRAIN split is RE-MEASURED with S
+    shots in the CURRENT basis -- the physically  cost, counted in shots_used.
 
+    Gradient through the shot noise uses the straight-through estimator
+    f = p + (p_hat - p)_detached, i.e. dL/dp = dL/df. The gradient of p w.r.t. the readout
+    parameters is EXACT (Daleckii-Krein for expm, gate-by-gate for the circuit), and is
+    verified against finite differences in --selftest.
+    """
     rng = np.random.default_rng(900_000 + 131 * seed + 7 * D)
     Ntr = Psi_tr.shape[0]
     yv = ytr.astype(float)
@@ -654,7 +827,21 @@ def structure_row(name, T, L, R, F_m, abelian):
     err_circ = float(np.max(np.abs(rhos[-1] - np.tensordot(f, R, axes=(0, 0)) / m)))
     B = F_m.conj().T @ rho @ F_m
     offdiag = float(np.max(np.abs(B - np.diag(np.diag(B)))))
-    
+    # The irrep-dimension diagnostic below splits the group algebra centre by
+    # eigenvalue clustering. That fails for groups with COMPLEX (non-real) irreps
+    # -- A4 has three 1-dimensional irreps, two of them a complex-conjugate pair
+    # with cube-root-of-unity characters, which cluster together and are reported
+    # as a single 2-dimensional block: isotypic dims come out [1,2,9] instead of
+    # [1,1,1,3], and the perfect-square assertion inside irrep_dims_from_centre
+    # trips. F21 = C7:C3 has the same issue.
+    #
+    # This is a DIAGNOSTIC ONLY. irrep_dims_from_centre is used nowhere on the
+    # measurement path -- run_cell never calls it -- so a failure here says
+    # nothing about the accuracies. Aborting the whole sweep over an unavailable
+    # diagnostic would lose the measurement for every later group, so instead we
+    # record that it was unavailable and carry on. gft_verified=0 marks the
+    # groups for which F_G was NOT independently confirmed to be a generalized
+    # Fourier transform by this route; do not claim that verification for them.
     try:
         dims, _ = irrep_dims_from_centre(T, R)
         blocks = gft_block_structure(F_m, rhos)
@@ -667,6 +854,8 @@ def structure_row(name, T, L, R, F_m, abelian):
         gft_note = f"centre split unavailable: {exc}"
     t2err = assert_matches_t2(name, m, L, F_m)
 
+    # Physics assertions below are NOT relaxed: state validity, G-circulance and
+    # the abelian Fourier-diagonal ceiling must all still hold exactly.
     assert err_herm < 1e-12 and err_tr < 1e-12 and min_eig > -1e-12
     assert err_circ < 1e-12, f"{name}: frame state not G-circulant"
     if gft_note.startswith("block mismatch"):
@@ -783,7 +972,9 @@ def run_cell(name, T, L, Rop, bases, task, S, seed, abelian):
             out[k] = ""
         out["acc_train_modeF_totalmatched"] = a_tr
         out["acc_test_modeF_totalmatched"] = a_te
-       
+        # optimisation-gap diagnostic: at S=exact, arm (2) with a LINEAR head is exactly
+        # logistic regression over all Hermitian M = R diag(w) R^dag, a CONVEX problem.
+        # Solving it directly bounds how much of any arm-(2) shortfall is the optimiser.
         cv_tr, cv_te, _ = fit_logreg(Psi_tr * math.sqrt(1.0), ytr, Psi_te, yte)
         out["acc_train_learned_unitary_convex"] = cv_tr
         out["acc_test_learned_unitary_convex"] = cv_te

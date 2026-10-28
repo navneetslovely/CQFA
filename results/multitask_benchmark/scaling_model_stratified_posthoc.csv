@@ -1,4 +1,0 @@
-stratum,n_groups,groups,mean_twoq_per_unit,sd_twoq_per_unit,cv,status,note
-n_data_qubits=1,1,Q8,4.971,,,POST_HOC_SECONDARY_not_the_preregistered_test,pre-registered test pooled all n_frame>=2 groups and gave CV=0.234; stratifying by data-register width is a post-hoc refinement reported for transparency only
-n_data_qubits=2,6,C4|C8d|S3|D4|A4|S4,5.946,0.324,0.054,POST_HOC_SECONDARY_not_the_preregistered_test,pre-registered test pooled all n_frame>=2 groups and gave CV=0.234; stratifying by data-register width is a post-hoc refinement reported for transparency only
-n_data_qubits=3,1,C8,9.800,,,POST_HOC_SECONDARY_not_the_preregistered_test,pre-registered test pooled all n_frame>=2 groups and gave CV=0.234; stratifying by data-register width is a post-hoc refinement reported for transparency only

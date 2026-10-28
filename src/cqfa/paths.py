@@ -1,4 +1,11 @@
+"""Filesystem locations used by the experiments, analysis and figure scripts.
 
+Every path is resolved relative to the archive root, which is located by
+walking up from this file. Nothing in the package depends on the working
+directory or on any absolute path, so the archive can be unpacked anywhere.
+
+Set ``CQFA_ROOT`` to override the archive root explicitly.
+"""
 from __future__ import annotations
 
 import os

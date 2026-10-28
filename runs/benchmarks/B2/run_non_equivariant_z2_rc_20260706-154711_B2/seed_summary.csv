@@ -1,2 +1,0 @@
-rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
-z2_rc,non_equivariant,orbit_interference,5,0.78,0.04136557881996955,0.7333333333333333,0.8333333333333334,0.7433333333333333,0.8166666666666667,12,0.5

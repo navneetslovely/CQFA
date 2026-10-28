@@ -1,4 +1,30 @@
+"""
+experiments/noise_lib.py
+========================
+A comprehensive single- and few-qubit NOISE CHANNEL library, so every CQFA
+experiment can be stress-tested against the FULL zoo of error models rather than
+one or two. All channels are exact (Kraus / density-matrix), density-matrix-exact,
+and composable. Rates are per-qubit unless noted.
 
+Channels (the standard set for NISQ robustness studies):
+  depolarizing(p)        rho -> (1-p) rho + p I/2                (isotropic)
+  dephasing / phase-flip(p)  Z error w.p. p                     (T2 / pure dephasing)
+  bit_flip(p)            X error w.p. p
+  bit_phase_flip(p)      Y error w.p. p
+  amplitude_damping(g)   T1 relaxation |1>-><|0>                 (energy loss)
+  phase_damping(l)       T2 without energy loss                 (dephasing channel)
+  pauli(px,py,pz)        general Pauli channel
+  coherent_z(theta)      unitary over-rotation exp(-i theta Z/2) (calibration error)
+  coherent_x(theta)      unitary over-rotation exp(-i theta X/2)
+  thermal(g, nbar)       generalized amplitude damping (finite-T)
+
+Plus:
+  readout_confusion(q, nbits)   classical bit-flip confusion matrix on a measured
+                                register (each bit flips w.p. q).
+  apply_iid(rho, n, channel)    apply a single-qubit channel i.i.d. to all n qubits.
+  NOISE_MODELS                  a named registry mapping model-name -> (strength ->
+                                single-qubit Kraus list), for uniform sweeps.
+"""
 from __future__ import annotations
 
 import numpy as np

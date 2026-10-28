@@ -1,4 +1,23 @@
+"""
+experiments/trainability_law/two_knob_sweep.py
+========================================
+Demonstrates that the Representation Dial's two knobs are INDEPENDENT, on a single
+2-axis grid (answering the review: hardness was previously labeled, never varied).
 
+  * TRAINABILITY knob  = dim(H_+), varied by the GROUP ((Z2)^k on n qubits ->
+    dim H_+ = 2^(n-k)). Reading T = trainability score = 1/dim(H_+) (small dim ->
+    trainable; from the same Ragone law used in the certificate).
+  * HARDNESS knob = the fraction p of non-re-preparable (quantum) input data, varied
+    CONTINUOUSLY from p=0 (classical, re-preparable, simulable) to p=1 (quantum, the
+    data-acquisition phase is impossible). Reading H = p (the certificate's escape
+    witness, generalized from binary to a mixture).
+
+We sweep the full grid (group) x (p) and show: T depends ONLY on the group and H
+depends ONLY on p -- the readings are orthogonal (|corr(T-knob, H-reading)| ~ 0 and
+vice-versa), so any quadrant (trainable/untrainable x hard/easy) is reachable. This
+turns the dial from a two-point schematic into a demonstrated 2D object.
+Output: results/trainability_law/two_knob_sweep.csv .
+"""
 from __future__ import annotations
 import argparse, csv, os
 import numpy as np

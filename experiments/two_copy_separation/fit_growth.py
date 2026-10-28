@@ -1,4 +1,15 @@
+"""
+Fit the growth exponent of the SINGLE-COPY arm in the scaled separation sweep.
 
+Reads  results/two_copy_separation/learning_separation_scaled.csv
+Writes results/two_copy_separation/learning_separation_scaled_fit.csv
+
+Model: singlecopy_copies(n) = 2^(alpha*n + beta), i.e. base 2^alpha per qubit.
+Only rungs with singlecopy_capped_runs == 0 are fitted (a capped rung is a LOWER
+BOUND on the true copy count, so including it would bias the exponent DOWN).
+The coherent arm is fitted the same way as a control: if the separation is real its
+alpha must be ~0.
+"""
 from __future__ import annotations
 
 import csv

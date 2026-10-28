@@ -1,4 +1,19 @@
+"""
+experiments.hardware_ibm.ibm_campaign.analyze
+==========================================
+Turn raw per-PUB counts into per-experiment CSV rows. PURE and OFFLINE: it reads
+only the saved raw_counts + the stored theory, so it re-runs identically on the
+device counts long after the job, and the dry run and the real run share one code
+path. Reuses the verified ``readout`` conventions for the CQFA circuits.
 
+Dispatch by ``PubSpec.analysis``:
+    string_parity   C1 direct <O_string>            -> abs err vs +1 / 0
+    shadow_snapshot C1 single-copy shadow snapshots  -> hit rate vs 1/3^w
+    bell_purity     C2 Tr(rho^2) via destructive Bell
+    cqfa_postsel    C3/C5/C6 f_A (post-sel) vs f_raw, accept rate
+    direct_expval   C4 Mode-B orbit arm <U_g psi|M|U_g psi>
+(C4 surplus and C5 equivariance are assembled across their grouped PUBs.)
+"""
 from __future__ import annotations
 
 from collections import defaultdict

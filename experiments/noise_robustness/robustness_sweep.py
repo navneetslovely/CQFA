@@ -1,4 +1,19 @@
+"""
+experiments/robustness_sweep.py
+===============================
+Comprehensive noise robustness : sweep the two headline
+advantages through ALL 10 noise models in experiments/noise_lib.NOISE_MODELS,
+at several strengths, so the claim is "robust against noise of every standard
+kind", not one or two channels.
 
+  T_2copy  : the two-copy purity separation (coherent copies vs single-copy),
+             each copy passed through the noise channel i.i.d. on all qubits.
+  T_modeF  : the Mode-F hidden-shift accuracy, with the noise channel applied to
+             every frame qubit (Hadamard-test operational features, finite shots).
+
+Resume-aware (per model x strength parts) so it runs on the CPU fleet and can be
+relaunched freely. Output: results/robustness/{twocopy,modef}_allnoise.csv .
+"""
 from __future__ import annotations
 
 import argparse

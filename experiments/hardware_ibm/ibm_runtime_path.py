@@ -1,4 +1,23 @@
+"""
+experiments.hardware_ibm.ibm_runtime_path
+======================================
+Budget-guarded REAL-HARDWARE path via qiskit-ibm-runtime. OFF BY DEFAULT.
 
+The author has ~10 minutes of IBM budget; this path must NEVER be spent
+automatically. THREE independent locks are required before a single job is
+submitted:
+
+    1. env var  CQFA_IBM_RUN=1
+    2. CLI flag --ibm         (args.ibm)
+    3. CLI flag --ibm-confirm (args.ibm_confirm)
+
+Plus hard budget caps: n_circuits * shots must be <= args.max_total_shots
+(default 4096). Absent any lock, ``run_ibm`` raises and the caller
+(``run_hardware.py``) falls back to the matching FakeBackend device-noise model.
+
+No token is ever embedded; auth is read from the saved qiskit config or the
+QISKIT_IBM_TOKEN env var by ``QiskitRuntimeService()``.
+"""
 from __future__ import annotations
 
 import os
@@ -25,7 +44,30 @@ def _check_locks(args):
 
 
 def run_ibm(circuits, shots, args, min_num_qubits=3, service=None):
-  
+    """Submit ONE job to the least-busy real device, under three locks + caps.
+
+    Parameters
+    ----------
+    circuits : list[QuantumCircuit]
+        Already state-prepared, measured circuits (prefer shallow prep, see
+        ``shallow_cluster_prep``).
+    shots : int
+        Shots per circuit (capped by args.max_shots).
+    args : argparse.Namespace
+        Must carry .ibm, .ibm_confirm, .max_shots, .max_circuits,
+        .max_total_shots.
+    service : QiskitRuntimeService or None
+        Injected for testing (mock). If None, constructed from saved creds.
+
+    Returns
+    -------
+    dict with keys: backend_label, job_id, counts (list), n_circuits, shots.
+
+    Raises
+    ------
+    IBMDisabled if any lock is missing (caller should fall back to Fake).
+    AssertionError if a budget cap is exceeded.
+    """
     _check_locks(args)
 
     single = not isinstance(circuits, (list, tuple))
@@ -90,7 +132,11 @@ def run_ibm(circuits, shots, args, min_num_qubits=3, service=None):
 # shallow, hardware-friendly state prep (avoids deep initialize() on device)
 # ---------------------------------------------------------------------------
 def shallow_cluster_prep(n_data):
-  
+    """Cluster-state prep (H on all + CZ on the chain) — the physical SPT input.
+
+    Returns a QuantumCircuit on n_data qubits. Transpiles shallowly (linear
+    depth) unlike an arbitrary ``initialize``. Used for the Z2xZ2 IBM arm.
+    """
     from qiskit import QuantumCircuit, QuantumRegister
     d = QuantumRegister(n_data, "data")
     qc = QuantumCircuit(d)

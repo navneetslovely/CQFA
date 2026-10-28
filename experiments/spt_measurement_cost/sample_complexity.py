@@ -1,4 +1,28 @@
+"""
+experiments/spt_measurement_cost/sample_complexity.py
+=======================================
+The C*(n) driver: for each (arm, n) sweep a matched COPY budget, measure the
+estimator error of the target functional, find the smallest budget reaching error
+<= epsilon, and aggregate over seeds with bootstrap 95% CIs.
 
+Arms:
+  * 'coherent'          : 2-copy Bell readout of F(rho)=mean_[a,b] <O_string(a,b)>^2.
+                          Per-shot variance O(1), n-independent -> C* flat.
+  * 'shadow_nonlinear'  : single-copy classical-shadow U-statistic estimate of the
+                          SAME F(rho). Variance grows with string weight/family ->
+                          C* blows up (2^Omega(n)).
+  * 'shadow_known'      : single-copy shadow estimate of the ONE known full-bulk
+                          string <O_string>^2 (control) -> stays flat-ish; its slope
+                          is the integrity check that the separation is task-driven.
+  * 'local'             : low-weight shadow features only -> cannot separate (control).
+
+Budget accounting: one coherent 2-copy shot consumes 2 copies; one
+single-copy shadow shot consumes 1 copy. C is the matched COPY budget.
+
+OOM guardrail: all estimators are statevector-only; no 4^n object is ever formed
+(the coherent arm goes through readout_coherent, which squares single-copy
+expectations; the shadow arm samples single-copy bitstrings).
+"""
 from __future__ import annotations
 
 import csv
@@ -18,7 +42,9 @@ def target_functional(psi: np.ndarray, n: int, intervals) -> float:
 
 
 def estimate_coherent(psi, n, intervals, string_ops, rng, n_shots) -> float:
-
+    """Coherent 2-copy estimate of F_norm: average the per-interval Bell estimate of
+    <P>^2 over the family. n_shots = number of 2-copy shots (2 copies each)."""
+    # split shots across the family members (round-robin); each member gets >=1 shot
     m = len(intervals)
     shots_each = max(1, n_shots // m)
     acc = 0.0
@@ -38,7 +64,12 @@ def estimate_shadow_nonlinear(psi, n, labels, rng, n_shots) -> float:
 
 
 def estimate_shadow_known(psi, n, rng, n_shots) -> float:
-  
+    """CONTROL 2: single-copy DIRECT estimate of the ONE known full-bulk string <O>.
+
+    Measured directly in its own Pauli basis every shot -> per-shot variance
+    1 - <O>^2 <= 1, n-INDEPENDENT. This is the integrity control that stays flat;
+    if it grew with n the separation would be operator-driven, not task-driven.
+    """
     return S.known_string_estimate(psi, n, rng, n_shots)
 
 
@@ -81,7 +112,12 @@ def arm_error_at_budget(arm, psi, n, intervals, string_ops, labels, target, rng,
 
 def cstar_one_seed(arm, n, budgets, epsilon, seed,
                    spt_lambda=0.0, edge_pin=0.0):
-    
+    """C*(arm, n) for one seed: smallest budget with error <= epsilon on the SPT
+    class representative (the hard-to-estimate side). Returns (cstar, errors).
+
+    Uses the SPT cluster state (lam=0) as the representative whose functional the
+    arm must estimate to epsilon. cstar = np.inf if no budget reaches epsilon.
+    """
     rng = np.random.default_rng(seed)
     psi = M.prepare_state(n, spt_lambda, "spt", edge_pin=edge_pin) if spt_lambda >= 0 else None
     intervals = F.interval_family(n)
@@ -103,7 +139,8 @@ def cstar_one_seed(arm, n, budgets, epsilon, seed,
 
 # -- aggregation with bootstrap CIs --------------------------------------------
 def bootstrap_ci(values, n_boot=10000, seed=0, alpha=0.05):
-   
+    """Bootstrap (percentile) CI of the mean over seeds. Handles inf by clipping to
+    a large finite sentinel for the resample, then reports the finite fraction."""
     v = np.asarray(values, dtype=float)
     finite = np.isfinite(v)
     if finite.sum() == 0:
@@ -122,7 +159,7 @@ def bootstrap_ci(values, n_boot=10000, seed=0, alpha=0.05):
 
 def cstar_over_seeds(arm, n, budgets, epsilon, seeds, spt_lambda=0.0,
                      edge_pin=0.0, n_boot=10000):
-   
+    """Aggregate C*(arm,n) over seeds: mean, std, bootstrap 95% CI."""
     vals = []
     for s in seeds:
         cs, _, _ = cstar_one_seed(arm, n, budgets, epsilon, s,
@@ -142,7 +179,7 @@ def cstar_over_seeds(arm, n, budgets, epsilon, seeds, spt_lambda=0.0,
 
 # -- raw estimate logging ------------------------------------------------------
 def collect_raw(arm, n, budgets, epsilon, seeds, spt_lambda=0.0, edge_pin=0.0):
-   
+    """Per-(budget,seed) rows for raw_estimates.csv (traceable numbers)."""
     rows = []
     intervals = F.interval_family(n)
     for s in seeds:
@@ -170,7 +207,8 @@ def write_csv(rows, path):
 
 # -- log-slope helper (used by tests: flat vs growing) -------------------------
 def log_cstar_slope(ns, cstars):
-    
+    """Least-squares slope of log2(C*) vs n over the finite points. Flat ~ 0,
+    exponential growth > 0."""
     ns = np.asarray(ns, dtype=float)
     cs = np.asarray(cstars, dtype=float)
     m = np.isfinite(cs) & (cs > 0)

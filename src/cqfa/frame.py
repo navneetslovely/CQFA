@@ -1,4 +1,17 @@
+"""The CQFA layer as statevector operations.
 
+Two readout modes act on a data state |psi> with Hermitian observable M and
+representation ``rep``:
+
+  Mode A, coherent    average amplitudes through Pi, then read out:
+                        f_A = <Pi psi| M |Pi psi> / || Pi psi ||^2
+  Mode B, decohered   average outputs over the orbit:
+                        f_B = (1/|G|) sum_g <psi| U_g^dag M U_g |psi>
+
+Their difference f_A - f_B is the coherent surplus: the off-diagonal
+interference terms that output averaging cannot represent. The frame asymmetry
+q = 1 - || Pi psi ||^2 is the Mode-A post-selection failure probability.
+"""
 from __future__ import annotations
 
 import numpy as np
@@ -88,7 +101,12 @@ def joint_state(psi: np.ndarray, rep: Representation) -> np.ndarray:
 
 
 def postselect_symmetric(psi: np.ndarray, rep: Representation, tol: float = 1e-12):
+    """Post-select the frame of |Phi> onto |G>. Returns (data_state, prob).
 
+    The (unnormalised) data state equals Pi psi, so this reproduces cqfa_readout
+    via the explicit frame register — an internal consistency check that the
+    abstract projector Pi and the physical oracle+post-selection agree.
+    """
     phi = joint_state(psi, rep)
     dimF = 2 ** rep.n_frame_qubits
     d = rep.dim

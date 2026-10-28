@@ -1,2 +1,0 @@
-rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
-z2_pauli4,augmented,spt_derived,5,1.0,0.0,1.0,1.0,1.0,1.0,24,0.49428571428571433

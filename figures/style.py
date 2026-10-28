@@ -1,4 +1,25 @@
+"""Shared publication style for every figure in this archive.
 
+Constraints applied to every figure:
+
+  * no title is drawn inside the figure; captions live in the document;
+  * tick labels and axis labels are bold, so a figure stays legible when
+    printed at a fraction of the text width;
+  * output is vector PDF regenerated from the recorded CSVs;
+  * text is converted to outlines after rendering, so the emitted PDF carries
+    no font objects and therefore no Type 3 or Identity-H fonts.
+
+Usage::
+
+    from figures.style import apply_style, new_fig, bold_ticks, save, PALETTE
+
+    apply_style()
+    fig, ax = new_fig()
+    ax.plot(...)
+    ax.set_xlabel("system size $n$")
+    bold_ticks(ax)
+    save(fig, "figure_name")
+"""
 from __future__ import annotations
 import os
 import shutil
@@ -58,7 +79,10 @@ def apply_style() -> None:
         "legend.handlelength": 1.5,
         "legend.borderaxespad": 0.4,
         "legend.labelspacing": 0.3,
-        
+        # We save with bbox_inches='tight' (see save()), which is the single most
+        # reliable anti-clip recipe: it expands the saved region to include EVERY
+        # artist (bold labels, rotated ticks, legends). Do NOT also enable constrained
+        # or tight layout — they fight bbox='tight' and can re-trim an edge label.
         "figure.constrained_layout.use": False,
         "figure.autolayout": False,
         "pdf.fonttype": 42,            # editable/embeddable fonts (no Type-3)
@@ -67,14 +91,17 @@ def apply_style() -> None:
 
 
 def new_fig(w: float = 3.7, h: float = 3.0):
-    
+    """A single-panel figure sized for ~1/3 text-width placement in a row.
+    Saved with bbox_inches='tight' (see save()), so nothing clips."""
     fig, ax = plt.subplots(figsize=(w, h))
     ax.margins(x=0.03)
     return fig, ax
 
 
 def thin_ticks(ax, nx: int = 6, ny: int = 6) -> None:
-   
+    """Cap the number of major ticks so bold tick labels never crowd/overlap.
+    Skips log axes (self-limiting) and categorical axes with fixed ticks (e.g. bar
+    charts set via bar_labels), which must not have their labels overwritten."""
     from matplotlib.ticker import MaxNLocator, FixedLocator
     if ax.get_xscale() == "linear" and not isinstance(ax.xaxis.get_major_locator(), FixedLocator):
         ax.xaxis.set_major_locator(MaxNLocator(nbins=nx, integer=False, prune=None))
@@ -94,7 +121,16 @@ def bold_ticks(ax) -> None:
 
 
 def outline_fonts(pdf_path: str) -> bool:
-   
+    """Convert every glyph in the PDF to vector outlines, in place.
+
+    Publishers often reject Type 3 fonts and ask that no CID/Identity-H font be retained.
+    matplotlib's pdf.fonttype=42 avoids Type 3 but still emits CID TrueType
+    subsets with Identity-H encoding. Outlining removes the font objects
+    altogether, which satisfies both rules at once.
+
+    The page box, the geometry, and every mark are untouched: the figure looks
+    exactly the same, it simply no longer carries fonts. Returns False (leaving
+    the PDF as-is) when Ghostscript is unavailable."""
     gs = shutil.which("gs")
     if gs is None:
         return False
@@ -113,7 +149,10 @@ def outline_fonts(pdf_path: str) -> bool:
 
 
 def save(fig, name: str, also_png: bool = True) -> str:
-   
+    """Save vector PDF (and a PNG preview) to figures/output/. Returns the PDF path.
+    No title is ever added. Saved with bbox_inches='tight' (+ a small pad), which
+    expands the saved region to include every artist — bold labels, rotated tick
+    labels, and legends are never trimmed, at any subfigure size."""
     os.makedirs(_OUT, exist_ok=True)
     pdf = os.path.join(_OUT, f"{name}.pdf")
     fig.savefig(pdf, bbox_inches="tight", pad_inches=0.08)
@@ -135,7 +174,8 @@ def bar_labels(ax, labels, rotate_if_longer_than: int = 4) -> None:
 
 
 def demo() -> None:
-
+    """Render a 3-in-a-row style demo (worst case: long labels + legend) so clipping
+    and overlap can be eyeballed without real data."""
     import numpy as np
     apply_style()
     x = np.arange(2, 11)

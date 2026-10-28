@@ -1,6 +1,0 @@
-[equivalence] z2_rc(n=2): worst|diff|=1.33e-15 (hadamard 7.22e-16)  PASS
-[equivalence] z2_pauli(n=2): worst|diff|=1.11e-15 (hadamard 5.83e-16)  PASS
-[equivalence] z2_pauli(n=3): worst|diff|=7.77e-16 (hadamard 7.49e-16)  PASS
-[equivalence] z2xz2(n=4): worst|diff|=9.44e-16 (hadamard 9.44e-16)  PASS
-[equivalence] OVERALL worst=1.33e-15  PASS (tol=1e-09)
-[run_hardware] equivalence -> results/hardware/equivalence.csv (PASS)

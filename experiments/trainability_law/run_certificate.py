@@ -1,4 +1,34 @@
+"""
+experiments.trainability_law.run_certificate
+======================================
+The Certified Representation Dial (CRD): compute the (T, H) certificate points
+for each model on the z2_pauli(n) family and write two CSVs.
 
+  certificate_points.csv   -- one row per (rep, n, model, seed): the raw axes
+                              T_d_eff, T_var_lb, T_P_g_rho, T_P_g_M and
+                              H_escape, H_surplus, H_frame_entropy, H_bond_chi.
+  certificate_scaling.csv  -- one row per (family, model): DLA-dim poly/exp fit
+                              of T, mean H at n_max, and the assigned quadrant.
+
+For the non_equivariant model the trainability coordinate is read from the
+AMBIENT su(2^n) DLA (dim 4^n - 1) -- the barren case -- rather than the
+frame-induced restricted DLA, so the dial correctly places it in the
+untrainable quadrant.
+
+ ledger (see README.md):
+  * T mechanism (Ragone-Fontana law + poly dim(g_G)) : PROVEN for the special
+    case (z2_pauli / RC-EQC), EMPIRICAL for the general family.
+  * H1 escape flag : UNCONDITIONAL under its own (non-re-preparable data) premise.
+  * H2 proxies (surplus, frame entropy / bond dim) : EVIDENCE, a resource
+    witness, NOT a classical-hardness theorem.
+
+Usage:
+
+    python -m experiments.trainability_law.run_certificate \
+        --n-min 2 --n-max 5 --models cqfa classical_fa non_equivariant \
+        --source quantum_nonreprepable --n-data 64 --seeds 0 1 2 3 4 \
+        --out experiments/trainability_law/out
+"""
 from __future__ import annotations
 
 import argparse
@@ -28,7 +58,10 @@ SCALE_FIELDS = ["family", "model", "n_min", "n_max",
 
 
 def _ambient_trainability(rep, n, chi, M):
-  
+    """Trainability axis for the generic HEA: ambient su(2^n) DLA + raw chi.
+
+    This is the barren case; d_eff = 4^n - 1 so var_lb collapses exponentially.
+    """
     gens = D.hea_circuit_generators(n)
     d_amb, basis = D.lie_closure_dim(gens, cap=4 ** n - 1)
     rho = np.outer(chi, chi.conj())
@@ -82,7 +115,10 @@ def compute_points(args):
 
 
 def _quadrant(poly_vs_exp, H_escape, H_surplus):
-
+    # Trainability is determined by the DLA SCALING (the mechanism), not an
+    # absolute var_lb cutoff: poly dim(g_G) => no barren plateau => trainable;
+    # exp dim(g) (su(2^n)) => barren plateau => untrainable.  This is n-robust,
+    # unlike thresholding var_lb whose absolute value shrinks for every model.
     trainable = (poly_vs_exp == "poly")
     hard = (H_escape == 1) and (H_surplus > 1e-6)
     if trainable and hard:

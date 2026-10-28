@@ -1,4 +1,23 @@
+"""
+experiments/spt_measurement_cost/exponential_separation.py
+============================================
+The EXPONENTIAL measurement-complexity separation on SPT data (strengthened form).
 
+Task: estimate the nonlocal SPT order parameter <O_string> (a weight-w Pauli string,
+w = n-2) of an unknown cluster-Ising ground state, to fixed precision eps.
+
+  * Symmetry-aware COHERENT readout: reads the protected order directly ->
+    per-shot variance V_coh = O(1); shots ~ V_coh / eps^2 (FLAT in n).
+  * Symmetry-agnostic SINGLE-COPY classical shadows (Huang-Kueng-Preskill 2020):
+    the standard single-copy primitive when the observable is not known a priori.
+    Per-shot variance of a weight-w Pauli is EXACTLY 3^w (theorem); shots ~ 3^w/eps^2
+    -> EXPONENTIAL in n.
+  * Control (single-copy told the exact string basis): O(1), confirming the gap is
+    the price of symmetry-agnostic single-copy tomography, not of the state.
+
+We VERIFY V_shadow = 3^w empirically (V_shadow/3^w ~ 1) and report shots vs n.
+Everything statevector-only. Output: results/spt_measurement_cost/exponential_separation.csv .
+"""
 from __future__ import annotations
 import argparse, csv, os
 import numpy as np

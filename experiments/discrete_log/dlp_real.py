@@ -1,4 +1,29 @@
+"""
+experiments/discrete_log/dlp_real.py
+========================================
+A discrete-log concept class (Liu-Arunachalam-Temme 2021) evaluated against
+strong, tuned classical baselines that fail head-to-head at a matched sample
+budget.
 
+Concept class (LAT): for prime p, primitive root g, hidden s,
+    f_s(x) = 1  iff  dlog_g(x) in [s, s+(p-1)/2)  (mod p-1),  x in Z_p^*.
+The label is a half-interval in the EXPONENT (dlog) -- smooth in dlog space,
+pseudo-random in x space (verified: adjacent-x label agreement ~1/2).
+
+  * Classical learners see the raw representation of x (value, normalised, and a
+    rich bank of smooth/periodic x-features). Strong, CV-tuned models: SVM-RBF,
+    RandomForest, GradientBoosting, MLP, kNN, logistic. They CANNOT learn f_s.
+  * The quantum feature map provides dlog_g(x) (efficiently computable on a quantum
+    computer via Shor's discrete-log; extracted by the CQFA frame Fourier readout,
+    Mode F). A single-feature interval classifier then separates f_s perfectly.
+
+scope: at simulatable p a classical learner COULD brute-force dlog; the
+ASYMPTOTIC no-classical-learner guarantee is the LAT theorem (cited, under DLP), not
+re-proved here. What we exhibit is the MECHANISM: strong classical ML on the raw
+data fails while the dlog (quantum) feature map succeeds, at matched sample budget.
+
+Output: results/discrete_log/dlp_real.csv .
+"""
 from __future__ import annotations
 
 import argparse

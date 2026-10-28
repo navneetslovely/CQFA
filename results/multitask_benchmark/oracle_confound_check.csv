@@ -1,5 +1,0 @@
-component,abelian_group,abelian_rep_structure,nonabelian_group,nonabelian_rep_structure,order_G,n_data_qubits,abelian_twoq,nonabelian_twoq,ratio_nonab_over_ab,dominated_by
-single_U_g_worstcase,C8d,diagonal,D4,permutation,8,2,0.0,1.0,inf(abelian=0),single U_g synthesis
-select_V_naive,C8d,diagonal,D4,permutation,8,2,146.0,1221.0,8.363,single U_g synthesis
-select_V_ladder,C8d,diagonal,D4,permutation,8,2,191.0,204.0,1.068,frame address decoding (Toffoli ladder)
-VERDICT,,,,,,,,,1.068,KILLS_nonabelian_oracle_penalty: ladder ratio < 2 at matched |G| and n_data; the large naive-SELECT ratio is an artifact of diagonal-vs-permutation U_g structure

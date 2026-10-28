@@ -1,4 +1,86 @@
+"""
+experiments.hardware_ibm.ibm_campaign.hardware_stats
+=================================================
+Per-job and per-PUB hardware statistics for the recorded IBM campaign.
 
+Builds the complete statistics table from artifacts already on disk under
+``results/ibm_campaign/``, so the hardware interpretation rests only on what was
+measured. NO NEW QPU RUNS. Nothing is deleted or overwritten; every output is a
+new file.
+
+WHAT THIS MODULE IS
+-------------------
+This item is DESCRIPTIVE. There is no hypothesis to confirm or kill, so
+``criterion_outcome = DESCRIPTIVE_NO_CRITERION``. The deliverable is (a) a
+complete statistics table with uncertainty on every reported quantity, (b) a
+finite-N fit of the Mode-F information quantity with uncertainty bands over the N
+values ACTUALLY MEASURED, and (c) an explicit audit of which fields were never
+recorded.
+
+PRE-REGISTERED ESTIMATORS AND RULES (fixed BEFORE the first run of this file)
+-----------------------------------------------------------------------------
+P1. Point estimates are RECOMPUTED from ``raw_counts.json`` and must reproduce the
+    already-stored ``analysis/*.csv`` value to <= 1e-12. Column
+    ``matches_stored_csv`` records this per row; any FALSE is reported as a defect,
+    not silently smoothed.
+P2. Binomial proportions (accept_rate, peak probability, shadow hit rate) get a
+    95% WILSON score interval (continuity-uncorrected).
+P3. Every other reported scalar gets a nonparametric MULTINOMIAL BOOTSTRAP over the
+    stored shot counts: B = 10000 resamples, seed = 20260722, percentile 2.5/97.5.
+    Both are fixed here before any number is read.
+P4. DATA-SELECTED vs PRE-REGISTERED peak. ``peak_prob`` in the existing C8 CSV is
+    P(argmax), i.e. the bin is chosen by the data, so its CI is optimistically
+    biased. We report BOTH: ``p_at_true_shift`` (pre-registered bin k = s; this is
+    the one) and ``p_at_argmax`` (data-selected, labelled).
+P5. INFORMATION QUANTITY (the thing fitted vs N). For a frame-register outcome
+    distribution p(k | s) over N = 2^n_frame bins measured at a known hidden shift s:
+        R(N, s) = log2(N) - H(K | s)     [bits recovered per shot about the frame index]
+    H is Shannon entropy in bits. Ideal Mode F: p = delta_s  =>  H = 0  =>  R = log2 N.
+    Ideal Mode B: p uniform  =>  H = log2 N  =>  R = 0. Plug-in H is negatively
+    biased, so R is positively biased; we therefore report BOTH the plug-in R and
+    the MILLER-MADOW corrected R_mm (H_mm = H_plugin + (K_obs - 1) / (2 n ln 2)),
+    and FIT THE CORRECTED ONE. We additionally report the pooled mutual information
+    I(S;K) per (run, mode, N), which is capped at log2(n_shifts_measured) by the
+    number of shifts actually run (3, 3, 2) -- a design limit, disclosed, not hidden.
+P6. FIT. Weighted least squares of R_mm on log2(N) across N in {4, 8, 16} ONLY,
+    weights 1/se^2, se from the per-arm bootstrap. Slope/intercept uncertainty by
+    refitting each of the B joint bootstrap replicates (percentile 2.5/97.5).
+    The fit is DESCRIPTIVE and LOCAL: 3 distinct N, 2-4 frame qubits. Three points
+    cannot discriminate log2 N from any other function agreeing on them, and this
+    module makes no asymptotic statement.
+P7. VACUITY GUARD. ``label_signal_scale`` = |ideal_peak_prob - 1/N| for C8 rows,
+    |exact value| for the others. Any cell < 1e-10 is marked
+    ``vacuous_excluded`` BEFORE any interval is interpreted, and is excluded from
+    the fit. Mode-B rows have signal scale exactly 0 BY CONSTRUCTION (they are the
+    designed blind null), so they are tagged ``null_control_by_design`` and are
+    reported as the null, never as a measurement of an effect.
+P8. BASELINE CHOICE. R for hardware is differenced against, in order:
+      weak baseline   = blind/uniform readout, R = 0 (chance) -- the flattering one;
+      strong baseline = ideal noiseless simulation ``dry_c8_ideal``;
+      strongest realistic baseline = FakeFez device-noise model ``dry_c8_fez``.
+    All three deltas are written, each labelled. The strongest baseline is the
+    headline; the weak one is reported alongside and labelled weak.
+P9. >= 5 replicate arms per reported cell. Replicates here are (hidden shift) x
+    (independent device run): 6, 6 and 4 at N = 4, 8, 16. N = 16 has only 4 and is
+    flagged ``below_min_replicates`` in the CSV. This is a limit of the stored data
+    and cannot be fixed without new QPU time.
+P10. NOT RECORDED IS A FINDING. Any requested field absent from the stored
+    artifacts is written as the literal string ``NOT_RECORDED`` and itemised in
+    ``hardware_provenance_audit.csv``. Nothing is reconstructed or approximated.
+    Where a field is only BOUNDED by what was stored (e.g. calibration age is
+    bounded by the job submission timestamp), the bound goes in a separate
+    ``*_bound`` column so a naive reader cannot mistake it for a measurement.
+
+OUTPUTS (all NEW files, none overwritten)
+-----------------------------------------
+    results/ibm_campaign/hardware_stats.csv               per-PUB statistics table
+    results/ibm_campaign/hardware_information_finiteN.csv per (run, mode, N) info
+    results/ibm_campaign/hardware_information_fit.csv     the finite-N fit
+    results/ibm_campaign/hardware_provenance_audit.csv    recorded / NOT_RECORDED
+
+Run:
+    PYTHONPATH=. .venv314/bin/python -u -m experiments.hardware_ibm.ibm_campaign.hardware_stats
+"""
 from __future__ import annotations
 
 import csv

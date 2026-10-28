@@ -1,5 +1,0 @@
-n,dim_hplus,n_amplitudes_needed,reduction_max_err,mean_amp_magnitude,mean_accept_p,encoding_t_count,clifford_control_t_count,encoding_entanglement_bits,bond_dim_proxy,single_amplitude_hard,samples_to_read,tradeoff
-4,4,4,5.551115123125783e-17,0.2384666999844632,0.25,10,0,1.4970552768374448,2.8226598349120082,#P-hard (BQP<=P^#P; IQP:BMS16),4.0,"classical-hard eval + flat landscape, BUT exp quantum sampling (p=2^{2-n})"
-6,4,4,1.0755285551056204e-16,0.10921332438085789,0.0625,21,0,2.4589886932077967,5.498311690359742,#P-hard (BQP<=P^#P; IQP:BMS16),16.0,"classical-hard eval + flat landscape, BUT exp quantum sampling (p=2^{2-n})"
-8,4,4,7.216449660063518e-16,0.05708440866219571,0.015625000000000007,36,0,3.457045602287101,10.981822570045082,#P-hard (BQP<=P^#P; IQP:BMS16),63.99999999999997,"classical-hard eval + flat landscape, BUT exp quantum sampling (p=2^{2-n})"
-10,4,4,1.970645868709653e-15,0.029859003355532803,0.003906250000000003,55,0,4.296967146567458,19.65694404891152,#P-hard (BQP<=P^#P; IQP:BMS16),255.99999999999983,"classical-hard eval + flat landscape, BUT exp quantum sampling (p=2^{2-n})"

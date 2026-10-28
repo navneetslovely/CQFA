@@ -1,4 +1,31 @@
+"""
+experiments/trainability_law/trainability_law.py
+==========================================
+Solidifies the CQFA trainability law:
 
+    Var[ d_theta L ]  ~  1 / dim(H_+)            (H_+ = the G-invariant subspace)
+
+against a generic ansatz's  ~ 1 / dim(full)^2 = 1/4^n, giving an exponential
+(~ dim(full)^2 / dim(H_+)) gradient advantage, and a GENUINE barren-plateau
+escape whenever the group is large enough that dim(H_+) is polynomial.
+
+Three experiments, all deterministic (fixed seeds), mean +/- std over seeds:
+
+  (A) SCALING COLLAPSE. Sweep group family x n so dim(H_+) ranges widely; show
+      Var(CQFA) * dim(H_+) is ~constant (the law), while Var(generic) * 4^n is
+      ~constant -- i.e. the two obey different power laws.
+
+  (B) EMPIRICAL VALIDATION. Actually SAMPLE the gradient variance of a genuinely
+      equivariant ansatz (symmetrised generators, restricted to H_+) over random
+      parameters on aligned inputs, and check it tracks the analytical Ragone
+      1/dim(H_+) prediction (not merely assumes it).
+
+  (C) FULL ESCAPE. Fix a SMALL invariant subspace (large group, dim(H_+)=const)
+      and grow n; show Var(CQFA) stays O(1) (no plateau) while the generic ansatz
+      collapses as 1/4^n.
+
+Outputs (CLI --out dir): trainability_law.csv (A+C), trainability_empirical.csv (B).
+"""
 from __future__ import annotations
 import argparse, csv, os
 import numpy as np
@@ -80,7 +107,8 @@ def ragone_var_generic(n):
 # (B) EMPIRICAL gradient-variance sampling of a genuinely equivariant ansatz
 # ---------------------------------------------------------------------------
 def equivariant_ansatz_generators(rep, n, pack):
-   
+    """Symmetrised HEA generators restricted to H_+ (Hermitian), the ansatz's
+    parametrised generators.  Kept only if non-trivial on H_+."""
     Bplus = pack["Bplus"]
     gens = symmetrized_generators(hea_circuit_generators(n), rep)
     out = []
@@ -104,7 +132,10 @@ def _expm_herm(theta, H, cache):
 
 
 def empirical_gradient_variance(pack, gens, chi, S, rng, depth=3, eps=1e-4):
-   
+    """Var over S random-parameter draws of d/dtheta_0 <chi|W^dag O W|chi>, for the
+    equivariant ansatz W = prod over `depth` repetitions of prod_j exp(-i theta_j H_j).
+    Central finite difference on the first parameter (exact-gradient proxy; the
+    magnitude distribution is what matters for the plateau)."""
     O = pack["O_Hp"]
     layer = list(gens)
     L = len(layer)
@@ -136,20 +167,24 @@ def empirical_gradient_variance(pack, gens, chi, S, rng, depth=3, eps=1e-4):
 # drivers
 # ---------------------------------------------------------------------------
 def _group_for(tag, n, k):
-    
+    """global -> single global-flip Z2 (poly DLA 3(n-1), exp dim H_+);
+    escape -> (Z2)^(n-c) with k=n-c independent flips (constant dim H_+ = 2^c)."""
     if tag == "milder_plateau":
         return G.z2_pauli(n)                       # X^{(x)n}: dim H_+ = 2^(n-1), poly DLA
     return z2k_group(n, k)                          # (Z2)^k independent flips: dim H_+ = 2^(n-k)
 
 
 def run_scaling(seeds, out_dir):
-    
+    """(A) the Z2 milder-plateau family (poly DLA) + (C) the full-escape family
+    (constant dim H_+ via a growing group).  Analytical Ragone, fast configs only."""
     rows = []
     configs = []
-    
+    # (A) Z2 global-flip: dim H_+ = 2^(n-1) exponential; the main-experiment regime.
     for n in range(2, 11):
         configs.append(("milder_plateau", n, 1))
-    
+    # (C) FULL ESCAPE: keep dim(H_+) = 2^c CONSTANT by using k = n - c independent flips.
+    # Capped at n<=8: the escape (Var flat as n grows at fixed dim H_+) is already
+    # unambiguous over n=4..8; larger n needs 2^(n-c) explicit group matrices (OOM).
     for c in (2, 3):
         for n in range(c + 1, 9):        # start at the true minimum n (k = n-c >= 1)
             configs.append(("escape", n, n - c))
@@ -179,7 +214,7 @@ def run_scaling(seeds, out_dir):
 
 
 def run_empirical(seeds, out_dir, S=400, depth=3):
-  
+    """(B) sample the equivariant ansatz gradients; check vs Ragone 1/dim(H_+)."""
     rows = []
     for n in range(2, 9):                              # Z2 global-flip (poly DLA): validate the law
         rep = G.z2_pauli(n)

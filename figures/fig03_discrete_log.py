@@ -1,4 +1,17 @@
+"""Figure 3: discrete-log comparison over 30 primes.
 
+Rebuilt from the recorded CSV. This script performs no training and no
+simulation; it reads results and renders "f_dlp_wide.pdf" into figures/output/.
+
+Source
+------
+results/discrete_log/dlp_wide/dlp_wide_agg.csv
+
+Each row is one prime. ``quantum_dlog_mean`` is the cross-validated accuracy of
+the quantum discrete-log feature, averaged over seeds, with
+``quantum_dlog_std`` as the seed spread. ``best_classical_mean`` is the maximum
+over the seven classical baseline columns in the same file.
+"""
 import csv
 
 from cqfa.paths import RESULTS

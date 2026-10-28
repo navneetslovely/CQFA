@@ -1,4 +1,20 @@
+"""
+experiments.hardware_ibm.equivalence
+=================================
+THE GATING CROSS-CHECK. For random (psi, theta) and each supported group, the
+qiskit *statevector* CQFA readout must reproduce the numpy ground truth to
+< 1e-9:
 
+    | f_A_qiskit(psi, theta)  -  CQFAModel(rep).feature(theta, psi)[0] | < 1e-9
+    | p_qiskit(psi)           -  symmetric_fraction(psi, rep)          | < 1e-9
+
+Also cross-checks a random Hermitian observable M (not just Z_0) via a direct
+numpy readout on the post-selected data block, and validates the Hadamard-test
+diagnostic against Re<psi|A|psi>.
+
+Run it directly (``python -m experiments.hardware_ibm.equivalence``); it prints the
+worst difference per representation and an overall pass or fail.
+"""
 from __future__ import annotations
 
 import numpy as np
@@ -25,7 +41,10 @@ def _init_circuit(psi_q, n_data, n_frame):
 
 
 def qiskit_statevector_feature(rep, psi, theta, M=None):
- 
+    """Exact qiskit post-selected coherent readout (f_A, p) for the CQFA circuit.
+
+    If M is None, uses Z on numpy site 0 (matches CQFAModel's default observable).
+    """
     n_data = int(round(np.log2(rep.dim)))
     n_frame = rep.n_frame_qubits
     n_layers = 0 if theta is None else len(np.asarray(theta).ravel()) // (n_data * 2)
@@ -42,7 +61,12 @@ def qiskit_statevector_feature(rep, psi, theta, M=None):
 # ---------------------------------------------------------------------------
 def check_rep(rep_name, n_data=None, n_trials=20, n_thetas=5, n_layers=3, seed=0,
               tol=1e-9):
+    """Run the statevector cross-check for one rep. Returns (rows, worst).
 
+    rows: list of dicts (one per trial) for CSV. worst: max abs diff seen.
+    Observables: Z_0 (matches CQFAModel) AND a random Hermitian M per trial
+    (checked against a direct numpy post-selected readout).
+    """
     rep = hardware_representation(rep_name, n_data)
     nd = int(round(np.log2(rep.dim)))
     model = Mo.CQFAModel(rep, n_layers=n_layers)

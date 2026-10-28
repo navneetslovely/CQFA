@@ -1,4 +1,27 @@
+"""
+experiments/discrete_log/run_sweep.py
+=============================
+Driver for the LAT discrete-log concept-class proof-of-principle.
 
+For a small prime p, over >=5 seeds, we measure the test accuracy of:
+  * the STRUCTURED covariant-C_{p-1} kernel learner (log-structure-aware), and
+  * the strongest CLASSICAL-on-raw-x learner (log-blind control),
+plus the majority-class chance baseline.
+
+Each seed draws a fresh random concept secret s and a fresh disjoint train/test
+split of Z_p^*.  We report mean +/- std and a bootstrap 95% CI for each learner,
+and write per-seed + summary CSVs so every headline number is traceable.
+
+scope (printed in the output and the README):
+  * proof-of-principle at simulable p; NO runtime-supremacy / scaling claim;
+  * classical hardness is the LAT theorem under DLP -- CITED, not re-proven;
+  * the *empirical* content is that the group/log inductive bias separates the
+    learners at few samples, exactly as the LAT mechanism predicts.
+
+Run:
+  python -m experiments.discrete_log.run_sweep --p 23 --seeds 5 --n_train 8 --n_test 14
+  python -m experiments.discrete_log.run_sweep --p 47 --seeds 8 --n_train 12 --n_test 20 --tag main
+"""
 from __future__ import annotations
 
 import argparse

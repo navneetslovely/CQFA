@@ -1,2 +1,0 @@
-rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
-d4,cqfa,coherent_teacher,5,0.6766666666666665,0.0771722460186015,0.55,0.7666666666666667,0.6098333333333333,0.74,12,0.35571428571428576

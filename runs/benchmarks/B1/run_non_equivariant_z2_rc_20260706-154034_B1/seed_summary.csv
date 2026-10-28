@@ -1,2 +1,0 @@
-rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
-z2_rc,non_equivariant,coherent_teacher,5,0.7666666666666666,0.038005847503304616,0.7,0.8166666666666667,0.7299999999999999,0.7966666666666666,12,0.5

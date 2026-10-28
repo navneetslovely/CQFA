@@ -1,4 +1,26 @@
+"""
+experiments/robustness_noisy_task_summary.py
+============================================
+Aggregates results/robustness/noisy_task_redesign_v2.csv into the per-task summary
+that the paper/rebuttal cites, so that EVERY reported number exists in a CSV cell
+(integrity rule 1). Reads only; writes NEW files.
 
+It also computes the POWER DIAGNOSTIC that decides whether the pre-registered
+criterion actually had teeth on a given task:
+
+    bayes_span = max(bayes_acc) - min(bayes_acc)  over non-vacuous cells
+
+The criterion ("CQFA tracks the noisy-task Bayes accuracy") can only be TESTED
+where the Bayes ceiling actually moves. If bayes_span is small the criterion is
+passed vacuously and MUST be reported as underpowered, not as confirmation.
+Threshold fixed here at 0.10 accuracy: below that the task never got materially
+harder anywhere in the grid, so "the method degrades because the task degrades"
+was never put at risk.
+
+Outputs:
+  results/robustness/noisy_task_summary_v2.csv
+  results/robustness/noisy_task_channel_spread_v2.csv
+"""
 from __future__ import annotations
 
 import argparse

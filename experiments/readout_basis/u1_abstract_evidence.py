@@ -1,4 +1,54 @@
+"""
+U1 abstract evidence -- the two measurements the abstract sentence depends on.
 
+WHY THIS FILE EXISTS
+--------------------
+The adversarial review of U1 found two defects that changed what U1 may claim, and the
+corrected numbers currently exist only in scratch scripts. Integrity rule 1 forbids citing a
+number that is not in a committed CSV, so this module recomputes both and writes them.
+
+DEFECT 5 -- N_FIXED_BASES = 8 is an arbitrary constant, and the shot-matched headline was an
+artifact of it. `modeF_bestbasis` is best-of-8 random generalized Fourier bases. Nothing makes
+8 special. Sweeping the candidate pool size K shows that at S=256 a best-of-128 FIXED pool
+ties the learned circuit (~-0.000) at less than half the circuit's readout-fitting cost, so
+"learning beats fixed readouts at matched shots" is FALSE at that budget. At exact shots the
+same attack fails: the fixed pool saturates well below the learned circuit. Part A measures
+the whole K-curve at both budgets so the claim can be stated at the budget where it holds and
+withdrawn at the budget where it does not.
+
+DEFECT 6 -- the mechanism regressor was wrong. `max_offdiag_after_fourier` in
+u1_structure_check.csv is max|entry| of the off-diagonal of F^dag rho F for ONE single random
+state (rhos[0], seed 7), unnormalised. It ANTI-correlates with the ensemble off-diagonal
+weight it was meant to proxy, which is why the reported mechanism correlation was a null
+(r=0.11, p=0.77). Part B replaces it with two proper regressors: the ensemble-averaged
+relative off-Fourier-diagonal Frobenius weight, and the closed-form group invariant
+    invisible_fraction = 1 - (sum_lambda d_lambda) / |G|
+which is the fraction of the frame state's weight lying off the Fourier diagonal for a
+non-abelian group (it is exactly 0 for abelian G, where sum d_lambda = |G|).
+
+WHAT IS AND IS NOT A MEASUREMENT HERE
+-------------------------------------
+The invisible fraction is a GROUP-THEORETIC CONSTANT, not a measurement -- it is computed
+from the irrep dimensions. The measurement is the accuracy delta. The claim under test is
+that the delta scales with that constant. Reporting it as a correlation over 9 groups is
+therefore a test of a structural prediction, not a discovered empirical law, and the paper
+must say so.
+
+PRE-REGISTERED, TWO-SIDED (fixed before this file was first run):
+  Part A CONFIRMS the learned readout only at budgets where the best-of-K fixed pool
+    SATURATES strictly below the learned circuit as K grows. It KILLS the shot-matched claim
+    at any budget where a fixed pool reaches parity at or below the circuit's own fitting cost.
+  Part B CONFIRMS the mechanism if delta correlates with the invisible fraction with the
+    correlation excluding 0 and surviving leave-one-out. It KILLS it if the correlation is
+    null, or if it is explained equally well by 1/|G| (i.e. the effect is a size artifact
+    rather than a representation-theoretic one) -- so 1/|G| is included as a rival regressor
+    and must be beaten, not ignored.
+
+Reads : results/readout_basis/u1_shotmatched_percell.csv  (committed, unchanged)
+Writes: results/readout_basis/u1_pool_sweep.csv           (NEW)
+        results/readout_basis/u1_mechanism.csv            (NEW)
+Nothing is overwritten or deleted.
+"""
 from __future__ import annotations
 
 import csv
@@ -11,7 +61,7 @@ from scipy import stats as sps
 import experiments.readout_basis.u1_shotmatched_nonabelian as U
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-OUT = os.path.join(REPO, "results", "cqfa_pp")
+OUT = os.path.join(REPO, "results", "readout_basis")
 PERCELL = os.path.join(OUT, "u1_shotmatched_percell.csv")
 
 NONAB = ["S3", "D4", "Q8", "D5", "A4", "D6", "D10", "F21", "S4"]

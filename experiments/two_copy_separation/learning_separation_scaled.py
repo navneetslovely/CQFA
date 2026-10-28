@@ -1,4 +1,37 @@
+"""
+experiments/two_copy_separation/learning_separation_scaled.py
+=================================================================
+SCALED version of learning_separation.py: same task, same learners, same
+estimators -- but engineered so the single-copy arm can be pushed well past n=5.
 
+What changed (algorithmics only -- the ESTIMATORS ARE IDENTICAL):
+
+ 1. Shadow Gram in closed form.  The single-copy purity U-statistic needs
+    Tr(S_i S_j) for all snapshot pairs, where S_i = ⊗_q (3|b,s><b,s| - I).
+    The original code built dense d x d snapshot matrices (O(C^2 d^2) work and
+    O(C d^2) memory) -- hopeless past n≈6.  But the trace factorises per qubit:
+
+        Tr(S_i S_j) = Π_q [ 9 |<v_iq|v_jq>|^2 - 4 ]
+                    = 5^a * (-4)^b * (1/2)^c
+
+    with a = #qubits where (basis,outcome) agree, b = #qubits where the basis
+    agrees but the outcome differs, c = #qubits with different bases (a+b+c = n).
+    a and b+a come from two one-hot Gram matmuls, so the whole C x C Gram is two
+    BLAS calls + elementwise work: O(C^2 n) flops, no d^2 anywhere.
+    Verified against the original dense implementation to <1e-6 (--verify).
+
+ 2. Snapshot sampling is batched.  A Haar state is rotated into B different random
+    product Pauli eigenbases at once with n batched 2x2 einsums, then B outcomes are
+    drawn by one cumsum+searchsorted.  Maximally mixed states need no simulation at
+    all (every product-basis outcome is uniform).
+
+ 3. Exponential (doubling) search over the copy budget with SNAPSHOT AND GRAM REUSE:
+    the ladder is nested, so the Gram block for budget C contains the block for C/2.
+    Only the new L-shaped region is ever computed, so reaching budget C costs
+    ~0.67 C^2 total instead of re-scanning.
+
+Output: results/two_copy_separation/learning_separation_scaled.csv
+"""
 from __future__ import annotations
 
 import argparse
@@ -33,7 +66,12 @@ def haar_vec(n: int, rng) -> np.ndarray:
 
 
 class State:
- 
+    """A state held in the cheapest faithful form.
+
+    kind='pure'      : one state vector, purity 1.
+    kind='maxmixed'  : I/d, purity 2^-n; product-basis outcomes are uniform bits.
+    kind='rankr'     : uniform mixture of r Haar vectors (kept as vectors).
+    """
 
     def __init__(self, kind, n, vecs=None):
         self.kind, self.n, self.vecs = kind, n, vecs
@@ -65,7 +103,8 @@ def make_dataset(n, m, rng, mixed_rank=None):
 # batched single-copy random-Pauli snapshots
 # --------------------------------------------------------------------------
 def _sample_outcomes_from_vecs(V, bases, rng, chunk=256):
-
+    """V: (B,d) state vectors (one per snapshot). bases: (B,n).
+    Rotate each vector into its own product eigenbasis, Born-sample one index."""
     B, d = V.shape
     n = bases.shape[1]
     idx_out = np.empty(B, dtype=np.int64)
@@ -134,7 +173,9 @@ def _gram_block(Ai, Ki, Aj, Kj, n):
 
 
 def _gram_block_sum(Ai, Ki, Aj, Kj, n, chunk=2048):
-   
+    """sum_{i,j} Tr(S_i S_j) over a row-set x column-set, computed in row chunks so
+    peak memory is O(chunk * n_cols) instead of O(n_rows * n_cols).  Accumulated in
+    float64 because the summands span 5^n in magnitude with alternating sign."""
     tot = 0.0
     for s in range(0, Ai.shape[0], chunk):
         e = min(s + chunk, Ai.shape[0])

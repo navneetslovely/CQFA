@@ -1,4 +1,17 @@
+"""Seeded training, bootstrap confidence intervals and CSV logging.
 
+Conventions:
+
+  * all randomness flows through the ``seeds`` argument;
+  * results are reported as acc_mean +/- acc_std with a bootstrap 95% interval
+    over those seeds;
+  * each run writes a self-describing folder containing its configuration and
+    output CSVs, so every reported value is traceable to its source.
+
+Command line::
+
+    python -m cqfa.train --rep z2_rc --model all --seeds 0 1 2 3 4
+"""
 from __future__ import annotations
 
 import argparse

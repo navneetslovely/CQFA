@@ -1,4 +1,34 @@
+"""
+experiments.trainability_law.run_scaling
+==================================
+The gradient-variance-vs-qubit-count experiment (the "no-barren-plateau"
+figure).  For each model and qubit count n it estimates
 
+    V_m(n) = Var_theta[ d_mu f_m(theta; chi_fixed) ]
+
+over S wide-random parameter draws (theta ~ U[0, 2pi)^P) at a FIXED input,
+across >=5 outer seeds, with a per-point bootstrap 95% CI.  It then fits
+log V vs n two ways (exponential vs polynomial) to classify each model as a
+barren PLATEAU (exp decay) or TRAINABLE (poly / flat decay), and cross-checks
+against the DLA Var ~ 1/dim(g) law.
+
+Models:
+  cqfa            -- coherent-projected input chi in H_+ (expected trainable).
+  non_equivariant -- generic HEA on the raw state (expected barren plateau,
+                     the negative control).
+  classical_fa    -- orbit-output averaging (expected trainable).
+
+The 'augmented' model is intentionally excluded (its forward pass and thus
+per-sample gradient variance are identical to non_equivariant).
+
+Deterministic; usage:
+
+    python -m experiments.trainability_law.run_scaling \
+        --n-min 2 --n-max 8 --samples 1000 --seeds 0 1 2 3 4 --n-layers 2 \
+        --models cqfa non_equivariant classical_fa \
+        --out experiments/trainability_law/out/variance.csv \
+        --fits-out experiments/trainability_law/out/fits.csv
+"""
 from __future__ import annotations
 
 import argparse
@@ -32,7 +62,12 @@ def _build_model(model_name, rep, n_layers, observable):
 
 
 def _dla_prediction(model_name, rep, n, chi, M):
+    """Ragone Eq.10 prediction Var_pred = P_g(rho) P_g(O)/dim(g).
 
+    For cqfa/classical_fa use the RESTRICTED (frame-induced) DLA on H_+ and the
+    projected chi; for non_equivariant use the AMBIENT su(2^n) DLA and the raw
+    state.  Returns (var_pred, dim_g) or (nan, nan) if not computed.
+    """
     try:
         if model_name in ("cqfa", "classical_fa"):
             d_eff, basis, Bplus = D.frame_induced_dla(rep, n)

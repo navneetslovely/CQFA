@@ -1,4 +1,46 @@
+"""
+experiments/discrete_log/dlog_concept.py
+===================================
+The Liu--Arunachalam--Temme (LAT) discrete-log concept class, at a small prime.
 
+Reference
+---------
+Y. Liu, S. Arunachalam, K. Temme, "A rigorous and robust quantum speed-up in
+supervised machine learning", Nature Physics 17, 1013--1017 (2021),
+DOI 10.1038/s41567-021-01287-z.
+
+The LAT concept class
+---------------------
+Fix a prime ``p`` and a generator ``g`` of the multiplicative group ``Z_p^*``
+(which is cyclic of order ``p-1``).  Every ``x in {1,...,p-1}`` has a unique
+*discrete logarithm* ``log_g(x) in {0,...,p-2}`` with ``g**log_g(x) == x (mod p)``.
+
+The concept is a *half interval in log space*: for a secret ``s in Z_{p-1}``,
+
+    f_s(x) = +1   if   log_g(x) - s   (mod p-1)   in   {0, 1, ..., (p-3)/2},
+             -1   otherwise.
+
+Because ``log_g`` is a bijection ``Z_p^* -> Z_{p-1}`` and the concept is a
+contiguous half-arc of the *log* coordinate, the labels are perfectly linearly
+structured in the ``log_g(x)`` (equivalently, in the cyclic group ``C_{p-1}``
+acting by log-shift) but are cryptographically scrambled in the raw ``x``
+coordinate: recovering ``log_g(x)`` from ``x`` is the discrete-logarithm problem
+(Shor-hard).  This is exactly why LAT proves a provable *classical* hardness
+(under DLP) yet an efficient *quantum-kernel* learner.
+
+INTEGRITY / SCOPE
+-----------------
+* At the small primes used here (``p <= ~257``) the discrete log is trivially
+  brute-forced, so this module is a **proof-of-principle**, NOT a runtime
+  supremacy claim.  The asymptotic classical hardness is the LAT theorem under
+  DLP -- CITED, not re-proven, and NOT scaled.
+* The point demonstrated empirically at small ``p``: a learner that is *aware of
+  the log / cyclic-group structure* separates the concept from a handful of
+  samples, whereas a strong classical learner on the **raw ``x`` features** does
+  not generalise (its test accuracy stays at chance / memorisation only).
+
+Everything is pure-Python integer arithmetic and deterministic.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass

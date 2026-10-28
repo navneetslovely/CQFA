@@ -1,4 +1,34 @@
+"""
+experiments.multitask_benchmark.run_benchmarks
+====================================
+The single driver for the CQFA multi-dataset benchmark sweep.
 
+Runs the full (group x task x model) matrix (see matrix.py) via
+cqfa.train.run_experiment, aggregates over >=5 seeds with bootstrap 95% CIs, and
+writes ONE tidy master CSV to results/aggregated/benchmark_master.csv plus a
+self-describing per-cell run folder under runs/benchmarks/<cell>/ for every
+model-run (traceability: every headline number -> its source CSVs).
+
+Determinism contract
+--------------------
+  * data seed = 1000 + seed (matches cqfa.train.run_experiment);
+  * teacher observable fixed at teacher_seed=12345 (concept fixed across seeds);
+  * genomics-RC uses the always-available synthetic RC-invariant generator
+    (fully offline, no network); dataset_source recorded per row.
+
+Scope of each row
+-----------------
+Each row carries advantage_claim in
+{expressivity, sample_complexity, inductive_bias, mechanism_only} so no
+downstream table over-reads a number. quantum_model=False flags the classical
+RC baseline. NO runtime-supremacy claim at this simulable scale.
+
+CLI
+---
+    python -m experiments.multitask_benchmark.run_benchmarks --seeds 0 1 2 3 4
+    python -m experiments.multitask_benchmark.run_benchmarks --quick        # smoke: 1 seed, tiny
+Filters: --cells B1 B2 ... , --only-rep z2_rc , --only-task orbit_interference .
+"""
 from __future__ import annotations
 
 import argparse

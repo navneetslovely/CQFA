@@ -1,4 +1,32 @@
+"""
+experiments.hardware_ibm.ibm_campaign.campaign
+============================================
+CLI for the seven-experiment IBM campaign.
 
+    # cost + PUB breakdown, no execution
+    python -m experiments.hardware_ibm.ibm_campaign.campaign plan
+
+    # OFFLINE dry runs (no credentials, no budget) — the correctness gate
+    python -m experiments.hardware_ibm.ibm_campaign.campaign run --backend aer_noiseless
+    python -m experiments.hardware_ibm.ibm_campaign.campaign run --backend fake:fez
+
+    # REAL device — three locks + budget gate (only after you provide the key)
+    CQFA_IBM_RUN=1 python -m experiments.hardware_ibm.ibm_campaign.campaign run \
+        --backend ibm --ibm --ibm-confirm --budget-seconds 300
+
+    # re-analyze saved raw counts (device or offline) into CSVs, no execution
+    python -m experiments.hardware_ibm.ibm_campaign.campaign analyze --tag <run_tag>
+
+Artifacts (results/ibm_campaign/<tag>/):
+    raw_counts.json            every PUB's raw shot counts (device or sim)
+    pub_index.json             per-PUB experiment/shots/theory/meta + 2q depth + layout
+    manifest.json              backend, job id, usage, calibration, versions, cost
+    circuits.qpy               logical circuits; circuits_transpiled.qpy = physical ones
+    analysis/*.csv             per-experiment result tables
+
+The API token is NEVER stored; auth comes from the saved qiskit config / env and
+the manifest is scrubbed of any token value before writing.
+"""
 from __future__ import annotations
 
 import argparse

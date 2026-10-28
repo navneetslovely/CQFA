@@ -1,4 +1,17 @@
+"""Build every figure in the paper and supplementary document.
 
+Each figure is rendered from the recorded CSVs under results/. Nothing here
+trains a model or runs a simulation, so this script is fast and its output
+depends only on the shipped result files.
+
+Rendered PDFs are written to figures/output/. The versions used in the
+submitted documents are in figures/pdf/, so the two directories can be compared
+directly.
+
+Run::
+
+    python -m figures.make_all_figures
+"""
 import importlib
 import traceback
 

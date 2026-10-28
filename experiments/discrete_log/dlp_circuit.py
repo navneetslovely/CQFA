@@ -1,4 +1,28 @@
+"""
+experiments/discrete_log/dlp_circuit.py
+===========================================
+The CIRCUIT-LEVEL discrete-log feature map. Addresses the sharpest remaining
+critique of the DLP result ("the quantum feature is dlog read from a brute-forced
+table"): here the feature is produced by an ACTUAL quantum circuit -- Shor's
+discrete-log phase-estimation circuit (two QFT registers over the modular-
+exponentiation oracle) -- simulated on a real statevector backend, no table lookup.
 
+Shor discrete-log for x = g^s mod p over the order-r=p-1 cyclic group:
+  registers |a>_t |b>_t |work> ; Hadamard the two t-qubit exponent registers;
+  apply U_x: |a>|b>|1> -> |a>|b>| g^a x^{-b} mod p > (modular exponentiation);
+  QFT both exponent registers and measure -> outcomes (u,v) concentrate on lines
+  v = -s*u mod r, from which s (the discrete log) is recovered by lattice/continued-
+  fraction post-processing. We run the circuit, read the measured (u,v), and use the
+  CIRCUIT-EXTRACTED s as the quantum feature for the same LAT interval concept.
+
+We build the modular-exponentiation oracle as an exact permutation unitary on the
+work register (correct-by-construction; the point is that the FEATURE comes from a
+measured circuit, not a precomputed dlog table). Simulated with Aer statevector
+(CPU or GPU). For modest p (t ~ 4-6 qubits/register, work ~ ceil(log2 p)) this is a
+12-18 qubit circuit -- well within statevector range.
+
+Output: results/discrete_log/dlp_circuit.csv .
+"""
 from __future__ import annotations
 
 import argparse
@@ -99,7 +123,10 @@ def run_circuit_instance(p, t, seed, device="CPU", xp=None, shots=512):
     for d in draws:
         counts[int(d)] = counts.get(int(d), 0) + 1
 
-
+    # recover s by GLOBAL line-consistency: the measured phase pairs concentrate on
+    # (phi_u, phi_v) with phi_v = frac(-s * phi_u). For each candidate s in Z_r,
+    # score the measured distribution by closeness to that line (wrap-around metric),
+    # and take the best s. Robust when r=p-1 is not a power of two (r is small here).
     samples = []
     for idx, c in counts.items():
         a = idx // Q            # register a (row-major (a,b))

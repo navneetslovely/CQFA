@@ -1,4 +1,87 @@
+"""
+experiments/multitask_benchmark/resource_accounting.py
+=============================================
+Define the model as an explicit circuit and price the group oracle.
 
+This module settles the cost question operationally: for each finite group G in
+{Z2, C4, C8, S3, D4, Q8, A4, S4} and each CQFA readout mode
+
+    Mode A  coherent projection onto the trivial irrep (post-selected),
+    Mode B  decohered / classical frame averaging,
+    Mode F  frame Fourier (irrep) readout,
+
+we BUILD the actual qiskit circuit, TRANSPILE it to a real basis, and report
+COMPILED gate counts and depth -- never estimates. Every cost that the phrase
+"the group oracle" would otherwise absorb is itemised:
+
+    (i)   preparation of the frame state |G> = |G|^{-1/2} sum_g |g>,
+    (ii)  the multiplexed controlled-U_g (SELECT-V), in TWO constructions,
+    (iii) uncomputation of the frame (Mode A post-selection),
+    (iv)  the group Fourier transform on the frame (Mode F),
+    (v)   ANCILLA qubits used by the multiplexer (previously uncounted),
+    (vi)  post-selection acceptance probability (Mode A) and shots to a target
+          additive precision for every mode.
+
+PRE-REGISTRATION (stated BEFORE running; this item is DESCRIPTIVE by
+instruction, criterion_outcome = DESCRIPTIVE_NO_CRITERION).
+The deliverable is a resource table, so the pre-registration is about what the
+table is allowed to be used to claim:
+
+  CONFIRMS "the model is operationally complete" IF, for every (group, mode)
+  cell, a circuit is actually constructed AND passes an exactness check against
+  the numpy CQFA reference (cqfa.frame), AND every one of (i)-(vi) has a
+  compiled number in the CSV.
+
+  KILLS that claim IF any cell is unbuildable, or if any component is assumed
+  rather than constructed (e.g. an oracle inserted as a black box with no
+  compiled cost), or if a circuit fails the exactness check. The finding is then
+  that the oracle is UNPRICED, and it is reported as such rather than papered
+  over with an estimate.
+
+  Separately, the "for any finite group" phrasing is DEFENSIBLE only if the
+  measured oracle + Fourier cost is poly(log|G|); it must be QUALIFIED if the
+  measured cost grows like |G| or worse. This is decided by the numbers in
+  results/multitask_benchmark/resource_table.csv, not by assertion.
+
+VACUITY GUARD (integrity rule 3). A resource cell is vacuous if the circuit is
+empty (0 gates) where a non-trivial operation was intended. Such cells are
+flagged 'vacuous_excluded' in the notes column rather than reported as "free".
+
+SEEDS (integrity rule 5). Qiskit's transpiler is stochastic. Every reported
+gate/depth/2q cell is the mean over N_TRANSPILE_SEEDS = 5 transpiler seeds,
+with se = std(ddof=1)/sqrt(n). Raw per-seed counts are written to
+resource_raw_seeds.csv so nothing is unfalsifiable.
+
+BASELINE CHOICE (integrity rule 4). Mode B is costed in its CHEAPEST 
+implementation -- classically sampling g and applying a single U_g, using NO
+frame register and NO ancillas. That is the strongest baseline and it makes
+Modes A and F look worse, which is the direction. The coherent-frame
+variant of Mode B is reported alongside, labelled, as the weak baseline.
+
+WHAT IS NOT TESTED (integrity rule 9). See NOT_TESTED at the bottom of this
+docstring in the code and the `notes` columns:
+  * no hardware execution -- these are transpiled counts, not QPU runs;
+  * no error correction / magic-state costs;
+  * unary iteration (Babbush et al.) would reduce the SELECT Toffoli count from
+    ~2|G|(n_frame-1) to ~|G|; we do NOT implement it and therefore do not claim
+    it;
+  * efficient non-abelian QFT constructions (Beals for S_n, Moore-Rockmore-
+    Russell) are NOT implemented -- our non-abelian Fourier cost is generic
+    Quantum-Shannon-Decomposition synthesis and is an upper bound;
+  * the data-register unitaries U_g are compiled as generic UnitaryGates; a rep
+    with extra structure (e.g. permutation reps compiled as reversible logic)
+    would be cheaper.
+
+Outputs (all NEW files, nothing overwritten):
+  results/multitask_benchmark/resource_table.csv        aggregated per (group, mode)
+  results/multitask_benchmark/resource_components.csv   itemised per component
+  results/multitask_benchmark/resource_raw_seeds.csv    raw per-transpiler-seed counts
+  results/multitask_benchmark/group_structure.csv       group facts + irrep dims
+  results/multitask_benchmark/verification.csv          circuit-vs-numpy exactness checks
+
+Run:
+  PYTHONPATH=. .venv314/bin/python -u -m experiments.multitask_benchmark.resource_accounting
+"""
 from __future__ import annotations
 
 import csv
@@ -17,7 +100,9 @@ from cqfa.group import (
 )
 from cqfa.frame import coherent_projection
 
-
+# ---------------------------------------------------------------------------
+# fixed experimental grid -- FROZEN BEFORE THE FIRST COMPARISON RUN (rule 6)
+# ---------------------------------------------------------------------------
 BASIS_HERON = ["rz", "sx", "x", "cz"]        # IBM Heron native basis
 BASIS_TEXTBOOK = ["u", "cx"]                 # literature-comparable basis
 OPT_LEVEL = 3
@@ -30,7 +115,10 @@ LINEAR_COUPLING_GATE_CAP = 30000             # routing cap (see integrity rule 7
 OUT_DIR = os.path.join("results", "multitask_benchmark")
 
 
-
+# ---------------------------------------------------------------------------
+# extra group representations not present in cqfa.group (defined here so that
+# cqfa/group.py is left untouched)
+# ---------------------------------------------------------------------------
 def quaternion8() -> Representation:
     """Q8 = {+-1, +-i, +-j, +-k}, faithful 2-dimensional complex irrep on C^2.
 
@@ -51,7 +139,13 @@ def alternating4() -> Representation:
 
 
 def cyclic_ordered(n: int) -> Representation:
+    """C_n with elements listed in cyclic order P^0, P^1, ..., P^{n-1}.
 
+    close_matrices() does not guarantee that ordering, and the abelian Fourier
+    transform (the DFT matrix w^{-kg}) is only the correct group Fourier
+    transform when the frame label g really is the exponent. Building the list
+    explicitly makes the labelling and the DFT consistent by construction.
+    """
     P = _perm_matrix([(i + 1) % n for i in range(n)])
     mats, cur = [], np.eye(n, dtype=complex)
     for _ in range(n):
@@ -61,7 +155,18 @@ def cyclic_ordered(n: int) -> Representation:
 
 
 def cyclic_diag8_on_C4() -> Representation:
-  
+    """C8 acting faithfully and DIAGONALLY on C^4 by P = diag(1, w, w^2, w^3),
+    w = exp(2 pi i / 8).
+
+    This exists purely to give a MATCHED CONTROL for the abelian/non-abelian
+    comparison. It has |G| = 8 and n_data = 2, identical to D4 (order 8,
+    non-abelian, n_data = 2), and identical Mode-A acceptance (dim H_+ = 1 of 4).
+    Any difference in compiled cost between this group and D4 is therefore
+    attributable to (non-)commutativity rather than to group order or register
+    width. Elements are listed in exponent order so that the frame label really
+    is the exponent, which is what makes the character DFT the correct group
+    Fourier transform.
+    """
     w = np.exp(2j * np.pi / 8)
     P = np.diag([1.0, w, w ** 2, w ** 3]).astype(complex)
     mats, cur = [], np.eye(4, dtype=complex)
@@ -140,7 +245,10 @@ def multiplication_table(mats, tol=1e-8) -> np.ndarray:
 
 
 def regular_reps(tab: np.ndarray):
-  
+    """Left regular rep L_a|b> = |ab> and right regular rep R_a|b> = |b a^{-1}>.
+
+    They commute, which is what makes the block-diagonalisation below work.
+    """
     n = tab.shape[0]
     inv = np.array([int(np.where(tab[a] == 0)[0][0]) for a in range(n)])
     L, R = [], []
@@ -156,7 +264,24 @@ def regular_reps(tab: np.ndarray):
 
 
 def group_fourier_transform(mats, abelian: bool, seed: int = 7):
-   
+    """Return (F, block_dims) with F a |G| x |G| unitary that block-diagonalises
+    the LEFT REGULAR representation into irreducible blocks.
+
+    Abelian case: F is the exact character DFT (all blocks 1x1). This is only
+    correct because cyclic_ordered() labels elements by their exponent.
+
+    Non-abelian case: F is obtained numerically. The commutant of the left
+    regular algebra is the right regular algebra; a generic Hermitian element M
+    of the right algebra acts as (+)_rho (I_{d_rho} (x) m_rho), so its
+    eigenspaces are exactly d_rho-dimensional and each carries one copy of the
+    irrep rho. Diagonalising M and grouping degenerate eigenvectors therefore
+    produces the change of basis that block-diagonalises every L_g at once --
+    i.e. a group Fourier transform, up to the (physically irrelevant for gate
+    counting) choice of basis inside each irrep.
+
+    Every returned F is VERIFIED: unitary, block-diagonalising for all g, and
+    every block irreducible by the Schur criterion (1/|G|) sum_g |chi(g)|^2 = 1.
+    """
     n = len(mats)
     tab = multiplication_table(mats)
     L, R, _ = regular_reps(tab)
@@ -193,7 +318,10 @@ def group_fourier_transform(mats, abelian: bool, seed: int = 7):
         assert check(F, block_dims), "abelian character DFT failed verification"
         return F, block_dims
 
-    
+    # Non-abelian: eigenvalues INSIDE a block are exactly degenerate (to eigh
+    # precision ~1e-13); eigenvalues ACROSS blocks are generically O(1) apart.
+    # A tight cut is therefore correct; a loose one merges distinct 1-dim irreps
+    # into a spurious reducible 2-dim block (observed for D4 at cut = 1e-3).
     for trial in range(40):
         rng = np.random.default_rng(seed + 1000 * trial)
         c = rng.standard_normal(n) + 1j * rng.standard_normal(n)
@@ -217,7 +345,11 @@ def group_fourier_transform(mats, abelian: bool, seed: int = 7):
 
 
 def irrep_summary(block_dims):
-    
+    """From block sizes recover the irrep dimension multiset.
+
+    The regular representation contains each irrep rho exactly d_rho times, so
+    a block of size d appears d times per irrep of dimension d.
+    """
     sizes = {}
     for d in block_dims:
         sizes[d] = sizes.get(d, 0) + 1
@@ -232,7 +364,12 @@ def irrep_summary(block_dims):
 # circuit components
 # ---------------------------------------------------------------------------
 def circ_prep_G(n_frame: int, order: int) -> QuantumCircuit:
-    
+    """Prepare |G> = |G|^{-1/2} sum_{g<|G|} |g> on n_frame qubits.
+
+    |G| a power of two  -> Hadamards.
+    otherwise           -> generic amplitude encoding of a non-uniform-support
+                           state, which is NOT free and is priced here.
+    """
     qc = QuantumCircuit(n_frame, name="prepG")
     if order == 2 ** n_frame:
         qc.h(range(n_frame))
@@ -244,7 +381,10 @@ def circ_prep_G(n_frame: int, order: int) -> QuantumCircuit:
 
 
 def circ_select_naive(mats_p, n_frame: int, nd: int) -> QuantumCircuit:
-    
+    """SELECT-V = sum_g |g><g| (x) U_g as |G| multi-controlled unitaries.
+
+    Zero ancillas; each term is an n_frame-controlled arbitrary nd-qubit gate.
+    """
     qc = QuantumCircuit(n_frame + nd, name="selectV_naive")
     fq = list(range(n_frame))
     dq = list(range(n_frame, n_frame + nd))
@@ -256,7 +396,18 @@ def circ_select_naive(mats_p, n_frame: int, nd: int) -> QuantumCircuit:
 
 
 def circ_select_ladder(mats_p, n_frame: int, nd: int) -> QuantumCircuit:
-    
+    """SELECT-V with an explicit ANCILLA ladder, so the ancilla cost is counted
+    rather than absorbed into the oracle.
+
+    For each g: X-conjugate the frame qubits whose bit of g is 0, AND the
+    n_frame frame qubits into one flag via a ladder of n_frame-1 Toffolis using
+    n_frame-1 ancillas, apply a SINGLY-controlled U_g, then uncompute the ladder
+    and the X's. Ancillas are returned to |0>, which is verified.
+
+    Cost model: |G| * [2(n_frame-1) Toffoli + 1 controlled-U_g].
+    NOT IMPLEMENTED: unary iteration, which shares partial ANDs between
+    consecutive g and would cut the Toffoli count to ~|G| total.
+    """
     n_anc = max(0, n_frame - 1)
     qc = QuantumCircuit(n_frame + nd + n_anc, name="selectV_ladder")
     fq = list(range(n_frame))
@@ -329,7 +480,13 @@ def compile_counts(qc: QuantumCircuit, basis, seed: int, coupling=None):
 
 
 def line_coupling(n: int):
-    
+    """Nearest-neighbour line on n qubits, or None when routing is vacuous.
+
+    A circuit on fewer than 2 qubits has no two-qubit gates to route, so a
+    coupling map is meaningless (and qiskit rejects an empty one). Returning
+    None makes the 'linear_nn' row identical to 'all_to_all' by construction,
+    which is the truth for such a circuit rather than a missing measurement.
+    """
     if n < 2:
         return None
     return [[i, i + 1] for i in range(n - 1)] + [[i + 1, i] for i in range(n - 1)]
@@ -352,7 +509,10 @@ def agg(vals):
 # exactness verification: circuit == numpy CQFA reference
 # ---------------------------------------------------------------------------
 def verify_mode_A(rep: Representation, mats_p, n_frame: int, nd: int, n_seeds=5):
-    
+    """Build the full Mode-A circuit (prep |psi>, prep |G>, SELECT-V, prep|G>^dag)
+    and check that post-selecting the frame on |0...0> reproduces Pi|psi> from
+    cqfa.frame, and that the acceptance probability matches ||Pi psi||^2.
+    """
     Pi_p = sum(mats_p) / len(mats_p)
     errs, perrs = [], []
     prep = circ_prep_G(n_frame, rep.order)

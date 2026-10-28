@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite it as below."
+title: "CQFA: code and recorded results for Coherent Quantum Frame Averaging"
+version: 1.0.0
+type: software
+authors:
+  - family-names: Singh
+    given-names: Navneet
+    affiliation: Deakin University
+    orcid: "https://orcid.org/0000-0002-3940-1608"
+  - family-names: Pokhrel
+    given-names: Shiva Raj
+    affiliation: Deakin University
+    orcid: "https://orcid.org/0000-0001-5819-765X"
+license:
+  - MIT
+  - CC-BY-4.0
+repository-code: "https://github.com/navneetslovely/CQFA"
+abstract: >-
+  Library, experiment drivers, recorded results and figure scripts for the
+  article "Coherent Quantum Frame Averaging: A Symmetrization Primitive with
+  Separable Trainability and Hardness Controls".
+keywords:
+  - quantum machine learning
+  - equivariance
+  - group Fourier transform
+  - frame averaging
+  - variational quantum circuits
+  - Fisher information

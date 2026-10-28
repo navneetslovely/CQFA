@@ -1,4 +1,20 @@
+"""
+experiments/generalization/learning_curves.py
+================================================
+The equivariance -> generalization (sample-efficiency) advantage.
 
+Restricting the hypothesis class to G-invariant functions removes label-irrelevant
+capacity, so an equivariant model needs fewer training samples to reach a target test
+accuracy. We measure test accuracy vs training-set size for CQFA, classical frame
+averaging, and a non-equivariant model at MATCHED parameter counts, on the
+coherent-teacher task (Z2), averaged over seeds with bootstrap CIs.
+
+Prediction (equivariant generalization bound): excess risk ~ sqrt(d_eff/N); confining
+to the invariant subspace cuts d_eff by the orbit-size factor, so the equivariant
+curves rise faster and the sample size to reach a target is smaller.
+
+Output: results/generalization/learning_curves.csv .
+"""
 from __future__ import annotations
 import argparse, csv, os
 import numpy as np

@@ -1,4 +1,16 @@
+"""
+experiments/spt_measurement_cost/plots.py
+===========================
+Figures for the measurement-complexity experiment, generated FROM the CSVs written by run_separation.py (no hand-entered
+numbers). matplotlib is an optional dependency; make_all() no-ops gracefully if it
+is unavailable.
 
+Figures:
+  * cstar_vs_n.png   -- the headline plot: C*(n) vs n (log y), one curve per arm, with
+                        bootstrap 95% CI bands.
+  * ratio_vs_n.png   -- C*_shadow_nonlinear / C*_coherent vs n (the headline gap).
+  * string_order.png -- physics sanity: string order & <Z_mid> vs lambda per n.
+"""
 from __future__ import annotations
 
 import csv

@@ -1,4 +1,19 @@
+"""
+experiments/fisher_information/fourier_mode.py
+============================================
+Mode F (frame Fourier / irrep readout) for a cyclic group $G=\\mathbb Z_N$, and the
+three-mode comparison on a hidden-shift learning task. Statevector-exact.
 
+Demonstrations (all verified against exact ground truth):
+  * blindness:  Mode A (projection, trivial irrep) and Mode B (classical FA) give
+    outputs CONSTANT in the hidden shift $s$; Mode F's Fourier phase $=-2\\pi ks/N$.
+  * learnability: a classifier on Mode-F features learns a hidden-shift label
+    $g(s)$; classifiers on Mode-A / Mode-B features are stuck at chance.
+  * efficiency: Fourier sampling uses every outcome (no post-selection) -> Mode F
+    escapes the coherent-projection trade-off (Prop. trade-off).
+
+Output: results/fisher_information/mode_comparison.csv .
+"""
 from __future__ import annotations
 
 import argparse

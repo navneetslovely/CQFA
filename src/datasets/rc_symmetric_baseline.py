@@ -1,4 +1,22 @@
+"""A classical reverse-complement-symmetric baseline.
 
+On classical genomics data an RC-parameter-shared classical model is a strong
+baseline and is expected to be competitive with the quantum models. It is
+reported alongside them so the comparison on this task is complete.
+
+Design
+------
+Features are the RC-symmetrised k-mer count histogram of a sequence,
+
+    h_sym(seq) = h(seq) + h(RC(seq)),
+
+which is invariant under the reverse-complement map by construction. A logistic
+classifier is fitted on those features. The model is deterministic: a fixed
+solver, a fixed iteration cap and a fixed seed.
+
+The data seed convention matches the quantum runs, so the two arms see the same
+sequences for a given seed.
+"""
 from __future__ import annotations
 
 import numpy as np
@@ -20,7 +38,12 @@ def rc_symmetrized_features(seqs, k: int) -> np.ndarray:
 
 
 class RCCNNClassical:
+    """RC-equivariant classical classifier (RCPS-style logistic head).
 
+    `n_params` is reported for provenance (feature-dim + bias); it is NOT matched
+    to the quantum models (different model class) and the master CSV flags this
+    row with quantum_model=False.
+    """
 
     def __init__(self, k: int = 2, C: float = 1.0, seed: int = 0):
         self.k = k
@@ -42,7 +65,12 @@ class RCCNNClassical:
 
 
 def run_rc_baseline_seed(seed, n_train, n_test, k=2, seq_len=12, motif="CG", rho=0.1):
-   
+    """Train + evaluate the classical RC baseline for one data seed.
+
+    Uses the SAME data seed convention as cqfa.train.run_experiment (1000 + seed)
+    so the classical baseline sees the same sequences as the quantum models.
+    Returns dict(seed, y_true, p_score, acc).
+    """
     drng = np.random.default_rng(1000 + seed)
     seqs, y = generate_sequences(n_train + n_test, drng, seq_len=seq_len,
                                  motif=motif, rho=rho)

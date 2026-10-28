@@ -1,4 +1,15 @@
+"""figures/scripts/make_paper_figs2.py
+====================================
+Regenerators for f_fair (line plot) and f_noise (heatmap), reproducing their
+original plot TYPE and style. Only the reported problems are fixed:
+  f_fair : y-axis label was cut; legend sat on top of the lines.
+  f_noise: heatmap x-axis strength labels were crowded/overlapping.
+Nothing else about the look is changed. Copies each PDF next to the manuscript.
 
+Sources:
+  f_fair  : results/two_copy_separation/{learning_separation,entanglement,overlap}.csv
+  f_noise : results/robustness/{modef_allnoise,twocopy_allnoise}.csv
+"""
 from __future__ import annotations
 import os, shutil
 import numpy as np

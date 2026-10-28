@@ -1,44 +1,41 @@
-CQFA — Review Licence
+CQFA: code and data
 
-Copyright (c) 2026. All rights reserved.
+Copyright (c) 2026 Navneet Singh and Shiva Raj Pokhrel
 
+This archive carries two licences.
 
+Software. The source code under src/, experiments/, analysis/ and scripts/, the
+Python files under figures/, and the files pyproject.toml, requirements.txt and
+requirements-lock.txt are released under the MIT License, reproduced below.
 
+Data and documentation. The recorded results under results/, the figure files
+under figures/pdf/, and README.md and REPRODUCE.md are released under the
+Creative Commons Attribution 4.0 International licence (CC BY 4.0),
+https://creativecommons.org/licenses/by/4.0/
 
-GRANT
+Third-party packages listed in requirements-lock.txt remain under their own
+licences.
 
-You may download, run, inspect and modify the code, and use the data included
-in this archive, for the purposes of:
+-------------------------------------------------------------------------------
 
-  (a) evaluating the submission, and
-  (b) reproducing the results reported in the paper and supplementary document.
+MIT License
 
+Copyright (c) 2026 Navneet Singh and Shiva Raj Pokhrel
 
-RESERVED
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-All other rights are reserved. Without prior written permission you may not:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-  - redistribute this archive or any part of it,
-  - use it for any commercial purpose, or
-  - incorporate it, in whole or in part, into other published work.
-
-No patent rights are granted.
-
-Terms for public release will be issued upon publication.
-
-
-THIRD-PARTY MATERIAL
-
-Third-party packages listed in requirements-lock.txt, and any datasets
-referenced from the published literature, remain governed by their own terms.
-
-
-NO WARRANTY
-
-THE SOFTWARE AND DATA ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
-EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR DATA OR THE USE OR OTHER DEALINGS
-IN THE SOFTWARE OR DATA.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

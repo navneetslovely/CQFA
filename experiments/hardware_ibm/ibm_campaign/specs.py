@@ -1,4 +1,21 @@
+"""
+experiments.hardware_ibm.ibm_campaign.specs
+========================================
+PUB builders for the seven-experiment campaign. Each builder returns a list of
+:class:`PubSpec` (circuit + shots + exact theory + analyzer key). All PUBs are
+concatenated by :func:`build_campaign` into ONE batched job.
 
+Design rules
+------------
+* Reuse the VERIFIED core wherever possible: ``build_cqfa_circuit`` (C3/C5/C6,
+  Mode A of C4/C7), ``_append_basis_rotation`` / ``readout`` conventions.
+* Only C1 (SPT string) and C2 (two-copy Bell) get fresh circuits; their qubit
+  map is the trivial one (qubit q = site q), and the offline dry run asserts the
+  ideal-sampler estimate matches the stored theory, so any convention slip is
+  caught before a device is touched.
+* Every circuit is SHALLOW (parametrized preps, never a deep ``initialize`` on a
+  data register), so transpiled 2q-depth stays low on Heron.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -407,14 +424,19 @@ def build_c7(shots=4096, layers=(0, 1, 2, 3), seed=41):
 # C8 — Mode F (frame Fourier readout) hidden-shift recovery vs blind Mode B
 # ===========================================================================
 def _c8_phase_oracle(qc, frame, s: int, N: int):
- 
+    """Imprint e^{2*pi*i*s*g/N} on the frame register, g = sum_j g_j 2^j (q_j weight
+    2^j). Diagonal, so it factorises into SINGLE-qubit phase gates (zero 2q gates):
+    phase on q_j is 2*pi*s*2^j/N. This is exactly the relative phase U_g psi_s
+    carries across frame basis states in the Mode-F component v_k (fourier_mode.py)."""
     f = len(frame)
     for j in range(f):
         qc.p(2.0 * np.pi * s * (2 ** j) / N, frame[j])
 
 
 def _c8_iqft(qc, frame):
-   
+    """Inverse QFT on the frame register (the coherent Mode-F readout). Standard
+    swap-then-controlled-phase form; the offline correctness gate verifies it maps
+    QFT|s> -> |s> (peak at k=s) so any convention slip is caught before hardware."""
     f = len(frame)
     for i in range(f // 2):
         qc.swap(frame[i], frame[f - 1 - i])
@@ -425,7 +447,14 @@ def _c8_iqft(qc, frame):
 
 
 def build_c8(frame_shifts=((2, (1, 2, 3)), (3, (1, 3, 6)), (4, (5, 11))), shots=4096):
-
+    """Fourier phase-readout stage of Mode F on the frame register alone: a shift s
+    imprinted as single-qubit phases is recovered by an inverse QFT (peak at k=s),
+    while the computational-basis control (same prep, NO inverse-QFT) is uniformly
+    blind. No group oracle V, data register or joint frame-data measurement is run.
+    Frame register = ceil(log2 N) qubits; the phase imprint is single-qubit only, so
+    the only 2q gates are the shallow inverse-QFT — Heron-legible, and the depth (=>
+    graceful noise degradation) grows with N. Exact theory from each built circuit's
+    own statevector."""
     specs = []
     for f, shifts in frame_shifts:
         N = 2 ** f

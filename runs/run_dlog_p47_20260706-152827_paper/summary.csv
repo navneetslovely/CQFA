@@ -1,2 +1,0 @@
-p,generator,group_order,n_train,n_test,seeds,C,structured_mean,structured_std,structured_ci_lo,structured_ci_hi,classical_raw_mean,classical_raw_std,classical_raw_ci_lo,classical_raw_ci_hi,chance_mean,separation_mean
-47,5,46,12,24,7,1.0,0.863095238095238,0.131222664791956,0.7559523809523808,0.9404761904761905,0.5595238095238095,0.043740888263985346,0.5238095238095238,0.5833333333333334,0.5595238095238095,0.3035714285714285

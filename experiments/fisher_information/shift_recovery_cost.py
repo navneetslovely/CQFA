@@ -1,4 +1,93 @@
+"""
+experiments/fisher_information/shift_recovery_cost.py
+===================================================
+Separate continuous quantum Fisher information from discrete hidden-shift
+recovery. A two-sided test of Prop.~\\ref{prop:fisher}.
 
+THE HYPOTHESIS UNDER TEST
+-------------------------
+prop:fisher (main.tex l.84) currently says, in one sentence, that
+  (i)  the Mode-F cross-sector measurement saturates the QCRB (CFI/F_Q = 1.000000), and
+  (ii) "a single fixed, post-selection-free product measurement estimates the
+       discriminating cross-irrep coherence to additive eps in O(1/eps^2) shots
+       INDEPENDENT OF N", and
+  (iii) "estimating [the coherence phase] to precision < pi/N recovers log_g x".
+Statements (i)-(ii) are LOCAL-ESTIMATION statements while (iii) is a DISCRETE
+N-hypothesis statement. Chaining them plausibly costs O(N^2) shots, because eps must
+shrink as O(1/N). This module measures that cost rather than asserting it.
+
+SETTING
+-------
+G = Z_N, U_g|x> = |x+g mod N>.  K = sum_j j |f_j><f_j| (Fourier number operator),
+U_theta = exp(-i theta K); U_{2 pi s/N} = shift-by-s.
+  |Phi_theta> = (I_R (x) U_theta)|Phi_0>,  |Phi_0> = N^{-1/2} sum_g |g>_R (x) U_g phi.
+Half A treats theta in R (continuous).  Half B treats s in {0..N-1} (discrete).
+
+READOUTS COMPARED (all three modes, as required)
+------------------------------------------------
+  A_projection            Mode A: coherent projection onto the trivial irrep
+                          (Pi = |f_0><f_0|), then a fixed system measurement.
+                          POST-SELECTED: acceptance = |phi_hat_0|^2 ~ 1/N.
+  B_frame_average         Mode B: decohered marginal rho_sys(s), fixed measurement.
+  F_srm_joint             Mode F, N-outcome optimal JOINT (square-root / Helstrom)
+                          measurement on frame (x) system.  Post-selection-free.
+                          This is the readout the IBM Heron C8 run realizes.
+  F_fixed_binary_sld      Mode F, the FIXED binary SLD-optimal projective measurement
+                          built at theta=0 -- the measurement that attains the QCRB in
+                          Half A -- reused verbatim to recover the discrete s.
+  F_fixed_product_coh     Mode F, the paper's own single-setting PRODUCT observables
+                          O_Re = R_Re (x) M, O_Im = R_Im (x) M, 50/50 randomized,
+                          with M chosen to MAXIMISE the coherence (strongest version).
+                          This is the estimator sentence (ii) is about.
+
+PRE-REGISTERED CRITERION (two-sided, fixed BEFORE running)
+----------------------------------------------------------
+Primary quantity: SHOTS_90(N) = the smallest total number of shots at which the
+maximum-likelihood decoder over the N shift hypotheses recovers s with probability
+>= 0.90 (uniform prior over s), MEASURED by Monte-Carlo, not modelled.
+Fit log2(SHOTS_90) = a + b log2(N) over N in {4,8,16,32,64}; report b with a 95% CI.
+
+  * The claim as written SURVIVES  iff, for the readout that sentence (ii) names --
+    the single fixed post-selection-free PRODUCT measurement -- the 95% CI for b
+    contains 0 (shots flat in N).
+  * The claim as written is KILLED iff that CI excludes 0 and is consistent with
+    b >= 2, i.e. the discrete recovery cost grows at least like N^2.  In that case
+    the restatement is: the COHERENCE is estimable to additive eps in
+    O(1/eps^2) shots independent of N at FIXED eps, while RECOVERING THE DISCRETE
+    SHIFT from it costs Theta(N^b).
+  * MIXED is declared if different Mode-F readouts fall on different sides -- in
+    which case the proposition must name which readout it means.
+Secondary (does NOT rescue the primary criterion, reported separately): b for
+F_srm_joint, the N-outcome joint readout actually run on hardware.
+
+Half A is a separate, independent check: for the CONTINUOUS parameter theta the
+QCRB language is legitimate, and CFI/F_Q must reproduce 1.000000, plus an
+OPERATIONAL check that the sampled MLE variance meets 1/(M F_Q).
+
+VACUITY GUARD (integrity rule 3)
+--------------------------------
+For every (readout, N, ensemble) cell we compute
+    label_signal_scale = max_{s != s'} TV( p(.|s), p(.|s') )
+BEFORE any decoding.  Cells with label_signal_scale < 1e-10 are marked
+'vacuous_excluded' and are NOT fitted; for Modes A and B this is exactly the
+zero of the separation and is reported as such (with an exact-zero certificate).
+
+CAPS (integrity rule 7)
+-----------------------
+If SHOTS_90 exceeds the budget cap, the measurement column shots_90 is left EMPTY
+and the cap is written to shots_90_lower_bound.
+
+SEEDS (integrity rule 5)
+------------------------
+>= 5 independent cells per (N, readout): 5 random base states phi for the 'generic'
+ensemble; 5 independent RNG replicates for the deterministic 'dlp_flat' ensemble.
+
+Outputs (all NEW files; nothing existing is touched):
+  results/fisher_information/shift_recovery_cost.csv          (per-cell measurements)
+  results/fisher_information/shift_recovery_cost_fits.csv     (scaling exponents + CI)
+  results/fisher_information/shift_recovery_cost_halfA.csv    (continuous-parameter QCRB)
+  results/fisher_information/shift_recovery_cost_hw_scaling.csv (IBM N=4,8,16 power check)
+"""
 from __future__ import annotations
 
 import argparse
@@ -22,6 +111,12 @@ TRIALS_CONFIRM = 4000          # MC trials at the returned M*
 _SHIFT_CACHE: dict = {}
 
 
+# Deterministic per-readout salt. This replaces abs(hash(name)) % 9973, which was
+# PYTHONHASHSEED-salted: the RNG stream differed on every invocation, so the module
+# was not reproducible (the fitted exponent moved 2.871 -> 2.888 -> 2.876 across
+# three runs and one secondary verdict flipped sign). zlib.crc32 is stable across
+# processes and Python versions, and unlike a hardcoded table it cannot silently
+# miss a readout name.
 def readout_salt(name: str) -> int:
     return zlib.crc32(name.encode("utf-8")) % 9973
 
@@ -124,7 +219,9 @@ def cfi_fixed_binary(phi: np.ndarray, N: int, dtheta: float = 1e-5):
 
 def operational_qcrb(phi: np.ndarray, N: int, F_Q: float, rng,
                      n_rep: int = 4000, shots: int = 400):
-   
+    """OPERATIONAL attainment: sample the FIXED binary measurement `shots` times at
+    theta_true = 0, take the MLE restricted to the local window |theta| <= 3/sqrt(F_Q)
+    (the QCRB is a LOCAL bound), and compare Var(theta_hat) to the QCRB 1/(shots F_Q)."""
     st = sld_basis(phi, N)
     if st is None:
         return float("nan"), float("nan")
@@ -163,7 +260,10 @@ def gram_matrix(phi: np.ndarray, N: int) -> np.ndarray:
 
 
 def srm_transition(G: np.ndarray) -> np.ndarray:
-    
+    """Square-root (pretty-good) measurement transition probabilities p(j|i) =
+    |[G^{1/2}]_{ji}|^2 for a uniform prior.  For a GEOMETRICALLY UNIFORM state set
+    (which {|Phi_s>} is, generated by a Z_N unitary) with a uniform prior the SRM is
+    the minimum-error (Helstrom) measurement, so this is exact, not a bound."""
     evals, evecs = np.linalg.eigh(G)
     evals = np.clip(evals.real, 0.0, None)
     Gh = (evecs * np.sqrt(evals)) @ evecs.conj().T
@@ -171,7 +271,15 @@ def srm_transition(G: np.ndarray) -> np.ndarray:
 
 
 def helstrom_certificate(phi: np.ndarray, N: int, G: np.ndarray):
-   
+    """Minimum-error (Helstrom) discrimination of the N hypotheses, with an explicit
+    DUAL OPTIMALITY CERTIFICATE rather than an appeal to the geometric-uniformity
+    theorem.  Build explicit coordinates c_s with G = C^dag C (so <Phi_s|Phi_t> = G[s,t]),
+    form the SRM E_s = rho^{-1/2} (1/N) c_s c_s^dag rho^{-1/2}, rho = (1/N) sum_s c_s c_s^dag,
+    and verify the Yuen-Kennedy-Lax conditions
+        Y = sum_s (1/N) c_s c_s^dag E_s   Hermitian,   Y - (1/N) c_s c_s^dag >= 0  for all s.
+    A non-negative min slack (to numerical tolerance) CERTIFIES the SRM is optimal, so
+    P_success is the true minimum-error probability, not merely an achievable value.
+    Returns (P_srm, P_closed_form, min_dual_slack, dual_herm_err, povm_completeness_err)."""
     evals, evecs = np.linalg.eigh(G)
     evals = np.clip(evals.real, 0.0, None)
     C = (evecs * np.sqrt(evals)).conj().T                  # C[:, s] = coords of |Phi_s>
@@ -209,7 +317,9 @@ def helstrom_certificate(phi: np.ndarray, N: int, G: np.ndarray):
 # outcome distributions p(o | s) for each readout  (all measurements FIXED in s)
 # ---------------------------------------------------------------------------
 def readout_A_projection(phi: np.ndarray, N: int):
-  
+    """Mode A: post-select on Pi = |f_0><f_0|, then measure the system in the
+    computational basis.  Accepted state is |f_0> for every s -> uniform, s-blind.
+    Returns (P[o,s], acceptance)."""
     Fm = fourier_states(N)
     f0 = Fm[:, 0]
     accs, cols = [], []
@@ -266,7 +376,13 @@ def readout_F_fixed_binary(phi: np.ndarray, N: int):
 
 def readout_F_fixed_product(phi: np.ndarray, N: int, kpair=(0, 1), strongest=True,
                             rng=None):
-
+    """Mode F: the paper's SINGLE-SETTING POST-SELECTION-FREE PRODUCT observables.
+    Frame is measured in the fixed basis diagonalising R_Re (resp. R_Im) built from the
+    Fourier frame vectors |e_k>, |e_k'>; the system is measured in the eigenbasis of a
+    FIXED Hermitian M with ||M|| = 1.  Settings are randomised 50/50, so the protocol is
+    a single fixed post-selection-free product measurement per shot.
+    strongest=True picks the M that MAXIMISES |v_k^dag M v_k'| (integrity rule 4:
+    report against the strongest available version of our own estimator)."""
     k, kp = kpair
     Fm_frame = fourier_states(N)                          # |e_a> columns
     ek, ekp = Fm_frame[:, k], Fm_frame[:, kp]
@@ -564,7 +680,12 @@ def run(sizes, seeds, cap, out_dir):
                 lss = label_signal_scale(P)
                 vac = "vacuous_excluded" if lss < 1e-10 else "ok"
                 for rp in reps:
-                   
+                    # NOTE: this previously used abs(hash(name)) % 9973. Python salts
+                    # str.__hash__ per process (PYTHONHASHSEED), so the RNG stream
+                    # differed on every invocation and the module was NOT reproducible:
+                    # the fitted exponent moved 2.871 -> 2.888 -> 2.876 across three
+                    # runs and one secondary verdict flipped sign. READOUT_SALT is a
+                    # fixed table so the stream depends only on (N, seed, rep, readout).
                     rng = np.random.default_rng(
                         int(1_000_003 * N + 7919 * (sd if sd is not None else 99)
                             + 131 * rp + readout_salt(name)))

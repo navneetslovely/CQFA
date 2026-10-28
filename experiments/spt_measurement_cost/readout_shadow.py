@@ -1,18 +1,48 @@
+"""
+experiments/spt_measurement_cost/readout_shadow.py
+====================================
+Single-copy classical-shadow baseline (Huang-Kueng-Preskill 2020, random-Pauli
+flavour). This is the arm the coherent 2-copy readout beats on the nonlinear /
+unknown-string task.
 
+Everything is statevector-only: to draw a single-copy measurement outcome we rotate
+|psi> by the chosen local Cliffords (one of {X,Y,Z}-basis rotations per site) and
+sample a bitstring from |amplitudes|^2 (multinomial). No density matrix is formed.
+
+Estimators:
+  * estimate_expectation(snaps, P)  -> unbiased <P> (linear; per-shot variance O(1)
+    for a SINGLE known Pauli -> the "known-string control" that stays FLAT in n).
+  * estimate_square_ustat(snaps, P) -> unbiased <P>^2 via a U-statistic over pairs
+    of independent snapshots. For the exponentially-large string family / purity the
+    single-copy sample complexity is 2^Omega(n) (HKP21, CCHL) -> the arm that BLOWS UP.
+  * local_observable_features(...)  -> low-weight (single-site + nearest-neighbour)
+    shadow estimates only; provably cannot separate the phases (control 1, FAILS).
+  * functional_estimate_shadow(...) -> single-copy estimate of the Option-A nonlinear
+    functional F(rho) = sum_{P in S_string} <P>^2 (blows up).
+"""
 from __future__ import annotations
 
 import numpy as np
 
-
+# single-qubit basis rotations (map measurement basis to Z basis) --------------
 _H = np.array([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)              # X-basis
 _HSdg = _H @ np.array([[1, 0], [0, -1j]], dtype=complex)                  # Y-basis: S^dag then H
-
+# Rotation that takes the |psi> so that a Z-basis measurement realizes the chosen
+# Pauli-basis measurement. For basis b in {0:X,1:Y,2:Z} we apply R_b to |psi>.
 _ROT = {
     0: _H,                       # measure X  <=> apply H then measure Z
     1: _HSdg,                    # measure Y  <=> apply H S^dag then measure Z
     2: np.eye(2, dtype=complex)  # measure Z
 }
-
+# Post-measurement single-shot inverse-channel snapshot ingredient:
+# for outcome bit s in {0,1} and basis b, the snapshot single-qubit operator is
+#   3 * |b,s><b,s| - I
+# where |b,s> is the eigenstate of Pauli_b with eigenvalue (-1)^s.
+# The estimator of <sigma_b'> from that snapshot is:
+#   tr[(3|b,s><b,s| - I) sigma_b'] = 3*<b,s|sigma_b'|b,s> - tr(sigma_b')
+# tr(sigma)=0 for X,Y,Z, and <b,s|sigma_b'|b,s> is (-1)^s if b'==b else 0.
+# => single-qubit estimator contribution is  3*(-1)^s  if b'==b else 0 (for a
+#    matching Pauli), or 1 for identity. This is the standard random-Pauli shadow.
 
 _PAULI_LABEL = {0: "X", 1: "Y", 2: "Z"}
 
@@ -90,7 +120,11 @@ def _per_snapshot_values(snaps, P_label: dict) -> np.ndarray:
 
 
 def estimate_square_ustat(snaps, P_label: dict) -> float:
-  
+    """Unbiased <P>^2 via the U-statistic over distinct snapshot pairs:
+        (1/(N(N-1))) sum_{j != k} v_j v_k    where v = per-snapshot <P> estimate.
+    E[v_j v_k] = <P>^2 for j != k (independent snapshots). This is the single-copy
+    estimator of the NONLINEAR quantity; its variance carries the 2^Omega(n) cost.
+    """
     v = _per_snapshot_values(snaps, P_label)
     N = len(v)
     if N < 2:
@@ -102,12 +136,20 @@ def estimate_square_ustat(snaps, P_label: dict) -> float:
 
 # -- Pauli-label helpers for the string operators ------------------------------
 def string_pauli_label(n: int, a: int | None = None, b: int | None = None) -> dict:
+    """The Y-decorated string O_string(a,b) as {site: Pauli} for shadow estimation.
 
+    For the bulk interval a=1,b=n-2 this is Z_0 Y_1 X_2..X_{n-3} Y_{n-2} Z_{n-1}.
+    Derived from the telescoping of K_i = Z_{i-1} X_i Z_{i+1}; verified by
+    test_readout::test_string_label_matches_operator.
+    """
     if a is None:
         a = 1
     if b is None:
         b = n - 2
-  
+    # Telescope: track Pauli parity per site over the product of K_i.
+    parity = {}  # site -> set of {'X','Z'} contributions counted mod nothing; we combine
+    # Build by multiplying single-site Paulis with Z*X = -iY bookkeeping (sign dropped;
+    # the operator sign is handled by string_operator; here we only need the support).
     from collections import Counter
     zc = Counter()
     xc = Counter()
@@ -133,7 +175,13 @@ def string_pauli_label(n: int, a: int | None = None, b: int | None = None) -> di
 # -- baselines -----------------------------------------------------------------
 def direct_pauli_samples(psi: np.ndarray, P_label: dict, rng: np.random.Generator,
                          n_shots: int) -> np.ndarray:
-  
+    """+/-1 samples of a SINGLE KNOWN Pauli string P, measured DIRECTLY in its own
+    eigenbasis (every shot measures P). Mean = <P>, per-shot variance 1 - <P>^2 <= 1,
+    n-INDEPENDENT. This is control 2: knowing the string, single-copy is easy.
+
+    Statevector-only: rotate each support qubit to the Z basis for its Pauli, sample
+    a bitstring, and take the parity (-1)^(sum of support bits) as the +/-1 outcome.
+    """
     n = int(np.log2(len(psi)))
     sites, codes = _pauli_support(P_label)
     bases = np.full(n, 2, dtype=np.int8)      # non-support qubits: harmless Z basis
@@ -150,12 +198,17 @@ def direct_pauli_samples(psi: np.ndarray, P_label: dict, rng: np.random.Generato
 
 def known_string_estimate(psi: np.ndarray, n: int, rng: np.random.Generator,
                           n_shots: int) -> float:
-   
+    """CONTROL 2: single-copy estimate of the ONE KNOWN string <O_string> by DIRECT
+    Pauli measurement. Easy, n-independent per-shot variance -> stays FLAT."""
     return float(np.mean(direct_pauli_samples(psi, string_pauli_label(n), rng, n_shots)))
 
 
 def local_observable_features(snaps, n: int) -> np.ndarray:
-    
+    """CONTROL 1: low-weight (single-site Z + nearest-neighbour ZZ) shadow features.
+
+    These cannot separate the phases at any budget. Returns a feature
+    vector for a downstream local-observable classifier.
+    """
     feats = []
     for q in range(n):
         feats.append(estimate_expectation(snaps, {q: "Z"}))
@@ -166,7 +219,10 @@ def local_observable_features(snaps, n: int) -> np.ndarray:
 
 
 def functional_estimate_shadow(snaps, strings_labels) -> float:
-   
+    """THE baseline: single-copy estimate of the nonlinear functional
+        F(rho) = sum_{P in S_string} <P>^2
+    via the U-statistic per string. Blows up (2^Omega(n)) as |S_string| grows.
+    """
     total = 0.0
     for lab in strings_labels:
         total += estimate_square_ustat(snaps, lab)

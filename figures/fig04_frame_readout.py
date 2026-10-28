@@ -1,4 +1,16 @@
+"""Figure 4: frame-readout head on the hidden-shift task.
 
+Rebuilt from the recorded CSV. This script performs no training and no
+simulation; it reads results and renders "f_modef.pdf" into figures/output/.
+
+Source
+------
+results/fisher_information/mode_comparison.csv
+
+One row per group order. Modes A and B are equal to the last recorded digit at
+every size, so the two traces coincide and are drawn with offset line styles to
+keep both visible.
+"""
 import csv
 
 from cqfa.paths import RESULTS

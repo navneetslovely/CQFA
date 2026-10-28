@@ -1,4 +1,54 @@
+"""
+Complex-irrep-safe certification that F_G is a generalized Fourier transform.
 
+WHY THIS FILE EXISTS
+--------------------
+u1_structure_check.csv ships gft_verified=0 for five of twelve groups -- A4, F21 and
+ALL THREE abelian controls C6, C8, C12 -- because irrep_dims_from_centre() cannot
+split complex irreps. It builds a HERMITIAN generic element of the group-algebra
+centre and calls eigh(). For a complex-conjugate pair of irreps the Hermitian part
+symmetrises the two characters onto the SAME eigenvalue, so their isotypic components
+merge into one eigenspace of dimension d^2 + d^2. For A4 (irreps 1,1,1,3) the two
+conjugate 1-dimensional irreps merge into a dimension-2 eigenspace, 2 is not a perfect
+square, and the assertion trips: "isotypic dims [1,2,9] are not perfect squares".
+F21 = C7:C3 fails identically. The abelian controls were never reached because the
+sweep aborted first.
+
+The failure is in the DIAGNOSTIC, not in F_G. This module certifies the same property
+by a route that has no eigendecomposition in it at all, so complex irreps are a
+non-issue.
+
+METHOD -- pure sparsity structure, no eigenvalues
+-------------------------------------------------
+F is a generalized Fourier transform for G iff F^dag L_g F is block-diagonal, with the
+SAME block structure, for every g in G. The regular representation decomposes as
+    L  ~  (+)_lambda  d_lambda copies of lambda,
+so the block multiset is: each irrep lambda contributes d_lambda blocks of size
+d_lambda. We therefore:
+
+  1. accumulate the support of |F^dag L_g F| over ALL g (not a few random states, so an
+     accidental cancellation cannot merge two blocks), and take connected components;
+  2. certify block-diagonality directly: max |entry| strictly outside those blocks;
+  3. read the irrep dimensions back OUT of the block multiset. If a block size d occurs
+     n_d times then the number of irreps of dimension d is n_d / d, which must be a
+     positive integer -- a strong consistency check that a wrong F cannot pass;
+  4. verify the two theorems that must then hold:
+         sum_lambda d_lambda^2 == |G|      and      #irreps == #conjugacy classes.
+
+Steps 3 and 4 are what make this a certification rather than a description: a matrix
+that merely happens to be block-diagonal will fail the integrality of n_d/d or one of
+the two counting identities.
+
+PRE-REGISTERED, TWO-SIDED: F_G is CERTIFIED for a group iff block-diagonality holds to
+< 1e-9, every n_d/d is a positive integer, sum d^2 == |G|, and #irreps == #classes.
+It is REFUTED if any of those fails -- which would mean the Mode-F readout used
+throughout U1 is not a Fourier readout for that group, and every U1 number for it would
+have to be withdrawn. This is a real possibility for A4 and F21 precisely because they
+are the groups the shipped diagnostic could not check.
+
+Reads : nothing (regenerates the bases from the group tables)
+Writes: results/readout_basis/u1_gft_certification.csv   (NEW; nothing overwritten)
+"""
 from __future__ import annotations
 
 import csv
@@ -10,7 +60,7 @@ import numpy as np
 import experiments.readout_basis.u1_shotmatched_nonabelian as U
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-OUT = os.path.join(REPO, "results", "cqfa_pp", "u1_gft_certification.csv")
+OUT = os.path.join(REPO, "results", "readout_basis", "u1_gft_certification.csv")
 
 GROUPS = ["S3", "D4", "Q8", "D5", "A4", "D6", "D10", "F21", "S4", "C6", "C8", "C12"]
 TOL = 1e-9

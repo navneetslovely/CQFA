@@ -1,4 +1,16 @@
+"""
+experiments/fisher_information/noise_resilience.py
+================================================
+Resilience of the Mode F (frame Fourier) readout under realistic noise.
+Density-matrix exact, no shots: depolarizing noise on every frame qubit before the
+Fourier readout, plus classical readout bit-flips on the measured irrep label.
 
+Question answered (, whatever the curve says): how fast does the Mode-F
+hidden-shift accuracy degrade as noise grows, and does the A/B-blind vs F-sees
+separation survive device-scale noise rates (~0.1-1% depol, ~1-3% readout)?
+
+Output: results/fisher_information/noise_resilience.csv .
+"""
 from __future__ import annotations
 
 import argparse
@@ -54,7 +66,12 @@ def _fourier_frame_povm(N: int):
 
 
 def modeF_noisy(psi: np.ndarray, ref: np.ndarray, N: int, p_dep: float, q_flip: float):
-    
+    """Noisy Mode-F features via the OPERATIONAL Hadamard-test construction: an
+    ancilla holds (|0>|Phi(ref)> + |1>|Phi(psi)>)/sqrt2; measuring X/Y(anc) x Pi_k
+    reads the complex overlap c_k = <v_k^ref | v_k^psi> (exactly the noiseless
+    Mode-F phase feature at p=0), and Pi_k on the |1> branch reads p_k. Depolarizing
+    acts on every frame qubit; readout bit-flips scramble the measured irrep label
+    k for BOTH the probabilities and the complex overlaps."""
     d = len(psi)
     phi_r = _joint_state(ref, N)
     phi_p = _joint_state(psi, N)
@@ -93,7 +110,11 @@ def modeF_noisy(psi: np.ndarray, ref: np.ndarray, N: int, p_dep: float, q_flip: 
 
 
 def sample_features(probs, overlaps, shots, rng):
-   
+    """Finite-shot estimates — the resilience mechanism. With exact
+    expectations a fixed channel is an invertible linear map a classifier undoes;
+    the REAL noise cost is the shrunken signal against shot noise. p_k from a
+    multinomial (`shots` draws); each Re/Im overlap from `shots` Hadamard-test
+    +/-1 outcomes with the exact mean."""
     N = len(probs)
     p = np.clip(np.real(probs), 0, None); p = p / p.sum()
     p_hat = rng.multinomial(shots, p) / shots

@@ -1,4 +1,15 @@
+"""A deterministic statevector simulator with parameter-shift gradients.
 
+The ansatz W(theta) is layers of single-qubit RY and RZ rotations followed by a
+CNOT ring, a standard hardware-efficient template. Every trainable parameter
+enters exactly one Pauli rotation exp(-i theta P / 2), so the parameter-shift
+rule
+
+    d<O>/dtheta = 1/2 [ <O>(theta + pi/2) - <O>(theta - pi/2) ]
+
+is exact. All four model variants share this ansatz and observable, which is
+what makes their parameter counts identical.
+"""
 from __future__ import annotations
 
 import numpy as np
@@ -63,7 +74,11 @@ def local_z(n: int, qubit: int = 0) -> np.ndarray:
 # ansatz
 # ---------------------------------------------------------------------------
 class Ansatz:
-   
+    """Hardware-efficient ansatz W(theta) on n_qubits with n_layers.
+
+    Parameter layout: theta is a flat vector of length n_layers*n_qubits*2,
+    reshaped to (n_layers, n_qubits, 2) = (RY, RZ) angles per qubit per layer.
+    """
 
     def __init__(self, n_qubits: int, n_layers: int):
         self.n_qubits = n_qubits

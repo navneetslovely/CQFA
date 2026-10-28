@@ -1,1 +1,0 @@
-{"prime": 179, "seed": 16, "generator": 2, "n_examples": 178, "cls_svm_rbf": 0.3488888888888889, "cls_random_forest": 0.30396825396825394, "cls_grad_boost": 0.41650793650793655, "cls_mlp": 0.36539682539682544, "cls_knn": 0.32634920634920633, "cls_logistic": 0.43206349206349204, "cls_rawvalue_only": 0.5944444444444444, "quantum_dlog": 0.9887301587301588}

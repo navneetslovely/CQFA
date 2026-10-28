@@ -1,4 +1,16 @@
+"""
+experiments/trainability_law/equivariant_trained.py
+=============================================
+Demonstrates the CQFA thesis END-TO-END on ONE model: the genuinely equivariant
+CQFA ansatz (generators closing into the frame-induced DLA g_G) is TRAINED to
+convergence AND its trained-regime gradient variance follows the law Var ~ 1/dim(H_+).
 
+This closes the gap flagged in review: the trainability law is a property of the
+equivariant ansatz, and here that same equivariant ansatz is the deployed, trained model
+(not the generic-ansatz CQFAModel used elsewhere for raw expressivity). We report, per n
+and per seed: final train/test accuracy (it IS trainable) and the trained gradient
+variance (it obeys the law). Output: results/trainability_law/equivariant_trained.csv .
+"""
 from __future__ import annotations
 import argparse, csv, os
 import numpy as np
@@ -27,7 +39,9 @@ def _apply(gens, thetas, chi, depth, eig=None):
 
 
 def _val_grad(gate_gens, gate_eig, thetas, chi, O):
-    
+    """Exact value and gradient of <chi|W^dag O W|chi> via the adjoint method, O(P)
+    matvecs (one forward + one backward pass). gate_gens/gate_eig are the ORDERED
+    per-gate generator matrices and eigendecompositions."""
     P = len(thetas)
     states = [chi.astype(complex)]
     for k in range(P):

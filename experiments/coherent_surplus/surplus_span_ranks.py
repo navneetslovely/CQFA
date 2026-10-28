@@ -1,4 +1,101 @@
+"""Certify the coherent-surplus dimension by operator span ranks.
 
+Counting |G| diagonal terms and |G|^2 pair-indexed terms does not by itself
+establish that their operator spans have those dimensions: representation
+multiplicities, group relations and stabilisers can create dependencies. This
+module measures the spans directly.
+
+SCOPE RELATIVE TO surplus_dimension.py
+--------------------------------------
+results/coherent_surplus/surplus_dimension.csv is produced by
+experiments/coherent_surplus/surplus_dimension.py, whose `_rank()` calls
+np.linalg.matrix_rank on the stacked vectorised operators, so `coherent_dim`
+there is already a numerically computed rank rather than the closed-form count
+|G|(|G|-1). Its sample is narrow: one generic Gaussian-Hermitian M at one seed,
+and only faithful representations (C_n regular, Z2, S3-natural, D4-natural).
+Degenerate M, reducible and multiplicity representations, unfaithful
+representations and nontrivial stabilisers are the cases that can break the
+closed form, and this module covers them.
+
+WHAT IS COMPUTED
+----------------
+For a finite group G with unitary rep {U_g}_{g in G} on C^d, and Hermitian M:
+
+    C_{gh} = U_g^dag M U_h
+    d_B = dim_R span_R { Herm parts of C_{gg} : g in G }      (classical / diagonal)
+    d_A = dim_R span_R { Herm parts of C_{gh} : g,h in G }     (coherent / all pairs)
+    coherent surplus = d_A - d_B
+
+Features are <psi|A|psi> with A Hermitian, so the correct object is the REAL
+vector space of Hermitian operators (dim_R Herm(d) = d^2). Each Hermitian
+operator is mapped by a Hilbert-Schmidt ISOMETRY into R^{d^2}
+(diag real parts; sqrt(2)*Re and sqrt(2)*Im of the strict upper triangle),
+rows are stacked, and the rank is the numerical rank of that real matrix
+via SVD.
+
+Since C_{gh}^dag = U_h^dag M U_g = C_{hg} (M Hermitian), the pair set is closed
+under dagger, hence span_C{Herm parts} = span_C{C_{gh}} and the provable bounds are
+
+    d_B <= min(|G|, d^2),      d_A <= min(|G|^2, d^2).
+
+The closed form asserts BOTH bounds are saturated:
+    closed_form_paper = min(|G|^2, d^2) - |G|            (as in surplus_dimension.py)
+    closed_form_bound = min(|G|^2, d^2) - min(|G|, d^2)  (the bound difference)
+
+TOLERANCE DISCIPLINE (anti tolerance-fiddling)
+----------------------------------------------
+Every operator is normalised to unit Frobenius norm before stacking (row scaling
+does not change a row space) so no operator is spuriously small. Rank is reported
+at THREE relative thresholds sigma_i > tau * sigma_max, tau in {1e-6, 1e-9, 1e-12};
+`rank_stable` is True only if all three agree. The singular-value spectrum GAP is
+reported explicitly: sigma_last_kept, sigma_first_dropped, and their ratio. A rank
+is defensible only if the gap is many orders of magnitude.
+
+VACUITY GUARD
+-------------
+op_norm_scale = max Frobenius norm over the operator set. Any operator with
+norm/op_norm_scale < 1e-10 is EXCLUDED as vacuous BEFORE the SVD and counted in
+n_vacuous_excluded. If op_norm_scale itself < 1e-14 the whole cell is marked
+vacuous_excluded and its rank columns are left EMPTY.
+
+CASES TESTED
+------------
+(i)   generic Haar-type M            : M_family = gue_generic
+(ii)  M with degeneracies            : rank1_proj, half_proj, two_level_degenerate, identity
+(iii) REDUCIBLE representations      : rep_type = mult2 (rho (x) I_2, multiplicity 2),
+                                       natural perm reps (trivial (+) standard),
+                                       unfaithful reps
+(iv)  nontrivial stabilisers         : M_family = subgroup_averaged (M is exactly
+                                       invariant under a proper nontrivial subgroup H,
+                                       so the stabiliser of M under conjugation is >= H);
+                                       M_family = identity (stabiliser = all of G)
+(v)   abelian AND non-abelian G      : C_3..C_8, Z2 (abelian); S3, S4, D4 (non-abelian)
+
+>= 5 seeds per reported cell (seeds 0..4). Deterministic M families (identity)
+are still run at 5 seeds and flagged M_deterministic=True; their std is
+legitimately 0. Per-seed rows go to the main CSV; the summary CSV aggregates with
+se = std(ddof=1)/sqrt(n).
+
+PRE-REGISTERED CRITERION (two-sided, fixed BEFORE running)
+----------------------------------------------------------
+CONFIRMS: the numerically computed surplus d_A - d_B equals closed_form_paper
+          = min(|G|^2,d^2) - |G| in ALL tested cells. Then the closed form is an
+          equality and Proposition (coherent surplus) stands as written.
+
+KILLS:    ANY tested cell has d_A - d_B strictly below closed_form_paper (or d_A
+          strictly below min(|G|^2,d^2), or d_B strictly below min(|G|,d^2)).
+          Then the counting argument overstates the accessible dimension, the
+          closed form is NOT an equality, and the proposition must be restated as
+          an UPPER BOUND with the saturation conditions made explicit.
+
+(A cell with surplus ABOVE closed_form_paper is also a failure of the closed form
+as an equality; it is recorded separately as `paper_understates` -- it can happen
+because closed_form_paper subtracts |G| rather than the true d_B.)
+
+Outputs (both NEW files; surplus_dimension.csv is NOT touched):
+    results/coherent_surplus/surplus_span_ranks.csv          (per rep x M_family x seed)
+    results/coherent_surplus/surplus_span_ranks_summary.csv  (aggregated over seeds)
+"""
 from __future__ import annotations
 
 import argparse
@@ -90,6 +187,7 @@ class Case:
         self.label, self.mats, self.dim = label, mats, dim
         self.commut, self.rep_type, self.note = commut, rep_type, note
         self.order = len(mats)
+        self.irreps = None          # [(d_lambda, m_lambda), ...], filled lazily
 
 
 def _is_abelian(mats, tol=1e-9):
@@ -103,6 +201,92 @@ def _is_abelian(mats, tol=1e-9):
 def _mult2(mats):
     """rho (x) I_2 : same irreps, every multiplicity doubled (REDUCIBLE)."""
     return [np.kron(U, np.eye(2, dtype=complex)) for U in mats]
+
+
+def _blockdiag(blocks):
+    n = sum(b.shape[0] for b in blocks)
+    out = np.zeros((n, n), dtype=complex)
+    i = 0
+    for b in blocks:
+        k = b.shape[0]
+        out[i:i + k, i:i + k] = b
+        i += k
+    return out
+
+
+def _s3_irreps(s3_perm_mats):
+    """The three irreps of S3, as matrix lists aligned with the natural permutation rep:
+    trivial (1x1), sign (1x1), standard (2x2, the permutation action on the sum-zero plane)."""
+    triv = [np.eye(1, dtype=complex) for _ in s3_perm_mats]
+    sgn = [np.array([[np.round(np.real(np.linalg.det(U)))]], dtype=complex) for U in s3_perm_mats]
+    B = np.linalg.qr(np.array([[1, -1, 0], [1, 1, -2]], dtype=float).T)[0]   # 3x2, columns span sum-zero plane
+    std = [(B.T @ np.real(U) @ B).astype(complex) for U in s3_perm_mats]
+    return triv, sgn, std
+
+
+def s3_with_multiplicities(s3_perm_mats, m_triv, m_sgn, m_std):
+    """m_triv*triv (+) m_sgn*sgn (+) m_std*std of S3 as a block-diagonal representation."""
+    triv, sgn, std = _s3_irreps(s3_perm_mats)
+    mats = []
+    for t, sg, st in zip(triv, sgn, std):
+        blocks = [np.kron(np.eye(m), X) for m, X in ((m_triv, t), (m_sgn, sg), (m_std, st)) if m > 0]
+        mats.append(_blockdiag(blocks))
+    return mats
+
+
+def isotypic_structure(mats, tol=1e-7, seed=0):
+    """(d_lambda, m_lambda) for every irrep occurring in the representation, from the matrices alone.
+
+    The image algebra A = span{U_g} is semisimple, A = (+)_lambda M_{d_lambda} (x) I_{m_lambda}.
+    Twirling a random element of A over the group gives a generic element of the centre of A;
+    its Hermitian part is constant on each isotypic component, so its eigenprojections P_lambda
+    pick out the components. Then rank(P_lambda) = d_lambda m_lambda and dim(A P_lambda) =
+    d_lambda^2. Returns None if the two consistency checks (sum d m = d, sum d^2 = dim A) fail.
+    """
+    n, d = len(mats), mats[0].shape[0]
+    rng = np.random.default_rng(seed)
+    c = rng.standard_normal(n) + 1j * rng.standard_normal(n)
+    a = sum(ci * U for ci, U in zip(c, mats))
+    z = sum(U @ a @ U.conj().T for U in mats) / n          # central in A
+    H = (z + z.conj().T) / 2                                # centre is *-closed
+    w, V = np.linalg.eigh(H)
+    scale = max(1.0, float(np.abs(w).max()))
+    dimA = int((lambda sv: (sv > 1e-9 * sv[0]).sum())(
+        np.linalg.svd(np.array([U.reshape(-1) for U in mats]), compute_uv=False)))
+    out, i = [], 0
+    while i < d:
+        j = i
+        while j + 1 < d and abs(w[j + 1] - w[i]) < tol * scale:
+            j += 1
+        P = V[:, i:j + 1] @ V[:, i:j + 1].conj().T
+        r = j + 1 - i                                       # = d_lambda * m_lambda
+        AP = np.array([(U @ P).reshape(-1) for U in mats])
+        sv = np.linalg.svd(AP, compute_uv=False)
+        dsq = int((sv > 1e-9 * sv[0]).sum())                # = d_lambda^2
+        dl = int(round(np.sqrt(dsq)))
+        if dl * dl != dsq or r % dl:
+            return None
+        out.append((dl, r // dl))
+        i = j + 1
+    if sum(dl * ml for dl, ml in out) != d or sum(dl * dl for dl, _ in out) != dimA:
+        return None
+    return sorted(out)
+
+
+def pairwise_prediction(irreps):
+    """d_A = sum_{lambda,mu} d_l d_m min(d_l d_m, m_l m_m): the coherent count for generic M."""
+    return sum(dl * dm * min(dl * dm, ml * mm) for dl, ml in irreps for dm, mm in irreps)
+
+
+def multiplicity_regime(irreps):
+    """'regular' if m = d throughout, 'm_ge_d', 'm_le_d', or 'mixed'."""
+    ge = all(m >= dl for dl, m in irreps)
+    le = all(m <= dl for dl, m in irreps)
+    return "regular" if (ge and le) else "m_ge_d" if ge else "m_le_d" if le else "mixed"
+
+
+def irrep_string(irreps):
+    return ";".join(f"{dl}x{m}" for dl, m in irreps)
 
 
 def build_cases():
@@ -139,6 +323,21 @@ def build_cases():
                       "S3 natural (x) I_2: dim of group-algebra image is 5 < |G|=6"))
     cases.append(Case("D4-nat-mult2", _mult2(rd.matrices), 8, "nonabelian", "mult2",
                       "D4 natural (x) I_2"))
+
+    # ---- (iii) MULTIPLICITY PATTERNS of S3: (m_triv, m_sgn, m_std) ---------
+    # One-sided patterns (every m >= d_lambda, or every m <= d_lambda) satisfy a closed
+    # form, (dim A)^2 or d^2 respectively. Mixed patterns do not, even when {U_g} is
+    # linearly independent; (4,1,1) and (3,3,1) are the counterexamples to min(|G|^2,d^2).
+    for (mt, ms, md), rtype, note in (
+        ((1, 1, 2), "regular_blocks", "S3 regular rep assembled from its irreps: m = d throughout"),
+        ((2, 2, 4), "regular_mult2", "two copies of the S3 regular rep: m = 2d throughout"),
+        ((1, 1, 1), "multfree_all", "every S3 irrep once: m <= d, so d_A = d^2 = 16"),
+        ((1, 0, 3), "mult_uneven", "triv + 3 std, sgn absent: m >= d on occurring irreps, d_A = (dim A)^2 = 25"),
+        ((4, 1, 1), "mixed_mult", "4 triv + sgn + std: independent (dim A = 6) and mixed; d_A = 20, not 36"),
+        ((3, 3, 1), "mixed_mult", "3 triv + 3 sgn + std: independent (dim A = 6) and mixed; d_A = 24, not 36"),
+    ):
+        cases.append(Case(f"S3-m{mt}{ms}{md}", s3_with_multiplicities(s3, mt, ms, md),
+                          mt + ms + 2 * md, "nonabelian", rtype, note))
 
     # ---- (iii) UNFAITHFUL reps (group relations kill distinctness) --------
     # C4 acting through its C2 quotient: U_g = X^(g mod 2) on C^2, kernel {0,2}
@@ -276,6 +475,12 @@ def run_cell(case: Case, family: str, seed: int):
     cf_paper = bound_dA - m                       # exactly surplus_dimension.py's formula
     cf_bound = bound_dA - bound_dB
 
+    if case.irreps is None:
+        case.irreps = isotypic_structure(Us)
+    irr = case.irreps
+    pred_pair = pairwise_prediction(irr) if irr else None
+    regime = multiplicity_regime(irr) if irr else None
+
     row = dict(
         group=case.label, order_G=m, dim_d=d, commutativity=case.commut,
         rep_type=case.rep_type, rep_note=case.note,
@@ -288,6 +493,9 @@ def run_cell(case: Case, family: str, seed: int):
         d_B=rb["rank"], d_A=ra["rank"],
         bound_dB=bound_dB, bound_dA=bound_dA,
         closed_form_paper=cf_paper, closed_form_bound=cf_bound,
+        dim_group_algebra=(sum(dl * dl for dl, _ in irr) if irr else None),
+        irrep_structure=(irrep_string(irr) if irr else None),
+        multiplicity_regime=regime, d_A_pred_pairwise=pred_pair,
         tol_ref=TOL_REF,
         dB_rank_tol_1e6=rb["rank_tol_1e-06"], dB_rank_tol_1e9=rb["rank_tol_1e-09"],
         dB_rank_tol_1e12=rb["rank_tol_1e-12"], dB_rank_stable=rb["rank_stable"],
@@ -303,7 +511,8 @@ def run_cell(case: Case, family: str, seed: int):
         # rule 7: leave measurements EMPTY, do not let a bound render as a measurement
         row.update(surplus=None, matches_paper=None, matches_bound=None,
                    dB_saturates=None, dA_saturates=None,
-                   paper_understates=None, paper_overstates=None)
+                   paper_understates=None, paper_overstates=None,
+                   matches_pairwise=None)
         return row
 
     surplus = ra["rank"] - rb["rank"]
@@ -315,6 +524,7 @@ def run_cell(case: Case, family: str, seed: int):
         dA_saturates=(ra["rank"] == bound_dA),
         paper_overstates=(surplus < cf_paper),
         paper_understates=(surplus > cf_paper),
+        matches_pairwise=(None if pred_pair is None else ra["rank"] == pred_pair),
     )
     return row
 
@@ -372,13 +582,17 @@ def run(out_dir):
             bound_dB=r0["bound_dB"], bound_dA=r0["bound_dA"],
             closed_form_paper=r0["closed_form_paper"],
             closed_form_bound=r0["closed_form_bound"],
+            dim_group_algebra=r0["dim_group_algebra"],
+            irrep_structure=r0["irrep_structure"],
+            multiplicity_regime=r0["multiplicity_regime"],
+            d_A_pred_pairwise=r0["d_A_pred_pairwise"],
         )
         if not ok:
             base.update({c: None for c in
                          ("d_B_mean", "d_B_std", "d_B_se", "d_A_mean", "d_A_std", "d_A_se",
                           "surplus_mean", "surplus_std", "surplus_se", "surplus_min",
                           "surplus_max", "all_seeds_match_paper", "any_seed_match_paper",
-                          "all_seeds_match_bound", "all_ranks_stable",
+                          "all_seeds_match_bound", "all_seeds_match_pairwise", "all_ranks_stable",
                           "min_dA_sv_gap_ratio", "min_dB_sv_gap_ratio",
                           "dB_saturates_all", "dA_saturates_all", "verdict")})
             base["verdict"] = "vacuous_excluded"
@@ -405,6 +619,7 @@ def run(out_dir):
             all_seeds_match_paper=all_paper,
             any_seed_match_paper=any(r["matches_paper"] for r in ok),
             all_seeds_match_bound=all(r["matches_bound"] for r in ok),
+            all_seeds_match_pairwise=all(r["matches_pairwise"] for r in ok),
             all_ranks_stable=all(r["dA_rank_stable"] and r["dB_rank_stable"] for r in ok),
             min_dA_sv_gap_ratio=(min(finite_gapA) if finite_gapA else float("inf")),
             min_dB_sv_gap_ratio=(min(finite_gapB) if finite_gapB else float("inf")),
@@ -438,6 +653,11 @@ def run(out_dir):
     print(f"cells where d_B < min(|G|,d^2) : {n_dB_fail}")
     print(f"cells where d_A < min(|G|^2,d^2): {n_dA_fail}")
     print(f"BOUND VIOLATIONS (must be 0)   : {n_bound_viol}")
+    gen = [r for r in live if r["M_family"] == "gue_generic" and r["matches_pairwise"] is not None]
+    print(f"pairwise law d_A = sum d d' min(dd', mm'), generic M : "
+          f"{sum(1 for r in gen if r['matches_pairwise'])}/{len(gen)} cells exact")
+    mixed = sorted({r["group"] for r in gen if r["multiplicity_regime"] == "mixed"})
+    print(f"mixed-multiplicity representations (closed form must fail): {mixed}")
     print(f"all ranks tolerance-stable     : {all(r['dA_rank_stable'] and r['dB_rank_stable'] for r in live)}")
     print("VERDICT:", "CONFIRMS" if (n_over == 0 and n_under == 0) else "KILLS")
     return rows, srows

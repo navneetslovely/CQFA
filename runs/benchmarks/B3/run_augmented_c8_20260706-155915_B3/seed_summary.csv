@@ -1,2 +1,0 @@
-rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
-c8,augmented,symmetry_vs_broken,5,0.7266666666666667,0.044221663871405324,0.65,0.7833333333333333,0.6866666666666666,0.7633333333333333,18,0.5

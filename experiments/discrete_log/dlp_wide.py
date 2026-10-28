@@ -1,4 +1,19 @@
+"""
+experiments/discrete_log/dlp_wide.py
+========================================
+The wide discrete-log sweep: turns the 3-prime / 5-seed head-to-head into a
+CURVE -- many primes x many seeds x all six classical models, with a raw-value
+feature ablation. Addresses the review finding "thin, small-scale evidence: only
+3 primes, ~50 examples".
 
+Resume-aware CPU-fleet driver: each unit = (prime, seed) runs the full model bank
+and writes results/discrete_log/dlp_wide/parts/p{p}_s{seed}.json ; finished
+units are SKIPPED on relaunch, so the job can be killed/restarted freely (server
+rule: relaunching continues, never restarts). Final merge -> dlp_wide.csv .
+
+Run (Mac quick):   python -m experiments.discrete_log.dlp_wide --quick
+Run (server):      python -m experiments.discrete_log.dlp_wide --jobs 28
+"""
 from __future__ import annotations
 
 import argparse

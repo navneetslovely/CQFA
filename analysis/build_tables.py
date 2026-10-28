@@ -1,4 +1,8 @@
+"""Generate the result tables directly from the recorded CSVs.
 
+No value is written by hand: every table cell is read from a file under
+results/. Output is emitted as LaTeX fragments.
+"""
 from __future__ import annotations
 import os, glob
 import numpy as np

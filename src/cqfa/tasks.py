@@ -1,4 +1,18 @@
+"""Learning-task construction.
 
+``coherent_teacher_task`` labels each state by thresholding a fixed coherent
+teacher feature
+
+    c(psi) = <Pi psi| M |Pi psi> / || Pi psi ||^2,
+
+which depends on cross-orbit interference. Classical frame averaging observes
+only the orbit outputs {<psi| U_g^dag M U_g |psi>}, so it is
+information-theoretically bottlenecked on this concept while the coherent
+readout can represent it.
+
+The remaining constructors cover orbit interference, symmetric versus
+symmetry-broken targets, and states derived from symmetry-protected order.
+"""
 from __future__ import annotations
 
 import numpy as np
@@ -20,7 +34,11 @@ def random_hermitian(dim: int, rng: np.random.Generator) -> np.ndarray:
 
 def coherent_teacher_task(rep: Representation, n_samples: int,
                           rng: np.random.Generator, teacher_M: np.ndarray):
+    """Sample states and label by thresholding the coherent teacher feature.
 
+    Returns (X, y): X an (n_samples, dim) complex array of states, y in {0,1}.
+    States annihilated by Pi (post-selection prob ~0) are skipped.
+    """
     states, feats = [], []
     while len(states) < n_samples:
         psi = random_states(rep.dim, 1, rng)[0]
@@ -34,10 +52,26 @@ def coherent_teacher_task(rep: Representation, n_samples: int,
     return np.array(states), y
 
 
-
+# ===========================================================================
+# Benchmark tasks: the same (X, y) contract as coherent_teacher_task.
+# Each returns X (n_samples, rep.dim) complex unit states, y in {0,1}^n_samples,
+# median-balanced. All randomness flows through the passed rng (deterministic).
+# ===========================================================================
 def orbit_interference_task(rep: Representation, n_samples: int,
                             rng: np.random.Generator, teacher_M: np.ndarray):
+    """T2 -- the sharpest expressivity separation.
 
+    Label = sign (vs median) of the *coherent surplus* itself:
+        surplus(psi) = f_A(psi) - f_B(psi)
+    where f_A = cqfa_readout (Mode A, coherent amplitude average) and
+          f_B = classical_fa_readout (Mode B, orbit-output average).
+    The decision boundary IS the off-diagonal interference term that Mode B is,
+    by construction, blind to. Classical-FA therefore cannot separate it above
+    chance; CQFA can. `advantage_claim = expressivity`.
+
+    Pi-annihilated states (f_A is None) are skipped, as in the coherent-teacher
+    task.
+    """
     states, surplus = [], []
     while len(states) < n_samples:
         psi = random_states(rep.dim, 1, rng)[0]
@@ -57,7 +91,23 @@ def symmetry_vs_broken_task(rep: Representation, n_samples: int,
                             q_lo_quantile: float = 0.33,
                             q_hi_quantile: float = 0.67,
                             calib_pool: int = 400):
+    """T3 -- equivariance-as-inductive-bias.
 
+    Two clouds graded by the frame asymmetry order parameter
+        q(psi) = 1 - ||Pi psi||^2   (cqfa_layer.frame_asymmetry).
+    Class 0 = low-q (symmetric-ish), class 1 = high-q (broken).
+
+    Robustness note: the *absolute* q distribution is rep-dependent (for larger
+    orbits e.g. C8 the random-state q concentrates near 1, so fixed absolute
+    bands q_lo=0.15/q_hi=0.55 from the spec are unreachable). We therefore use
+    per-rep QUANTILE thresholds calibrated on a fresh pool of random states:
+    below the q_lo quantile -> class 0, above the q_hi quantile -> class 1, the
+    ambiguous middle band rejected. This always populates both classes and stays
+    fully deterministic (calibration draws come from the same rng stream).
+
+    Equivariant models (cqfa, classical_fa) should track this order parameter
+    cleanly; non-equivariant and augmented act as controls.
+    """
     # calibrate quantile cut-points on a pool drawn from the same rng
     pool = random_states(rep.dim, calib_pool, rng)
     qpool = np.array([L.frame_asymmetry(p, rep) for p in pool])
@@ -81,7 +131,11 @@ def symmetry_vs_broken_task(rep: Representation, n_samples: int,
 
 def _random_local_perturb(psi: np.ndarray, n: int, rng: np.random.Generator,
                           eps: float = 0.25) -> np.ndarray:
-   
+    """Apply independent small single-qubit RY/RZ rotations to each of n qubits.
+
+    Keeps the state physical (unit norm) and the task non-trivial but learnable.
+    Uses the verified statevector primitives in cqfa.simulator.
+    """
     from .simulator import _apply_1q_state, RY, RZ
     out = np.asarray(psi, dtype=complex).copy()
     for q in range(n):
@@ -92,7 +146,24 @@ def _random_local_perturb(psi: np.ndarray, n: int, rng: np.random.Generator,
 
 def spt_derived_task(rep: Representation, n_samples: int,
                      rng: np.random.Generator, eps: float = 0.25):
-   
+    """A trainable-scale binary task derived from symmetry-protected order.
+
+    rep must be a power-of-two rep on n = log2(dim) qubits (use z2_pauli(n)).
+    We sample states interpolating between the exact cluster/SPT ground state
+    (h=0, string order = +1) and a trivial paramagnet (h=3, string order ~0),
+    each dressed with small random single-qubit rotations. Label = SPT-side (0)
+    vs trivial-side (1).
+
+    Uses the ground-state primitives in
+    experiments/spt_measurement_cost/spt_physics_reference.py. The two base states differ (overlap 0.29-0.54 for n=2..4),
+    so the concept is learnable even where string order alone would not separate
+    (e.g. n=2 has no interior stabilizer site).
+
+    Scope: this is an expressivity and inductive-bias demonstration on
+    SPT-derived states, recorded as `advantage_claim = inductive_bias`. It is
+    distinct from the measurement-complexity result in
+    experiments/spt_measurement_cost/, which concerns the readout protocol.
+    """
     from experiments.spt_measurement_cost.spt_physics_reference import ground_state
     n = int(round(np.log2(rep.dim)))
     if 2 ** n != rep.dim:
@@ -123,7 +194,12 @@ TASK_REGISTRY = {
 
 
 def make_task(name: str, rep: Representation, teacher_seed: int = 12345):
-    
+    """Return a closure (n_samples, rng) -> (X, y) for the sweep driver.
+
+    The teacher observable M (for the two teacher-based tasks) is fixed by
+    `teacher_seed` so the *concept* is identical across data seeds -- the correct
+    experimental design already used in cqfa.train.run_experiment.
+    """
     fn = TASK_REGISTRY[name]
     if name in ("coherent_teacher", "orbit_interference"):
         M = random_hermitian(rep.dim, np.random.default_rng(teacher_seed))

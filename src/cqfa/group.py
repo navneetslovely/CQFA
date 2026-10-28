@@ -1,4 +1,19 @@
+"""Finite groups, unitary representations and the group oracle.
 
+Conventions used throughout:
+
+  * a representation is a list {U_g} of unitary matrices closed under
+    multiplication, with the identity first;
+  * the coherent group projector is Pi = (1/|G|) sum_g U_g, which projects
+    onto the G-invariant subspace;
+  * the frame register holds n_frame = ceil(log2 |G|) qubits prepared in the
+    uniform superposition |G> = |G|^{-1/2} sum_g |g>, carrying amplitude on
+    the first |G| computational-basis states and zero on any padding states;
+  * the group oracle is V = sum_g |g><g|_frame (x) U_g, a block-diagonal
+    unitary on frame (x) data.
+
+Pure NumPy and deterministic.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -94,7 +109,11 @@ def _perm_matrix(perm) -> np.ndarray:
 
 
 def close_matrices(generators, dim, cap: int = 5040, tol: float = 1e-9) -> list:
-    
+    """Close a set of generator unitaries into the full finite group.
+
+    Returns the group elements as matrices with the identity first. Convention
+    free (works by multiplying matrices), so it is robust for any finite rep.
+    """
     I = np.eye(dim, dtype=complex)
     mats = [I]
 
@@ -121,7 +140,12 @@ def close_matrices(generators, dim, cap: int = 5040, tol: float = 1e-9) -> list:
 # concrete group representations
 # ---------------------------------------------------------------------------
 def z2_rc() -> Representation:
- 
+    """G = Z2 (reverse-complement flavour), the RC-EQC case.
+
+    Involution A = X (x) Z on 2 qubits (A@A = I), matching rep_Z2 in
+    cqfa_core_verify.py. This is the group whose CQFA(Z2) instance must
+    reproduce the reverse-complement equivariance behaviour (regression test).
+    """
     A = kron([X, Z])
     return Representation("Z2-rc", close_matrices([A], 4), 4)
 

@@ -1,4 +1,41 @@
+"""
+U1 random-basis arm -- the untrained control arm.
 
+WHY THIS FILE EXISTS
+--------------------
+This arm is a condition on the abstract-level claim. A shallow trainable circuit
+readout recovers ~99% of the gap that the fixed Fourier readout leaves. But a
+single DATA-INDEPENDENT Haar-random basis, with zero fitting shots and no training
+whatsoever, already recovers most of the same gap at exact readout. The trainable
+readout must therefore be reported against that arm, not against the fixed Fourier
+basis alone.
+
+This arm measures ~0.956 for that arm, but only in scratch scripts. Integrity
+rule 1 forbids citing a number that is not in a committed CSV, so this module
+measures it properly and writes it down.
+
+WHY THE RANDOM ARM WORKS AT ALL, AND WHY IT IS NOT A REFUTATION
+---------------------------------------------------------------
+It is explained by the same rank fact the abstract states. The fixed generalized
+Fourier basis is rank-deficient on non-abelian G: it reads only sum_lambda d_lambda
+of the |G| real parameters. A Haar-random basis is full-rank almost surely, so it
+sees the missing directions -- it is simply badly CONDITIONED rather than blind.
+That is why it does well at exact readout and, collapses at
+finite shots. Both arms are measured here at both budgets so the paper can state the
+trade : Fourier is well-conditioned but rank-deficient, random is full-rank
+but ill-conditioned, and only the learned readout is both.
+
+PRE-REGISTERED, TWO-SIDED (fixed before first run):
+  The abstract's claim SURVIVES if the learned circuit still beats a random basis at
+    exact readout by mean(delta) > 2*se over >= 5 seeds on non-abelian groups.
+  It is KILLED if a random basis matches or beats the learned circuit at exact
+    readout -- in which case "a trainable circuit readout recovers the gap" is not
+    attributable to training at all, and the abstract sentence must be withdrawn
+    before submission, not after.
+
+Reads : results/readout_basis/u1_shotmatched_percell.csv   (committed, unchanged)
+Writes: results/readout_basis/u1_random_basis_arm.csv      (NEW; nothing overwritten)
+"""
 from __future__ import annotations
 
 import csv
@@ -11,7 +48,7 @@ from scipy import stats as sps
 import experiments.readout_basis.u1_shotmatched_nonabelian as U
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-OUTDIR = os.path.join(REPO, "results", "cqfa_pp")
+OUTDIR = os.path.join(REPO, "results", "readout_basis")
 PERCELL = os.path.join(OUTDIR, "u1_shotmatched_percell.csv")
 OUT = os.path.join(OUTDIR, "u1_random_basis_arm.csv")
 

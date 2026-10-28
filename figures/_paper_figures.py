@@ -1,4 +1,14 @@
+"""
+figures/scripts/make_all_figures.py
+===================================
+Regenerate every paper figure from the results CSVs, using the shared publication
+style (no titles; bold/large ticks and labels; vector PDF; readable at 1/3 width).
+Each figure is defensive: if its CSV is missing it is skipped with a note, so this
+can be run while experiments are still landing.
 
+Run:  .venv314/bin/python figures/scripts/make_all_figures.py
+Outputs: figures/output/f{1..7}_*.pdf (+ .png previews)
+"""
 from __future__ import annotations
 import os, glob, sys
 import numpy as np

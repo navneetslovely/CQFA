@@ -1,4 +1,51 @@
+"""Reverse-complement (Z2) DNA k-mer classification.
 
+The symmetry
+------------
+The reverse-complement map on a DNA sequence reverses base order and
+complements each base (A<->T, C<->G). It is an exact involution, so the group
+is Z2. A biological read and its reverse complement describe the same
+double-stranded locus, so a well-posed label is RC-invariant:
+y(seq) == y(RC(seq)). This is the standard finite-symmetry setting in genomics
+(Shrikumar et al., reverse-complement parameter sharing; Mallet and Vert,
+RC-equivariant networks).
+
+Encoding
+--------
+A length-k k-mer over the alphabet {A, C, G, T} is one-hot encoded over
+4^k = 2^{2k} amplitudes as a unit-norm real vector.
+
+  * k = 1 gives dimension 4, two qubits, matching z2_rc. Degenerate, since the
+    action is pure complement.
+  * k = 2 gives dimension 16, four qubits, matching z2_pauli(4). Non-degenerate
+    and used for the reported results.
+
+The RC involution on this index space is a fixed dim x dim
+permutation-with-complement unitary U_RC, formed by reversing position order
+and swapping the A<->T and C<->G channels. U_RC is built explicitly,
+U_RC @ U_RC == I is asserted, and {I, U_RC} is registered as a
+``Representation`` through ``close_matrices``, so the group action equals the
+reverse-complement map by construction.
+
+Scope
+-----
+This is a classical dataset. Reverse-complement-equivariant classical models
+are strong baselines on it and remain competitive. What the coherent readout
+contributes here is exact equivariance and label efficiency from an
+architecturally enforced symmetry, not a quantum runtime advantage; runs record
+``advantage_claim = "inductive_bias"``.
+
+Data source
+-----------
+The default and always-available path is a synthetic RC-symmetric generator.
+Labels are defined on {seq} U {RC(seq)}, so y(seq) == y(RC(seq)) holds exactly,
+and this is asserted for every batch by ``_verify_rc_invariance``. A
+public-fetch hook is present but disabled by default; when it is unavailable or
+disabled the driver records ``dataset_source = "synthetic"`` and proceeds fully
+offline and deterministically.
+
+Pure NumPy and deterministic, seeded through ``numpy.random.default_rng``.
+"""
 from __future__ import annotations
 
 import numpy as np
@@ -156,7 +203,16 @@ def _verify_rc_invariance(seqs, labels, motif: str) -> None:
 # window -> quantum-state encoding (RC of a WINDOW == group action on the state)
 # ---------------------------------------------------------------------------
 def _window_to_state(seq: str, k: int, rng: np.random.Generator) -> np.ndarray:
- 
+    """Encode a sequence as a normalized mixture of its k-mer one-hot amplitudes.
+
+    We form the (real, unit-norm) amplitude vector proportional to the sqrt of the
+    k-mer count histogram of the sequence's contiguous k-mers. The RC of the
+    sequence maps this state EXACTLY to U_RC applied to it (the k-mer multiset of
+    RC(seq) is the RC-image of the k-mer multiset of seq), so the group action on
+    the state == reverse complement on the data. A tiny deterministic phase jitter
+    breaks exact real-degeneracy without disturbing the RC-equivariance (jitter is
+    applied symmetrically so U_RC-equivariance of the *distribution* is preserved).
+    """
     counts = np.zeros(4 ** k, dtype=float)
     for i in range(len(seq) - k + 1):
         counts[kmer_to_index(seq[i:i + k])] += 1.0
@@ -178,7 +234,13 @@ def encode_dataset(seqs, k: int, rng: np.random.Generator) -> np.ndarray:
 # ---------------------------------------------------------------------------
 def build_genomics_rc(n_samples: int, rng: np.random.Generator, k: int = 2,
                       seq_len: int = 12, motif: str = "CG", rho: float = 0.1):
+    """Build (X, y, rep, meta) for the genomics-RC cell.
 
+    X   : (n_samples, 4^k) complex unit states (k-mer histogram amplitude encoding)
+    y   : (n_samples,) int labels, RC-invariant by construction (asserted)
+    rep : the Z2 U_RC Representation whose group action == reverse complement
+    meta: dict with source/provenance for the master CSV
+    """
     seqs, y = generate_sequences(n_samples, rng, seq_len=seq_len, motif=motif, rho=rho)
     _verify_rc_invariance(seqs, y, motif)             # invariance gate
     X = encode_dataset(seqs, k, rng)

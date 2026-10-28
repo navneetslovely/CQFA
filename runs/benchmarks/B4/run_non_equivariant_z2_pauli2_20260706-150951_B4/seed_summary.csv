@@ -1,2 +1,0 @@
-rep,model,task,n_seeds,acc_mean,acc_std,acc_min,acc_max,ci_lo,ci_hi,n_params,class_balance
-z2_pauli2,non_equivariant,spt_derived,1,1.0,0.0,1.0,1.0,1.0,1.0,8,0.4375

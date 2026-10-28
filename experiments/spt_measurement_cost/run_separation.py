@@ -1,4 +1,28 @@
+"""
+experiments/spt_measurement_cost/run_separation.py
+============================
+CLI entry point for the SPT measurement-complexity separation.
 
+Runs the C*(n) budget sweep for each arm over the size sweep and seeds, writes the
+four traceable CSVs (raw_estimates.csv, cstar.csv, ratio.csv, string_order.csv), and
+optionally the headline, ratio and physics figures.
+
+Example (headline):
+    python -m experiments.spt_measurement_cost.run_separation \
+        --sizes 6 8 10 12 \
+        --arms coherent shadow_nonlinear shadow_known local \
+        --budgets 16 64 256 1024 4096 16384 \
+        --epsilon 0.1 \
+        --seeds 0 1 2 3 4 5 6 \
+        --bootstrap 10000 \
+        --out results/spt_measurement_cost/
+
+Example (fast smoke, what the build ran):
+    python -m experiments.spt_measurement_cost.run_separation --sizes 6 8 \
+        --arms coherent shadow_nonlinear shadow_known \
+        --budgets 16 64 256 1024 4096 --epsilon 0.1 --seeds 0 1 \
+        --bootstrap 200 --out results/spt_measurement_cost_smoke/ --no-plots
+"""
 from __future__ import annotations
 
 import argparse

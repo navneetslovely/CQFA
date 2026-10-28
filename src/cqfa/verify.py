@@ -1,4 +1,9 @@
+"""Numerical verification of the invariance identities.
 
+Re-derives the exact-invariance and coherent-surplus statements from the
+package modules using fixed seeds. Importable, returning the computed
+quantities, and runnable, printing a summary.
+"""
 from __future__ import annotations
 
 import numpy as np

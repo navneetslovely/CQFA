@@ -1,4 +1,30 @@
+"""
+experiments/spt_measurement_cost/spt_model.py
+===============================
+State preparation and exact operators for the SPT measurement-complexity
+experiment.
 
+CANONICAL model (the physics-corrected one; see PHYSICS_NOTES.md §0):
+
+    H(lam; n) = -sum_{i=1}^{n-2} Z_{i-1} X_i Z_{i+1}  +  lam * sum_{i=0}^{n-2} X_i X_{i+1}
+
+Open boundary, 0-indexed sites 0..n-1. The 3-body cluster term runs over interior
+sites i=1..n-2; the competing 2-body XX term runs over bonds i=0..n-2. The
+*transverse -h*X field* variant (retained in spt_physics_reference.py only as a
+symmetry checker) has NO genuine SPT->trivial transition -- do NOT use it here.
+
+Verified facts (reproduced by this module's __main__ and the unit tests):
+  * H(lam) commutes exactly with the Z2xZ2 protecting symmetry (P_even, P_odd).
+  * The XX competitor drives a genuine gap-closing transition near lam ~ 1; the
+    string order S(lam) collapses (and sharpens with n).
+  * Clean class representatives: SPT lam=0.3 -> S ~ +0.98 ; trivial lam=2.5 -> S ~ 0.
+  * The exact cluster state at lam=0 (built by stabilizer projection, including
+    the two boundary stabilizers X_0 Z_1 and Z_{n-2} X_{n-1}) has string order
+    exactly +1.
+
+All states are exact statevectors; pure numpy dense ED (numpy.linalg.eigh), with an
+optional scipy.sparse fallback for the optional stretch size n=14.
+"""
 from __future__ import annotations
 
 import numpy as np
@@ -61,7 +87,12 @@ def boundary_stabilizers(n: int):
 
 
 def string_operator(n: int, a: int | None = None, b: int | None = None) -> np.ndarray:
-  
+    """O_string(a,b) = prod_{i=a}^{b} K_i (built by multiplying the K_i matrices).
+
+    Defaults a=1, b=n-2 (the full bulk interval). Telescopes to the Y-decorated
+    Pauli string Z_0 Y_1 X_2 ... X_{n-3} Y_{n-2} Z_{n-1}, the correct SPT order
+    parameter. Built by matrix product to stay convention-free.
+    """
     if a is None:
         a = 1
     if b is None:
@@ -73,7 +104,11 @@ def string_operator(n: int, a: int | None = None, b: int | None = None) -> np.nd
 
 
 def naive_string_operator(n: int) -> np.ndarray:
-  
+    """The WRONG (symmetry-forbidden) string Z_0 X_1 ... X_{n-2} Z_{n-1}.
+
+    Kept only so tests can assert it evaluates to ~0 in both phases (guards against
+    re-introducing the incorrect operator). Do NOT use it as an order parameter.
+    """
     d = {0: Z, n - 1: Z}
     for i in range(1, n - 1):
         d[i] = X
@@ -87,14 +122,29 @@ def string_order(psi: np.ndarray, n: int, a: int | None = None, b: int | None = 
 
 
 def local_z_mid(psi: np.ndarray, n: int) -> float:
-    
+    """<Z_{mid}> at the central site -- a representative LOCAL observable that does
+    NOT distinguish the phases (used by test_local_cannot_separate)."""
     mid = n // 2
     return float(np.real(psi.conj() @ op_on({mid: Z}, n) @ psi))
 
 
 # -- ground state extraction ---------------------------------------------------
 def ground_state(n: int, lam: float, edge_pin: float = 0.0, sparse: bool = False) -> np.ndarray:
-   
+    """Exact ground state (unit statevector) of H(lam).
+
+    Parameters
+    ----------
+    edge_pin : float
+        If > 0, add -edge_pin * (X_0 Z_1 + Z_{n-2} X_{n-1}) before diagonalizing.
+        This bulk-irrelevant, Z2xZ2-preserving term lifts the open-chain edge
+        degeneracy of the SPT phase so that eigh returns a unique symmetric ground
+        state with a well-defined string order. For the deep
+        class points (SPT lam=0.3, trivial lam=2.5) the finite-lam/finite-n
+        splitting already selects a unique state, so edge_pin=0 is fine there.
+    sparse : bool
+        If True, use scipy.sparse.linalg.eigsh (k=6, which='SA') -- only needed for
+        the optional stretch size n=14 where dense 2^n x 2^n eig is heavy.
+    """
     if sparse:
         return _ground_state_sparse(n, lam, edge_pin)
     H = cluster_ising_xx_hamiltonian(n, lam)
@@ -134,7 +184,14 @@ def _ground_state_sparse(n: int, lam: float, edge_pin: float) -> np.ndarray:
 
 
 def cluster_state(n: int) -> np.ndarray:
-    
+    """Exact SPT representative at lam=0: the graph/cluster state built by projecting
+    |0...0> onto the +1 eigenspace of every stabilizer.
+
+    stabgroup = {X_0 Z_1} u {Z_{i-1} X_i Z_{i+1}: i=1..n-2} u {Z_{n-2} X_{n-1}}.
+
+    Includes the two boundary stabilizers -> unique graph state, string order
+    exactly +1. This is the 'clean SPT' state (no diagonalization).
+    """
     dim = 2 ** n
     psi = np.zeros(dim, dtype=complex)
     psi[0] = 1.0  # |0...0>
@@ -162,7 +219,11 @@ TRIVIAL_LABEL = 0
 
 def prepare_state(n: int, lam: float, phase: str, edge_pin: float = 0.0,
                   sparse: bool = False) -> np.ndarray:
-   
+    """Prepare the class representative state at (n, lam).
+
+    phase in {'spt','trivial'}. For phase=='spt' and lam==0 the exact cluster state
+    (stabilizer projection) is returned; otherwise ED (with optional edge pinning).
+    """
     if phase == "spt" and abs(lam) < 1e-12:
         return cluster_state(n)
     return ground_state(n, lam, edge_pin=edge_pin, sparse=sparse)
@@ -171,7 +232,8 @@ def prepare_state(n: int, lam: float, phase: str, edge_pin: float = 0.0,
 def sample_class_state(n: int, rng: np.random.Generator,
                        spt_lambdas=SPT_LAMBDAS, trivial_lambdas=TRIVIAL_LAMBDAS,
                        edge_pin: float = 0.0, sparse: bool = False):
-   
+    """Draw a balanced labelled example: pick y in {0,1}, a lam from that class's
+    pool, build the ground state. Returns (psi, y, lam, phase)."""
     y = int(rng.integers(0, 2))
     if y == SPT_LABEL:
         lam = float(rng.choice(spt_lambdas))

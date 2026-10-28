@@ -1,4 +1,15 @@
+"""Robustness of the fitted growth exponent to the scoring rule.
 
+The exponent reported by ``learning_separation_scaled`` uses a threshold chosen
+in sample: every threshold is scanned on the same 24 points and the maximum over
+both polarities is taken. Two alternatives test whether the exponent depends on
+that choice.
+
+Rule 1 substitutes an oracle threshold, the midpoint between the two known
+purities 1 and 2^-n, which has no fitted parameters.
+
+Rule 2 fits the threshold on half the points and scores on the other half.
+"""
 import os
 import numpy as np
 

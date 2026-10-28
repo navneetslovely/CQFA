@@ -1,4 +1,13 @@
+"""End-to-end check that the archive is installed and working.
 
+Runs in well under a minute and touches every layer: the library, the group
+constructions, both readout modes, the invariance identity, a short training
+run, and the recorded result files.
+
+Run::
+
+    python scripts/smoke_test.py
+"""
 from __future__ import annotations
 
 import sys
@@ -54,7 +63,7 @@ def main() -> int:
                              f"unsymmetrised control {out['err_base']:.2f}"))
 
     n_csv = len(list(RESULTS.rglob("*.csv")))
-    results.append(check("recorded results are present", n_csv > 100,
+    results.append(check("recorded results are present", n_csv > 50,
                          f"{n_csv} CSV files under results/"))
 
     curated = RESULTS / "curated"

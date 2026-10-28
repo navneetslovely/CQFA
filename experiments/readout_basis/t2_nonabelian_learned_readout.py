@@ -1,4 +1,73 @@
+"""
+T2 -- NON-ABELIAN learned readout vs fixed Mode F  (falsification attempt)
+=========================================================================
 
+WHY THIS TEST EXISTS
+--------------------
+The structural ceiling argument establishes (results/readout_dial/, results/c2_learned_frame_reduction.csv,
+results/novelty_gate/) that for ABELIAN G the frame-register reduced state is circulant,
+hence DFT-diagonal, hence the fixed Mode-F (character) readout is already an optimal readout:
+a trainable readout can buy nothing.
+
+That argument is WEAK for NON-ABELIAN G. For non-abelian G the Fourier transform only
+BLOCK-diagonalises the frame state (one d_lambda x d_lambda block per irrep lambda), so a
+fixed-basis readout returns only the DIAGONAL of each block and throws away the
+d_lambda(d_lambda-1) off-diagonal real numbers. A learned readout has formal room there.
+This file tests that empirically.
+
+EXACT SETUP (statevector-exact, no shot noise, no hardware)
+-----------------------------------------------------------
+CQFA frame register: |Psi> = |G|^{-1/2} sum_g |g> (x) U_g|psi>, U = REGULAR representation.
+The frame reduced state is the Gram matrix
+
+        rho[g,h] = (1/|G|) <U_h psi | U_g psi> = (1/|G|) f(h^{-1} g),   f(k) = <psi|U_k|psi>
+
+i.e. rho = (1/|G|) sum_k f(k) R_k, a G-circulant matrix (R_k = right-regular translation).
+Both facts are asserted numerically at run time.
+
+TASK (identical functional form for abelian and non-abelian G, so the comparison is clean):
+  draw psi Haar-random in C^{|G|}; the label is a threshold of a LINEAR functional of the
+  frame state itself,          y = 1{ Re tr(rho W) > median_train },
+  for a per-seed random Hermitian W. The label is therefore, by construction, a function of
+  rho alone -- the ONLY question is whether the readout preserves the information.
+  Variant "generic_W": W generic Hermitian.
+  Variant "offdiag_W": W is supported purely on the OFF-Fourier-diagonal part (the part a
+  fixed-basis readout is blind to). For abelian G that part of rho is exactly zero, so the
+  label is floating-point noise and NOBODY can learn it -- a built-in sanity control.
+
+ARMS (matched data budget: same train/test split, same L2, same optimiser)
+  * acc_modeF            fixed Mode-F readout: p = diag(F^dag rho F) in a FIXED, deterministic,
+                         data-independent Fourier basis F, + trainable linear head.
+                         params = |G| + 1.
+  * acc_learned          trainable readout R(phi) on the frame register + linear head.
+                         KEY IDENTITY (asserted numerically below): a trainable unitary basis
+                         R followed by a linear head w is exactly
+                             logit = sum_k w_k <R_k|rho|R_k> = tr(rho M),  M = R diag(w) R^dag,
+                         and M ranges over ALL Hermitian matrices. So the learned-readout arm is
+                         EXACTLY logistic regression on the full Hermitian form of rho -- a CONVEX
+                         problem whose global optimum we reach. This makes the learned arm as
+                         strong as it can possibly be (no local-minimum excuse). params = |G|^2 + 1.
+  * acc_modeF_plus_head  CONTROL for parameter count, not information: fixed Mode-F features
+                         (|G| of them) + a trainable 1-hidden-layer head with ~|G|^2 params.
+                         If the learned arm's gain is merely "more parameters", this arm matches it.
+  * acc_modeF_bestbasis  (supplementary) best of 8 FIXED Fourier bases, chosen by TRAIN accuracy
+                         (never test) -- makes the fixed arm as strong as basis choice allows.
+
+PRE-REGISTERED CRITERION (applied exactly as written, not tuned)
+  delta_s = acc_learned(s) - acc_modeF(s) over >= 5 seeds (we use 8).
+  se      = std(delta, ddof=1) / sqrt(n_seeds).
+  The learned readout SURVIVES iff mean(delta) > 2 * se.  Otherwise: negative reported.
+  VACUITY GUARD (applied BEFORE the delta test): if the cell's label functional is
+  identically zero (label_signal_scale < 1e-10, i.e. pure floating-point roundoff),
+  the cell is reported as `vacuous_excluded` regardless of delta. Without this guard
+  the criterion thresholds noise against noise and can return SURVIVES on a task that
+  carries no label signal at all -- which it did for C8/offdiag_W
+  (delta=+0.00208, 2se=0.00137, label_signal_scale=6.98e-16) before the guard existed.
+
+CSV: results/readout_basis/t2_nonabelian_learned_readout.csv          (per group x task x seed)
+     results/readout_basis/t2_nonabelian_summary.csv                  (per group x task, verdict)
+     results/readout_basis/t2_structure_check.csv                     (structural asserts / diagnostics)
+"""
 from __future__ import annotations
 
 import csv
@@ -19,7 +88,7 @@ ROOT = os.path.abspath(__file__)
 while ROOT != os.path.dirname(ROOT) and not os.path.exists(
         os.path.join(ROOT, "pyproject.toml")):
     ROOT = os.path.dirname(ROOT)
-OUT = os.path.join(ROOT, "results", "cqfa_pp")
+OUT = os.path.join(ROOT, "results", "readout_basis")
 
 # ---- pre-registered hyper-parameters (fixed BEFORE looking at any accuracy) ----
 SEEDS = [0, 1, 2, 3, 4, 5, 6, 7]
@@ -69,7 +138,15 @@ def is_abelian(T):
 # fixed Fourier bases (deterministic, data-independent)
 # ===========================================================================
 def fourier_basis(L, R, b_index):
-  
+    """A canonical strong-Fourier-sampling basis of C[G].
+
+    In the matrix-unit picture C[G] = (+)_lambda M_{d_lambda}, the left-regular algebra acts by
+    LEFT multiplication and the right-regular algebra by RIGHT multiplication. A generic
+    Hermitian element  H = (A + A^dag)/2,  A = sum_k c_k R_k + sum_k d_k L_k,  therefore acts as
+    e -> Y e + e X with generic X, Y, whose eigenvectors are v_a w_b^T. In that eigenbasis every
+    R_k (hence every G-circulant matrix, hence rho) is BLOCK-diagonal, with blocks of size
+    d_lambda -- i.e. it is a valid choice of irrep bases (a Fourier basis). Deterministic.
+    """
     m = L.shape[0]
     rng = np.random.default_rng(BASIS_SEED + 1000 * b_index)
     c = rng.normal(size=m) + 1j * rng.normal(size=m)

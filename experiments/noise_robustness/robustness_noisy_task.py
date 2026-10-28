@@ -1,4 +1,145 @@
+"""Noise robustness measured against tasks that the channel provably preserves.
 
+The question this module settles: whether noise changes the task itself, whether
+labels remain tied to clean or to noisy states, and whether the lower bound still
+applies to the noisy ensemble.
+
+The sweep in experiments/noise_robustness/robustness_sweep.py records only
+(task, model, strength, N, acc, acc_std). It does not state which state the label
+is a function of, and it carries no Bayes ceiling, so a drop in accuracy is
+un-attributable: it could be the METHOD failing or the TASK dissolving. This
+module separates the two.
+
+WHAT THIS MODULE ADDS
+---------------------
+1. LABEL CONVENTION IS AN EXPLICIT, RECORDED VARIABLE. Every row carries
+   `label_convention` in {clean_state, noisy_state} and `label_defined_on`.
+   Both conventions are RUN for both tasks. They are different learning problems:
+     clean_state : y is fixed BEFORE the channel. Noise corrupts the evidence,
+                   never the ground truth. ("robustness" reading)
+     noisy_state : y is recomputed AFTER the channel from the post-channel state
+                   itself. ("the noise redefines the task" reading)
+   `label_flip_rate_vs_clean` quantifies how far apart the two problems are.
+
+2. A BAYES CEILING FOR THE NOISY ENSEMBLE, per channel/strength/convention.
+   Task A: `bayes_shotlimited_acc` is the EXACT Bayes-optimal decision rule for
+     the noisy task at the same shot budget the method gets -- exact multinomial
+     + binomial likelihoods for all N candidate shifts (the generative model is
+     known in closed form because there are only N distinct preparations), a
+     uniform prior (the true prior), and a log-sum-exp over the label classes.
+     This is optimal, not a heuristic. Its VALUE is Monte-Carlo estimated over
+     seeds/samples, so an SE is reported.
+   Task A also carries `helstrom_1copy_bayes_acc`: 1/2 + (1/4)||sigma_0-sigma_1||_1
+     on the exact class-averaged post-channel states -- a closed-form, measurement
+     -free single-copy ceiling.
+   Task B: `helstrom_1copy_bayes_acc` is EXACTLY 0.5 and is derived, not measured:
+     both classes have ensemble-average state I/d, and a channel is linear, so
+     E[N(rho)] agrees between classes and no single-copy strategy can beat chance.
+     The informative ceiling there is the two-copy `bayes_shotlimited_acc`, which
+     is MC-estimated from a large pool (labelled `mc_estimated` in
+     `bayes_method`), NOT exact -- disclosed per integrity rule 1.
+
+3. TASK INFORMATIVENESS, so a fall in accuracy is attributable.
+     `tv_class_distributions`  -- (1/2)||pbar_0 - pbar_1||_1 of the exact
+                                  class-conditional readout distributions.
+     `trace_dist_class_states` -- (1/2)||sigma_0 - sigma_1||_1 of the exact
+                                  class-average post-channel states.
+     `min_pairwise_stat_sep`   -- min over distinct preparations of the L2 gap
+                                  between their exact statistics. When this hits
+                                  0 the noisy task has literally ceased to exist
+                                  (the channel has collapsed the state family)
+                                  and no learner, informed or not, can do better
+                                  than the label prior.
+     `label_signal_scale`      -- vacuity guard (integrity rule 3). Any cell
+                                  below 1e-10 is marked 'vacuous_excluded' in
+                                  `vacuity_flag` and is EXCLUDED from the verdict
+                                  BEFORE any comparison is made.
+
+4. PHYSICAL, NOT NOMINAL, CHANNEL STRENGTH. Equal `nominal_strength` across
+   channels is NOT equal physical disturbance and this module never assumes it
+   is. Per channel/strength we record the exact Choi-derived
+   `entanglement_fidelity`, `process_infidelity`, `avg_gate_infidelity` and
+   `choi_trace_distance`, plus diamond-norm information split  across
+   `diamond_lower_bound` / `diamond_upper_bound` (the standard
+   ||J||_1 <= ||.||_diamond <= d||J||_1 sandwich) and
+   `diamond_numeric_lower_bound` (an explicit maximisation over pure inputs on
+   H (x) H, so every value is a CERTIFIED lower bound; the max over all such
+   inputs equals the diamond norm). cvxpy is not installed in this environment,
+   so no exact SDP value is claimed. `diamond_closed_form` is populated ONLY for
+   the two coherent unitary channels, where Aharonov-Kitaev-Nisan gives
+   ||U - I||_diamond = 2|sin(theta/2)| exactly, and serves as a cross-check on
+   the numeric bound. There is no column that presents a bound as a measurement
+   (integrity rule 7).
+
+TASKS
+-----
+Task A "modef"  : the Mode-F hidden-shift task (the headline advantage), N=8,
+                  channel on every frame qubit, finite-shot Hadamard-test
+                  features. Label is a property of the PREPARATION (which shift).
+Task B "twocopy": the purity (pure vs mixed) task, n=3, channel i.i.d. on every
+                  qubit. Label is a property of the STATE, so the two label
+                  conventions genuinely diverge here, which is what makes the
+                  distinction quantitative.
+
+THREE LEARNERS ON IDENTICAL TEST DATA (so all deltas are paired, rule 5)
+------------------------------------------------------------------------
+  cqfa_acc     : the method as published -- nearest-centroid, leave-one-out, on
+                 m examples (Task A); trained-threshold two-copy reader (Task B).
+  informed_acc : the INFORMED COMPARATOR. Same features, same shot budget, but
+                 trained on a large independent pool drawn from the SAME noisy
+                 ensemble (so it has effectively learned the channel) with a
+                 stronger classifier (shrinkage LDA / pool-optimal threshold).
+                 Strictly more informed than the method.
+  bayes_*_acc  : the ceiling described above.
+
+PRE-REGISTERED CRITERION (two-sided; fixed BEFORE the first run; applied verbatim)
+---------------------------------------------------------------------------------
+Define, per non-vacuous cell, on paired per-seed values:
+    task_degradation D  = bayes_acc(strength=0) - bayes_acc(strength)
+    method_shortfall M  = bayes_acc(strength)   - cqfa_acc(strength)
+    informed_shortfall I= bayes_acc(strength)   - informed_acc(strength)
+and the excess shortfalls relative to the SAME quantity at strength 0:
+    dM = M(strength) - M(0)        dI = I(strength) - I(0)
+
+  SURVIVES  if for every non-vacuous cell either dM <= 0.10, or dM exceeds 0.10
+            only where the informed comparator degrades comparably (dI >= dM - 0.05).
+            That is: CQFA tracks the noisy-task Bayes ceiling, and wherever CQFA
+            falls it is because the TASK fell, not the method.
+  KILLED    if there exists a non-vacuous cell with dM > 0.10, resolved at
+            > 2 paired SE, while dI <= 0.05. That is: the method falls materially
+            below the noisy-task Bayes ceiling while an informed learner with the
+            same access does not -- the method, not the task, is failing.
+  MIXED     if cells satisfying the KILL inequality exist but none is resolved at
+            > 2 paired SE.
+The per-cell outcome is written to `cell_verdict` and the aggregate to
+results/robustness/noisy_task_verdict.csv. The criterion is applied by code
+(`_verdict`), not by prose.
+
+WHAT THIS DOES NOT TEST (integrity rule 9; see also the run summary)
+-------------------------------------------------------------------
+ * Correlated / non-Markovian / crosstalk noise. All ten channels are i.i.d.
+   single-qubit and memoryless.
+ * Coherent-error accumulation across circuit depth: the channel is applied once
+   at the readout boundary, not per layer.
+ * Any real-hardware ensemble. This is density-matrix exact simulation only; no
+   new QPU runs were made (integrity rule 8).
+ * The Hadamard-test overlap features are sampled independently per irrep k,
+   matching the published pipeline in noise_resilience.sample_features. A single
+   physical experiment would share shots across k, so absolute shot efficiency is
+   optimistic for ALL THREE learners equally -- it cannot create or hide a gap
+   between them, which is what the criterion tests.
+ * Task B's Bayes ceiling is MC-estimated, not closed form (flagged per row in
+   `bayes_method`).
+
+Outputs (all NEW files; nothing existing is overwritten):
+  results/robustness/noisy_task_redesign.csv    -- one row per task x channel x
+                                                   strength x label_convention
+  results/robustness/noisy_task_channels.csv    -- physical channel measures
+  results/robustness/noisy_task_verdict.csv     -- the pre-registered verdict
+
+Run:
+  PYTHONPATH=. .venv314/bin/python -u -m experiments.noise_robustness.robustness_noisy_task
+"""
 from __future__ import annotations
 
 import argparse
@@ -39,7 +180,13 @@ def _trace_norm(A):
 
 
 def _diamond_numeric_lower(kraus, d=2, restarts=12, seed=0):
-  
+    """Certified lower bound on ||N - I||_diamond.
+
+    ||Delta||_diamond = max over PURE |psi> on H (x) H of ||(Delta (x) I)(|psi><psi|)||_1.
+    Every feasible |psi> therefore yields a valid lower bound, and the maximum over
+    all of them IS the diamond norm. We maximise numerically with restarts; the
+    returned number is reported as a LOWER BOUND, never as the diamond norm.
+    """
     rng = np.random.default_rng(seed)
     dim = d * d
     Es = [np.kron(K, np.eye(d)) for K in kraus]
@@ -111,7 +258,13 @@ def _fourier_povm(N):
 
 
 def modef_exact_stats(phi, N, kraus):
+    """For each of the N preparations U_g|phi>, the EXACT post-channel Mode-F
+    readout statistics (irrep probabilities p_k and complex overlaps c_k), plus
+    the exact post-channel joint state of the psi-branch (for Helstrom).
 
+    Construction matches experiments/fisher_information/noise_resilience.modeF_noisy
+    exactly, so this is the ceiling for the PUBLISHED pipeline, not a different one.
+    """
     d = N
     nfq = int(round(math.log2(N)))
     phi_r = _joint(phi, N)
@@ -218,7 +371,13 @@ def _informed_lda(Xtr, ytr, Xte, yte):
 
 
 def _noisy_state_labels(stats, clean_labels, tol=1e-9):
-   
+    """Label convention 'noisy_state': the label a fully-informed observer of the
+    POST-CHANNEL state assigns. Preparations whose exact post-channel statistics
+    coincide to `tol` are indistinguishable in principle and share one label (the
+    majority clean label of that group; ties keep the clean label). When the
+    channel is injective on the family this reproduces the clean labels exactly --
+    which is itself the answer to 'are labels tied to the clean or noisy state'
+    for this task, and it is measured, not assumed."""
     F = np.array([_exact_feature(s) for s in stats])
     n = len(stats)
     out = list(clean_labels)
@@ -351,7 +510,10 @@ def run_twocopy_cell(channel, strength, convention, n, m, T, pool, seeds, tau=0.
         pn1 = [p for p, y, _ in tr if y == 1]
         pn0 = [p for p, y, _ in tr if y == 0]
         y_all = [y for _, y, _ in te + tr]
-       
+        # DEGENERACY GUARD (same as Task A): under the noisy_state convention a
+        # strong channel can push EVERY state below the purity threshold, leaving a
+        # single class. Then all learners trivially hit the majority baseline; that
+        # is the task ceasing to exist, not robustness. Force signal to 0.
         if (not pn1) or (not pn0) or (0 not in y_all) or (1 not in y_all):
             gap = 0.0
         else:
@@ -421,13 +583,21 @@ def _mse(a):
 
 
 def _mean_info(infos):
-   
+    """Average the per-seed task-informativeness dicts.
+
+    NOTE (bug fixed after the v1 run): these quantities are per-seed random
+    variables -- the state family phi is redrawn per seed in Task A and the whole
+    ensemble is redrawn per seed in Task B -- so a single seed's value is not the
+    cell's value. v1 (results/robustness/noisy_task_redesign.csv) reported the
+    LAST seed only for every informativeness column, which understated the label
+    flip rate. v1 is retained unmodified; v2 is the corrected file.
+    """
     keys = infos[0].keys()
     return {k: float(np.mean([i[k] for i in infos])) for k in keys}
 
 
 def _verdict(rows):
-    
+    """Apply the pre-registered criterion verbatim. Vacuous cells excluded FIRST."""
     base = {}
     for r in rows:
         if float(r["nominal_strength"]) == 0.0:

@@ -1,4 +1,14 @@
+"""
+experiments.hardware_ibm.ibm_campaign.theory
+=========================================
+EXACT ground truth for every campaign experiment, computed from the verified
+numpy core (``cqfa.frame``, ``experiments.spt_measurement_cost.spt_model``) and exact
+statevectors. Every PUB stores its theory value here at build time, so the
+offline dry run can assert estimate == theory within shot noise (the
+correctness gate) and the IBM run can report abs-error against a fixed truth.
 
+No shots, no sampling — pure linear algebra.
+"""
 from __future__ import annotations
 
 import numpy as np
@@ -21,7 +31,17 @@ def spt_string_label(n: int) -> dict:
 
 
 def c1_string_theory(prep_circuit, n: int) -> float:
+    """Exact expectation of the ACTUAL measured Pauli string for the prepared state.
 
+    The campaign measures the tensor-product Y-decorated string
+    T = Z_0 Y_1 X_2..X_{n-3} Y_{n-2} Z_{n-1} (from ``spt_string_label``) by per-site
+    basis rotation + parity. The telescoped stabilizer product prod K_i equals T
+    only up to a global sign s in {+1,-1} that alternates with n (from the Z.X=-iY
+    phases), so we must contract against T itself, not prod K_i: the cluster state
+    is a +/-1 eigenstate of T (|<T>|=1), the paramagnet gives <T>=0. This is exactly
+    what the +/-1 parity readout returns, so estimate and theory agree by
+    construction (verified by the offline gate).
+    """
     from experiments.spt_measurement_cost import spt_model as Msp
     mats = {"X": Msp.X, "Y": Msp.Y, "Z": Msp.Z}
     label = spt_string_label(n)
@@ -93,7 +113,16 @@ def modeB_arm_theory(psi: np.ndarray, U_g: np.ndarray, observable: dict, n_data:
 # C8 — Mode F (frame Fourier readout) hidden-shift recovery vs blind Mode B
 # ---------------------------------------------------------------------------
 def c8_frame_distribution_theory(prep_circuit_no_measure, n_frame: int) -> np.ndarray:
-    
+    """Exact frame-register outcome distribution P(k) of the *built* C8 circuit
+    (prep with NO measurement), by exact statevector.
+
+    The circuit acts on exactly ``n_frame`` qubits (q0 = LSB), so amplitude index
+    == integer k = sum_j bit_j 2^j, matching the measured bitstring int(...) decode.
+    Computing theory from the built circuit's own statevector (as C1 does) means the
+    offline gate catches any QFT/oracle convention slip before a device is touched:
+      Mode F -> a delta at k = s (Fourier readout recovers the hidden shift);
+      Mode B -> uniform (classical frame averaging is blind to the cross-frame phase).
+    """
     sv = np.asarray(Statevector.from_instruction(prep_circuit_no_measure).data, dtype=complex)
     assert sv.shape[0] == 2 ** n_frame, (sv.shape, n_frame)
     return np.abs(sv) ** 2

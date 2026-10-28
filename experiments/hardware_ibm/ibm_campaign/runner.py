@@ -1,4 +1,27 @@
+"""
+experiments.hardware_ibm.ibm_campaign.runner
+=========================================
+Batched execution of the campaign PubSpecs, with a hard QPU-seconds gate and
+full provenance capture. Three execution paths share ONE code path so the
+offline dry run exercises exactly what the device run will do:
 
+    run_offline(specs, "aer_noiseless")   ideal sampler   (correctness gate)
+    run_offline(specs, "fake:fez")        Heron noise model (legibility check)
+    run_ibm(specs, args)                  REAL device, three locks + budget gate
+
+Every path returns a uniform result dict:
+    {counts_by_id, transpiled_2q_depth_by_id, backend_label, job_id,
+     usage, calibration, cost_estimate}
+
+Cost model (see the QPU-budget analysis): quantum_seconds ~= JOB_OVERHEAD +
+PER_SHOT * sum(shots). The true figure comes from ``job.usage_estimation`` /
+``job.usage()`` on the device and is recorded verbatim; this estimate only
+drives the pre-submit budget gate.
+
+The API token is NEVER read or written here — auth is resolved by
+``QiskitRuntimeService()`` from the user's saved config / env, and nothing from
+the environment is copied into any artifact.
+"""
 from __future__ import annotations
 
 from ..backends import get_backend, _join_register_counts
@@ -156,7 +179,12 @@ def _calibration_snapshot(backend, used_qubits, used_pairs=(), source="layout"):
 
 
 def run_ibm(specs, args, service=None):
+    """Submit the campaign as ONE batched job to the least-busy real device.
 
+    Requires three locks (CQFA_IBM_RUN=1, --ibm, --ibm-confirm) via
+    ``ibm_runtime_path`` AND the estimated QPU-seconds to fit ``args.budget_seconds``.
+    Raises before any submission if either fails. Never touches the token.
+    """
     from ..ibm_runtime_path import _check_locks
     _check_locks(args)                                   # raises IBMDisabled if not fully unlocked
     cost = enforce_budget(specs, getattr(args, "budget_seconds", 300.0))

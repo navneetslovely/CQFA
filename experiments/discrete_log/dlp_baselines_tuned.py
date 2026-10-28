@@ -1,4 +1,35 @@
+"""
+experiments/discrete_log/dlp_baselines_tuned.py
+===================================================
+Properly TUNED classical baselines on the discrete-log concept.
 
+The head-to-head in dlp_real.py / dlp_wide.py reports the best of six classical
+models at standard configurations, which leaves the baselines undertuned. Here
+every classical family gets a full cross-validated hyperparameter search on the
+same data, splits and seeds, plus a small neural network trained with Adam.
+
+Protocol (identical data pipeline to dlp_real.py):
+  * for prime p, primitive root g, seed sd: s = rng(sd).integers(0, p-1);
+    x = 1..p-1, y = 1[ (dlog_g(x) - s) mod (p-1) < (p-1)/2 ].
+  * classical learners see x only, through a feature map:
+      - "rich16"       : the existing bank (x/p, (x/p)^2, 16 sin/cos harmonics)
+      - "full_fourier" : the COMPLETE Fourier basis in x-space
+                         (all k = 1..min((p-1)//2, HARM_CAP) sin/cos harmonics)
+  * quantum reference: the dlog feature map (cos, sin of 2*pi*dlog/(p-1)) +
+    plain logistic regression -- untuned, exactly as in dlp_real.py.
+
+Two accuracies are reported per model, both 5-fold StratifiedKFold (same splitter
+as _cv_accuracy in dlp_real.py, scaler inside the pipeline):
+  * cv_acc_tuned    -- the search's own best inner-CV score. This is optimistically
+                       biased, since the configuration was chosen on this very
+                       score, and is therefore the most generous number available
+                       to the classical side. It is reported deliberately.
+  * nested_cv_acc   -- nested CV, with the grid re-selected inside each outer fold:
+                       the selection-bias-free generalisation estimate.
+Both are reported.
+
+Output: results/discrete_log/dlp_baselines_tuned.csv
+"""
 from __future__ import annotations
 
 import argparse
@@ -121,7 +152,11 @@ def model_grids(seed):
             "weights": ["uniform", "distance"]}),                           # 14
         "logistic": (LogisticRegression(max_iter=5000), {
             "C": [0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]}),                   # 6
-       
+        # CAP: 4 configs / 1500 epochs. The hand-written net is by far the slowest
+        # family (pure-numpy full-batch Adam): a timing probe at p=47 measured
+        # 144.7 s for the 8-config/3000-epoch grid vs <15 s for every other family.
+        # This cap is a COMPUTE decision, not an accuracy one -- the probe's
+        # 3000-epoch best inner-CV score was 0.478 (i.e. already at chance).
         "small_net": (SmallNet(seed=seed), {
             "hidden": [64, 256],
             "lr": [1e-3, 1e-2],

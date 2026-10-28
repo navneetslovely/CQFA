@@ -1,4 +1,25 @@
+"""
+experiments/fisher_information/extensions.py
+==========================================
+Two extensions of Mode F (frame Fourier readout):
 
+  (1) NON-ABELIAN Mode F on S_3 (isotypic / irrep readout of the regular rep). The
+      readout accesses the full isotypic decomposition (trivial + sign + standard);
+      a hidden group-element label is learnable from Mode-F features while Mode A
+      (trivial irrep) and Mode B (classical) are blind. Non-abelian isotypic readout
+      is where genuinely-open hidden-subgroup advantages live; we demonstrate the
+      CAPABILITY generalizes (a provable non-abelian HSP separation remains open).
+
+  (2) DLP trifecta: Mode F over Z_{p-1} on a discrete-log-based label. Mode F
+      extracts the exponent (Fourier sampling) so a trainable head learns the label
+      efficiently (no post-selection); the same label is classically hard under the
+      discrete-log assumption (Liu-Arunachalam-Temme 2021). This realises the
+      trainable + classically-hard + efficiently-evaluable trifecta that the
+      coherent-projection mode provably cannot (Prop. trade-off) -- the positive
+      resolution of the trade-off, on one instance.
+
+Output: results/fisher_information/{nonabelian_s3,dlp_trifecta}.csv .
+"""
 from __future__ import annotations
 
 import argparse
@@ -110,7 +131,17 @@ def _primitive_root(p):
 
 
 def run_dlp_trifecta(primes, m, seeds, out_dir):
-   
+    """HIDDEN-SHIFT MECHANISM demo on Z_{p-1} (scope). Mode F extracts the
+    hidden shift s (Fourier sampling -> efficient, no post-selection) and a linear
+    head learns label=highbit(s) with non-vanishing gradient (trainable).
+
+    IMPORTANT / Scope: as implemented the task is psi=shift(s)@phi with a DIRECTLY
+    GIVEN shift s -- it is CLASSICALLY EASY (cross-correlate with the known reference).
+    We do NOT implement the discrete-log feature map, so classical HARDNESS is NOT
+    demonstrated here. A genuine classically-hard instantiation is the modular-
+    exponentiation encoding of Liu-Arunachalam-Temme (2021) -- cited prior art, not
+    reproduced. So this shows the trainable+efficient side + the Fourier mechanism;
+    it is NOT a demonstrated trainable+hard+efficient trifecta."""
     rows = []
     for p in primes:
         assert _is_prime(p)

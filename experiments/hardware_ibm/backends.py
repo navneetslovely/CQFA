@@ -1,4 +1,20 @@
+"""
+experiments.hardware_ibm.backends
+==============================
+LABELLED backend factory. Every executor carries a human-readable ``label`` that
+is written into every CSV row, so no result ever appears without its backend
+provenance (integrity rule). Four kinds:
 
+    "aer_statevector"  -> Aer:statevector(exact)   exact, no shots (equivalence gate)
+    "aer_noiseless"    -> Aer:noiseless            AerSimulator, shots
+    "aer_depol:<p>"    -> Aer:depol(p=<p>)         depolarizing NoiseModel
+    "fake:<name>"      -> Fake:<name>              FakeBackendV2 device-noise model
+
+FakeBackends are *device-noise models*, NOT the live devices — captions must say
+"device-noise model (Fake...)", never "run on manila". These run by default (no
+credentials, no budget). The real IBM path lives in ``ibm_runtime_path.py`` and
+is gated off by default.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -12,7 +28,20 @@ from qiskit.quantum_info import Statevector
 # ---------------------------------------------------------------------------
 @dataclass
 class BackendRunner:
+    """Uniform interface over the different execution paths.
 
+    Attributes
+    ----------
+    label : str
+        Human-readable backend label written into CSVs.
+    noise_model : str
+        Short tag for the CSV ``noise_model`` column ("none", "depolarizing",
+        "device").
+    noise_strength : float
+        Numeric strength for the CSV (depol p; 0.0 for noiseless; -1 for device).
+    kind : str
+        One of {"statevector", "sampler"}.
+    """
 
     label: str
     noise_model: str
@@ -37,7 +66,12 @@ class BackendRunner:
                          seed_transpiler=self._seed if seed is None else seed)
 
     def run_sampler(self, circuits, shots: int, seed=None):
+        """Run a list of measured circuits; return a list of counts dicts.
 
+        Counts keys are qiskit's default classical-register-joined bitstrings
+        (register order matches how the circuit declared its ClassicalRegisters;
+        readout.py parses them by register, not by guessing positions).
+        """
         if self.kind != "sampler":
             raise RuntimeError(f"backend {self.label} is not a sampler backend")
         single = not isinstance(circuits, (list, tuple))
@@ -68,7 +102,14 @@ class BackendRunner:
 
 
 def _join_register_counts(data, reg_names) -> dict:
+    """Merge per-register BitArrays into one counts dict keyed 'reg1 reg0' order.
 
+    We key the combined string as '<c_frame> <c_data>' by joining registers in a
+    fixed, documented order so readout.py can split unambiguously. To keep it
+    simple and register-name driven, we return a dict keyed by a tuple-string
+    "<name>=<bits>;..." — but for compatibility with count-summing we produce the
+    space-joined qiskit-style string in registration order.
+    """
     # Build per-shot combined outcomes to preserve joint correlations.
     per_reg = {name: data[name] for name in reg_names}
     n_shots = None

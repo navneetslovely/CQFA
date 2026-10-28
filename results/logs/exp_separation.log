@@ -1,8 +1,0 @@
-n=4 w=4 3^w=      81 V_shadow=       78 (V/3^w=0.97) V_coh=0.001 | shots: coherent=0 shadow=7.822e+03 ratio=7.82e+04
-n=5 w=5 3^w=     243 V_shadow=      253 (V/3^w=1.04) V_coh=0.053 | shots: coherent=5 shadow=2.528e+04 ratio=4.78e+03
-n=6 w=6 3^w=     729 V_shadow=      700 (V/3^w=0.96) V_coh=0.029 | shots: coherent=3 shadow=6.998e+04 ratio=2.40e+04
-n=7 w=7 3^w=    2187 V_shadow=     2052 (V/3^w=0.94) V_coh=0.030 | shots: coherent=3 shadow=2.052e+05 ratio=6.80e+04
-n=8 w=8 3^w=    6561 V_shadow=     5722 (V/3^w=0.87) V_coh=0.032 | shots: coherent=3 shadow=5.722e+05 ratio=1.78e+05
-n=9 w=9 3^w=   19683 V_shadow=    20338 (V/3^w=1.03) V_coh=0.028 | shots: coherent=3 shadow=2.034e+06 ratio=7.35e+05
-n=10 w=10 3^w=   59049 V_shadow=    52301 (V/3^w=0.89) V_coh=0.025 | shots: coherent=3 shadow=5.230e+06 ratio=2.06e+06
-wrote results/e2_spt/exponential_separation.csv

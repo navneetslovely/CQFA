@@ -1,4 +1,14 @@
+"""figures/scripts/make_modef_hw.py
+=================================
+Mode F on real IBM hardware (C8): the frame Fourier readout recovers the hidden
+shift (peak probability at k=s) while the decohered Mode-B control is uniformly
+blind (peak ~1/N). Two independent device runs (ibm_fez) on different qubit layouts
+-> reproducibility. Single panel, publication style (no title, bold ticks, vector PDF).
 
+Source CSVs:
+  results/ibm_campaign/ibm_modef/analysis/c8.csv   (run-1, job d9d6ltkinv1c73aokueg)
+  results/ibm_campaign/ibm_modef2/analysis/c8.csv  (run-2, job d9dd6paneu4c739n3brg)
+"""
 from __future__ import annotations
 import csv, os, shutil
 import numpy as np

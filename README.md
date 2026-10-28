@@ -68,7 +68,8 @@ and confirms the recorded results are present.
 python -m figures.make_all_figures
 ```
 
-Reads the recorded CSVs and writes all eleven figures into `figures/output/`.
+Reads the recorded CSVs and writes the ten data figures into `figures/output/`
+(Figure 1 is a schematic; its PDF is `figures/pdf/f0_architecture.pdf`).
 It trains nothing and simulates nothing. The versions used in the article and
 its supplementary material are in `figures/pdf/`, so the two directories can be
 compared directly. `REPRODUCE.md` maps each figure of the article to its script.

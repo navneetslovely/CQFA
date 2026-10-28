@@ -16,7 +16,6 @@ import importlib
 import traceback
 
 MAIN_PAPER = [
-    ("Figure 1", "figures.fig01_architecture",           "f0_architecture"),
     ("Figure 2", "figures.fig02_two_copy_separation",    "f_fair"),
     ("Figure 3", "figures.fig03_discrete_log",           "f_dlp_wide"),
     ("Figure 4", "figures.fig04_frame_readout",          "f_modef"),

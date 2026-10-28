@@ -12,7 +12,7 @@ experiments regenerates those CSVs and takes considerably longer.
 ## Level 1 — rebuild every figure and table from recorded results
 
 ```bash
-python -m figures.make_all_figures      # all eleven figures -> figures/output/
+python -m figures.make_all_figures      # the ten data figures -> figures/output/
 python -m analysis.build_tables         # result tables -> analysis/output/tables.tex
 ```
 
@@ -27,7 +27,7 @@ article's.
 
 | article | command | file in `figures/pdf/` | reads |
 |---|---|---|---|
-| Fig. 1 | `python -m figures.fig01_architecture` | `f0_architecture.pdf` | schematic, no data |
+| Fig. 1 | schematic, not regenerated | `f0_architecture.pdf` | no data |
 | Fig. 2 | `python -m figures.figS1_surplus_dimension` | `f9_surplus_dimension.pdf` | `results/coherent_surplus/surplus_dimension.csv` |
 | Fig. 3 | `python -m figures.fig02_two_copy_separation` | `f_fair.pdf` | `results/two_copy_separation/` |
 | Fig. 4 | `python -m figures.fig03_discrete_log` | `f_dlp_wide.pdf` | `results/discrete_log/dlp_wide/dlp_wide_agg.csv` |

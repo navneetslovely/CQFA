@@ -1,8 +1,7 @@
 # CQFA — Coherent Quantum Frame Averaging
 
 Source code, recorded results and figure generators for the submission
-*Coherent Quantum Frame Averaging: A Representation Dial for Trainable,
-Hard-to-Simulate Quantum Machine Learning*.
+*Coherent Quantum Frame Averaging: A Symmetrization Primitive with Separable Trainability and Hardness Controls*.
 
 Everything needed to reproduce, conduct and analyse the reported experiments is
 here: the library, every experiment driver, the analysis code, the plotting
